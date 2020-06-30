@@ -16,27 +16,27 @@ with callysto.Cell("python"):
 with callysto.Cell("python"):
     def get_drs_urls(table_name):
         """
-        Return a dictionary containing drs urls and file names, using sample as the key.                      
+        Return a dictionary containing drs urls and file names, using sample as the key.
         """
         info = dict()
-        for row in tnu.table.list_entities(table_name):                                                       
+        for row in tnu.table.list_entities(table_name):
             drs_url = row['attributes']['object_id']
             file_name = row['attributes']['file_name']
             # Assume file names have the format `NWD244548.b38.irc.v1.cram`
             sample = file_name.split(".", 1)[0]
-            info[sample] = dict(file_name=file_name, drs_url=drs_url)                                         
+            info[sample] = dict(file_name=file_name, drs_url=drs_url)
         return info
 
-    def upload_data_table(tsv):         
+    def upload_data_table(tsv):
         billing_project = os.environ['GOOGLE_PROJECT']
         workspace = os.environ['WORKSPACE_NAME']
         resp = fiss.fapi.upload_entities(billing_project, workspace, tsv, model="flexible")
         resp.raise_for_status()
 
-get_drs_urls = mock.MagicMock()
+get_drs_urls = mock.MagicMock()  # noqa
 
 with callysto.Cell("python"):
-    crams = get_drs_urls("submitted_aligned_reads")                                                           
+    crams = get_drs_urls("submitted_aligned_reads")
     crais = get_drs_urls("aligned_reads_index")
 
 with callysto.Cell("python"):
@@ -63,7 +63,7 @@ with callysto.Cell("python"):
         tnu.drs.copy(cram['drs_url'], f"{bucket}/{pfx}/{cram['file_name']}")
         tnu.drs.copy(crai['drs_url'], f"{bucket}/{pfx}/{crai['file_name']}")
 
-upload_data_table = mock.MagicMock()
+upload_data_table = mock.MagicMock()  # noqa
 
 with callysto.Cell("python"):
     # Create the IGV viewer data table
