@@ -6,7 +6,7 @@ function usage() {
     echo 'Given a source callysto script and a generated Jupyter notebook'
     echo 'copy the generated notebook to destination specified in the publish'
     echo 'directive. The publish directive is the first line of the source callysto script'
-    echo 'with the format: `# publish to gs://my_bucket/my_key`'
+    echo 'with the format: `# publish to: "my workspace name" "my notebook name"`.'
 }
 
 if [[ $# != 2 ]]; then
@@ -17,18 +17,14 @@ fi
 source_callysto_notebook=$1
 generated_jupyter_notebook=$2
 
-echo $source_callysto_notebook
 publish_directive=$(head -n 1 $source_callysto_notebook)
-dest=$(echo -n ${publish_directive} | cut -d ' ' -f4)
-if [[ ${dest} != *gs://* ]]; then
-    usage
-    echo "Malformatted publish directive: ${publish_directive}"
-    echo ${dest}
-    exit 1
-fi
-
+workspace=$(echo -n ${publish_directive} | cut -d ' ' -f4 | sed 's/"//g')
+notebook_name=$(echo -n ${publish_directive} | cut -d ' ' -f5- | sed 's/"//g')
+dest="gs://$(tnu workspace get-bucket --workspace ${workspace})/notebooks/${notebook_name}.ipynb"
 if [[ -f $generated_jupyter_notebook ]]; then
-    gsutil cp ${generated_jupyter_notebook} ${dest}
+	echo ${generated_jupyter_notebook}
+	echo ${dest}
+    gsutil cp "${generated_jupyter_notebook}" "${dest}"
 else
     usage
     echo "File does not exist: ${generated_jupyter_notebook}"
