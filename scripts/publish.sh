@@ -18,9 +18,10 @@ source_callysto_notebook=$1
 generated_jupyter_notebook=$2
 
 publish_directive=$(head -n 1 $source_callysto_notebook)
-workspace=$(echo -n ${publish_directive} | cut -d ' ' -f4 | sed 's/"//g')
-notebook_name=$(echo -n ${publish_directive} | cut -d ' ' -f5- | sed 's/"//g')
-dest="gs://$(tnu workspace get-bucket --workspace ${workspace})/notebooks/${notebook_name}.ipynb"
+workspace=$(echo -n ${publish_directive} | cut -d '"' -f2)
+notebook_name=$(echo -n ${publish_directive} | cut -d '"' -f3- | sed 's/"//g')
+bucket=$(tnu workspace get-bucket --workspace "${workspace}")
+dest="gs://${bucket}/notebooks/${notebook_name}.ipynb"
 if [[ -f $generated_jupyter_notebook ]]; then
 	echo ${generated_jupyter_notebook}
 	echo ${dest}
