@@ -102,8 +102,7 @@ with callysto.Cell("python"):
                                                     output=f"{bucket}/merged/chr2.vcf.gz"))
 
 
-################################################ TESTS ################################################
-from firecloud import fiss
+################################################ TESTS ################################################ noqa
 resp = fiss.fapi.get_entities(os.environ['GOOGLE_PROJECT'], os.environ['WORKSPACE_NAME'], "vcf-merge-workflow-input-drs")
 resp.raise_for_status()
 rows = resp.json()
