@@ -1,3 +1,5 @@
+include common.mk
+
 MODULES=notebooks
 
 all: test
