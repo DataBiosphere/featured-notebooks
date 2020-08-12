@@ -1,2 +1,4 @@
+flake8
+mypy
 git+https://github.com/xbrianh/callysto
 terra-notebook-utils
