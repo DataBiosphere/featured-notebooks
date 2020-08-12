@@ -1,4 +1,4 @@
-# bdcat_notebookgs
+# bdcat_notebooks
 Example Jupyter notebook source files for the BioData Catalyst consortium. These notebooks are published to the
 [Terra notebook environment](https://support.terra.bio/hc/en-us/articles/360027237871-Terra-s-Jupyter-Notebooks-environment-Part-I-Key-components).
 
@@ -49,7 +49,7 @@ gcloud auth application-default login
 ## Local Development Environment
 
 Notebook source scripts should be developed using a Python 3.7 virtual environment, which matches the typical Python version
-in Terra notebook runtimes, and requirements should be installed.
+in the Terra notebook runtime, and requirements should be installed.
 
 On MacOS or similar systems, this can be done by issuing the commands
 ```
@@ -62,7 +62,7 @@ where `{vpath}` should be replaced with the desired location of the virtual envi
 workflow to maintain a clean Python environment by frequently re-creating virtual environments.
 
 ## Links
-Project home page [GitHub](https://github.com/DataBiosphere/bdcat_notebookgs)  
+Project home page [GitHub](https://github.com/DataBiosphere/bdcat_notebooks)  
 
 ### Bugs
-Please report bugs, issues, feature requests, etc. on [GitHub](https://github.com/DataBiosphere/bdcat_notebookgs).
+Please report bugs, issues, feature requests, etc. on [GitHub](https://github.com/DataBiosphere/bdcat_notebooks).
