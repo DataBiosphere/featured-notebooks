@@ -6,27 +6,27 @@ with callysto.Cell("markdown"):
     """
     # xvcfmerge with `Array[String]` input
 
-    This notebook demonstrates the creation of Terra data tables as input to xvcfmerge workflows, referencing input VCFs with Array[String].
+    This notebook demonstrates the creation of Terra data tables as input to xvcfmerge workflows, referencing input
+    VCFs with an `Array[String]` of either DRS URIs or Google Storage URLs, and is meant to be used with the xvcfmerge
+    version [xbrianh-input-format](https://dockstore.org/workflows/github.com/DataBiosphere/xvcfmerge:xbrianh-input-format?tab=info).
 
-    This input style is in development. xvcfmerge workflows should use version "xbrianh-input-format"
+    This version of the xvcfmerge changes input format from a comma separated `String` of Google Storage URLs to an
+    `Array[String]` of either DRS URIs or Google Storage URLs. It is currently in beta.
 
     # Cohort VCF Merge
 
-    The TopMED data indexed by BioData Catalyst has been jointly called for each Freeze. TOPMed researchers not part of the TOPMed Constorium receive jointly called VCFs subsetted by project and consent code. If users have access to multiple projects and consent codes, they may wish to re-combine these VCFs. This notebook demonstrates merge tooling for jointly called VCFs.
+    TopMED multi-sample VCF files indexed by BioData Catalyst have been jointly called for each "Freeze", or release of
+    genomic data. These files are accessible in the "Reference File" node of the Gen3 graph. TOPMed researchers not
+    part of the TOPMed Consortium receive jointly called VCFs subsetted by project and consent code. If users have
+    access to multiple projects and consent codes, they may wish to re-combine these VCFs to form a synthetic cohort.
+    The Merge VCFs notebook demonstrates tooling to merge jointly called VCFs.
 
-    ## Aquire the Cohort VCFs to be merged
-
-    The VCFs should be stored in directories in your workspace bucket. During this tutorial, we will use the placeholder structure
-    ```
-    gs://my-bucket/vcfsa/chr1.vcf.gz
-    gs://my-bucket/vcfsa/chr2.vcf.gz
-    ...
-    gs://my-bucket/vcfsb/chr1.vcf.gz
-    gs://my-bucket/vcfsb/chr2.vcf.gz
-    ...
-    ```
-
-    Note: Freeze5b cohort VCFs in Gen3 are currently stored as tar arhcives exactly as they are represented in dbGAP. Before running this notebook, two or more archives must be extracted using the utilities found in the [unarchive-tar-files-to-workspace notebook](terra.biodatacatalyst.nhlbi.nih.gov/#workspaces/biodata-catalyst/BioData%20Catalyst%20Collection/notebooks/launch/unarchive-tar-files-to-workspace.ipynb).
+    Note: Cohort multi-sample VCFs are currently available in multiple formats in Gen3 with the goal of eventually
+    hosting files in actionable formats (i.e. not tar compressed). Currently, Freeze 8 multi-sample VCFs are available
+    as 23 files that are blocked zipped (*.vcf.gz). Some Freeze5b cohort VCFs in Gen3 may be stored as a single tar
+    bundle. If you are interested in Freeze 5b files that are tar archived, you will need to extract the contents of
+    the tar to your workspace using the utilities found in the
+    [unarchive-tar-files-to-workspace notebook](https://app.terra.bio/terra.biodatacatalyst.nhlbi.nih.gov/#workspaces/biodata-catalyst/BioData%20Catalyst%20Collection/notebooks/launch/unarchive-tar-files-to-workspace.ipynb).
 
     ## Workflows
 
