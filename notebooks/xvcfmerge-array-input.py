@@ -4,11 +4,9 @@ import callysto
 
 with callysto.Cell("markdown"):
     """
-    # xvcfmerge with `Array[String]` input
-
     This notebook demonstrates the creation of Terra data tables as input to xvcfmerge workflows, referencing input
     VCFs with an `Array[String]` of either DRS URIs or Google Storage URLs, and is meant to be used with the xvcfmerge
-    version [xbrianh-input-format](https://dockstore.org/workflows/github.com/DataBiosphere/xvcfmerge:xbrianh-input-format?tab=info).
+    version [xbrianh-input-format](https://dockstore.org/workflows/github.com/DataBiosphere/xvcfmerge:v0.1.0?tab=info).
 
     This version of the xvcfmerge changes input format from a comma separated `String` of Google Storage URLs to an
     `Array[String]` of either DRS URIs or Google Storage URLs. It is currently in beta.
@@ -31,7 +29,7 @@ with callysto.Cell("markdown"):
     ## Workflows
 
     Import the [Dockstore](https://dockstore.org) workflows into your workspace using the "NHLBI Biodata Catalyst" launch button:
-     - [xvcfmerge](https://dockstore.org/workflows/github.com/DataBiosphere/xvcfmerge:xbrianh-input-format?tab=info)
+     - [xvcfmerge](https://dockstore.org/workflows/github.com/DataBiosphere/xvcfmerge:v0.1.0?tab=info)
 
     Workflow execution time is typically ~20 minutes per VCF.
     """
