@@ -19,7 +19,7 @@ context managers:
 with callysto.Cell("{mode}"):
 	...
 ```
-where `{mode}` is `python` or `markdown`. Python statements outside if callysto contexts will not be rendered into
+where `{mode}` is `python` or `markdown`. Python statements outside of callysto contexts will not be rendered into
 cells. Test code, or code for preparing mock environments, should not be placed in callysto contexts.
 
 ## Publishing Notebooks
@@ -59,7 +59,7 @@ pip install -r requirements.txt
 ```
 
 where `{vpath}` should be replaced with the desired location of the virtual environment data. It is common developer
-workflow to maintain a clean Python environment by frequently re-creating virtual environments.
+pattern to maintain a clean Python environment by frequently re-creating virtual environments.
 
 ## Links
 Project home page [GitHub](https://github.com/DataBiosphere/bdcat_notebooks)  
