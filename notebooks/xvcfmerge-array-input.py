@@ -24,8 +24,8 @@ with callysto.Cell("markdown"):
     Note: Cohort multi-sample VCFs are currently available in multiple formats in Gen3 with the goal of eventually
     hosting files in actionable formats (i.e. not tar compressed). Currently, Freeze 8 multi-sample VCFs are available
     as 23 files that are blocked zipped (*.vcf.gz). Some Freeze5b cohort VCFs in Gen3 may be stored as a single tar
-    bundle. If you are interested in Freeze 5b files that are tar archived, you will need to extract the contents of
-    the tar to your workspace using the utilities found in the
+    bundle. If you are interested in Freeze 5b files that are tar.gz archived, you will need to extract the contents of
+    the tar.gz to your workspace using the utilities found in the
     [unarchive-tar-files-to-workspace notebook](https://app.terra.bio/terra.biodatacatalyst.nhlbi.nih.gov/#workspaces/biodata-catalyst/BioData%20Catalyst%20Collection/notebooks/launch/unarchive-tar-files-to-workspace.ipynb).
 
     ## Workflows
