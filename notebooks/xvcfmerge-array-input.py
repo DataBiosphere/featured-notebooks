@@ -8,8 +8,8 @@ with callysto.Cell("markdown"):
     VCFs with an `Array[String]` of either DRS URIs or Google Storage URLs, and is meant to be used with the xvcfmerge
     version [xbrianh-input-format](https://dockstore.org/workflows/github.com/DataBiosphere/xvcfmerge:v0.1.0?tab=info).
 
-    This version of the xvcfmerge changes input format from a comma separated `String` of Google Storage URLs to an
-    `Array[String]` of either DRS URIs or Google Storage URLs. It is currently in beta.
+    This version of the xvcfmerge changes input format from a comma separated `String` of Google Storage URLs (gs://) to an
+    `Array[String]` of either DRS URIs (drs://) or Google Storage URLs (gs://). It is currently in beta.
 
     # Cohort VCF Merge
 
@@ -60,13 +60,17 @@ with callysto.Cell("python"):
                                        row_name,
                                        fiss_updates)
         resp.raise_for_status()
-
+        
+with callysto.Cell("markdown"):
+    """
+    ## Option A: Prepare the merge workflow input data table for DRS URIs
+    This is a typical workflow preparation for merging TOPMed VCFs _without_ downloading them to your workspace bucket.
+    Results will be placed in your workspace bucket.
+    """
+    
 with callysto.Cell("python"):
-    # Prepare the merge workflow input data table for DRS URIs.
-    # This is a typical workflow preparation for merging TOPMed VCFs _without_ downloading them to your workspace bucket.
-    # Results will be placed in your workspace bucket.
     bucket = os.environ['WORKSPACE_BUCKET']
-    table = "vcf-merge-workflow-input-drs"
+    table = "vcf-merge-input-drs"
 
     tsv_data = "\t".join([f"{table}_id", "workspace", "billing_project"])
     for row_name in ["drs_combined_a", "drs_combined_b"]:
@@ -81,12 +85,22 @@ with callysto.Cell("python"):
                                                                       "drs://dg.4503/aba6b011-2ab4-4739-beb4-c1eeaee60c74"],
                                                               output=f"{bucket}/merged/drs_combined_b.vcf.gz"))
 
+with callysto.Cell("markdown"):
+    """
+    ## Option B: Prepare the merge workflow input data table for VCFs already in bucket
+    This workflow preparation uses VCFs that are present in your workspace bucket. Results will be placed in your workspace bucket.
+
+    Make sure that they follow the following format:
+    `gs://[your-bucket's-name]/vcfsa/chr1.vcf.gz`
+    `gs://[your-bucket's-name]/vcfsa/chr2.vcf.gz`
+    `..`
+    `gs://[your-bucket's-name]/vcfsb/chr1.vcf.gz`
+    `gs://[your-bucket's-name]/vcfsb/chr2.vcf.gz`
+    """
+   
 with callysto.Cell("python"):
-    # Prepare the merge workflow input data table for Google Storage URIs.
-    # This workflow preparation uses VCFs that are present in your workspace bucket.
-    # Results will be placed in your workspace bucket.
     bucket = os.environ['WORKSPACE_BUCKET']
-    table = "vcf-merge-workflow-input-bucket"
+    table = "vcf-merge-input-bucket"
 
     tsv_data = "\t".join([f"{table}_id", "workspace", "billing_project"])
     for row_name in ["chr1", "chr2"]:
