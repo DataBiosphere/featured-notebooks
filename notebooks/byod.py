@@ -45,6 +45,7 @@ with callysto.Cell("python"):
     from firecloud import fiss
     from collections import defaultdict
     from typing import Any, List, Set, Dict, Iterable
+    from terra_notebook_utils import gs
 
     google_project = os.environ['GOOGLE_PROJECT']
     workspace = os.environ['WORKSPACE_NAME']
@@ -184,6 +185,29 @@ with callysto.Cell("python"):
 with callysto.Cell("markdown"):
     """
     # Generate a data table that links to the data in your workspace bucket
+
+    To generate a Terra data table associating crams, crais, and sample ids (e.g. "NWD1"), use the snippet:
+    ```
+    listing = [key for key in gs.list_bucket("my-crams")]
+    create_cram_crai_table("my-table-name", listing)
+    ```
+
+    For example, the listing
+    ```
+    gs://my-workspace-bucket/my-crams/NWD1.cram
+    gs://my-workspace-bucket/my-crams/NWD1.crai
+    gs://my-workspace-bucket/my-crams/NWD2.cram
+    gs://my-workspace-bucket/my-crams/NWD2.crai
+    gs://my-workspace-bucket/my-crams/NWD3.cram
+    gs://my-workspace-bucket/my-crams/NWD3.crai
+    ```
+    would produce the table
+
+    | sample_id | cram       | crai      |
+    | --------- | ---------  | --------- |
+    | NWD1      | NWD1.cram  | NWD1.crai |
+    | NWD2      | NWD2.cram  | NWD2.crai |
+    | NWD3      | NWD3.cram  | NWD3.crai |
     """
 
 ################################################ TESTS ################################################ noqa
