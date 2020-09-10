@@ -126,7 +126,15 @@ with callysto.Cell("python"):
         crais = dict()
         for key in listing:
             _, filename = key.rsplit("/", 1)
-            sample, ext = filename.split(".", 1)
+
+            parts = filename.split(".")
+            if 3 == len(parts):  # foo.cram.crai branch
+                sample, _, ext = parts
+            elif 2 == len(parts):  # "foo.cram" or "foo.crai" branch
+                sample, ext = parts
+            else:
+                raise ValueError(f"Unable to parse '{filename}'")
+
             if "cram" == ext:
                 crams[sample] = key
             elif "crai" == ext:
@@ -255,11 +263,17 @@ listing = list()
 for i in range(5):
     listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram")
     listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.crai")
+for i in range(5, 8):
+    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram")
+    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram.crai")
 create_cram_crai_table("test_cram_crai_table", listing)
 keyed_rows = get_keyed_rows("test_cram_crai_table", "sample")
 for i in range(5):
     assert keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
                                                 crai=f"gs://some-bucket/some-pfx/sample_id_{i}.crai")
+for i in range(5, 8):
+    assert keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
+                                                crai=f"gs://some-bucket/some-pfx/sample_id_{i}.cram.crai")
 
 delete_table("test_metadata_table_a")
 test_metadata_table_a_columns = dict(sample=["sample_id_1", "sample_id_2", "sample_id_3", "sample_id_4"],
