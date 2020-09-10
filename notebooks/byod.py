@@ -210,6 +210,45 @@ with callysto.Cell("markdown"):
     | NWD3      | NWD3.cram  | NWD3.crai |
     """
 
+with callysto.Cell("markdown"):
+    """
+    # Merge data tables across sample ids
+
+    Data tables can be joined across any column of shared values. For instance, the following tables can be joined with
+    the `sample_id` column:
+
+    | sample_id | cram       | crai      |
+    | --------- | ---------  | --------- |
+    | NWD1      | NWD1.cram  | NWD1.crai |
+    | NWD2      | NWD2.cram  | NWD2.crai |
+    | NWD3      | NWD3.cram  | NWD3.crai |
+
+    | sample_id | first_name | last_name |
+    | --------- | ---------  | --------- |
+    | NWD1      | Bob        | Frank     |
+    | NWD2      | Sue        | Lee       |
+    | NWD3      | Adrian     | Zap       |
+
+    | sample_id | Diabetic   |
+    | --------- | ---------  |
+    | NWD1      | No         |
+    | NWD3      | Yes        |
+
+    The code snippet
+    ```
+    join_data_tables("joined_table_name", ["cram_crai_table", "name_table", "diabetic_table"], "sample_id")
+    ```
+    produces the combined table
+
+    | sample_id | cram       | crai      | first_name | last_name | Diabetic   |
+    | --------- | ---------  | --------- | ---------  | --------- | ---------  |
+    | NWD1      | NWD1.cram  | NWD1.crai | Bob        | Frank     | No         |
+    | NWD3      | NWD3.cram  | NWD3.crai | Adrian     | Zap       | Yes        |
+
+    Note that the row for `NWD2` is missing from the combined table since it was not present in `diabetic_table`.
+
+    """
+
 ################################################ TESTS ################################################ noqa
 delete_table("test_cram_crai_table")
 listing = list()
