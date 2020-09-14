@@ -60,14 +60,14 @@ with callysto.Cell("python"):
                                        row_name,
                                        fiss_updates)
         resp.raise_for_status()
-        
+
 with callysto.Cell("markdown"):
     """
     ## Option A: Prepare the merge workflow input data table for DRS URIs
     This is a typical workflow preparation for merging TOPMed VCFs _without_ downloading them to your workspace bucket.
     Results will be placed in your workspace bucket.
     """
-    
+
 with callysto.Cell("python"):
     bucket = os.environ['WORKSPACE_BUCKET']
     table = "vcf-merge-input-drs"
@@ -97,7 +97,7 @@ with callysto.Cell("markdown"):
     `gs://[your-bucket's-name]/vcfsb/chr1.vcf.gz`
     `gs://[your-bucket's-name]/vcfsb/chr2.vcf.gz`
     """
-   
+
 with callysto.Cell("python"):
     bucket = os.environ['WORKSPACE_BUCKET']
     table = "vcf-merge-input-bucket"
