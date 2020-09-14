@@ -7,6 +7,8 @@ os.environ['WORKSPACE_NAME'] = "terra-notebook-utils-tests"
 os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
 os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
+BLANK_CELL_VALUE = ""
+
 with callysto.Cell("markdown"):
     """
     # Bring your own data to your Terra workspace and organize it in a data table
@@ -110,9 +112,12 @@ with callysto.Cell("python"):
             return set()
 
     def join_keyed_rows(keyed_rows_a: Dict[str, Any], keyed_rows_b: Dict[str, Any]) -> Dict[str, Any]:
-        assert not keyed_row_columns(keyed_rows_a).intersection(keyed_row_columns(keyed_rows_b))
-        common_keys = set(keyed_rows_a.keys()).intersection(set(keyed_rows_b.keys()))
-        return {k: dict(**keyed_rows_a[k], **keyed_rows_b[k])
+        a_columns = keyed_row_columns(keyed_rows_a)
+        b_columns = keyed_row_columns(keyed_rows_b)
+        assert not a_columns.intersection(b_columns), "Keyed rows to join may not share columns"
+        common_keys = set(keyed_rows_a.keys()).union(set(keyed_rows_b.keys()))
+        return {k: dict(**keyed_rows_a.get(k, {c: BLANK_CELL_VALUE for c in a_columns}),
+                        **keyed_rows_b.get(k, {c: BLANK_CELL_VALUE for c in b_columns}))
                 for k in common_keys}
 
     def join_data_tables(new_table: str, tables_to_join: list, join_column: str):
@@ -258,6 +263,8 @@ with callysto.Cell("markdown"):
     """
 
 ################################################ TESTS ################################################ noqa
+BLANK_CELL_VALUE = f"{uuid4()}"
+
 delete_table("test_cram_crai_table")
 listing = list()
 for i in range(5):
@@ -267,13 +274,13 @@ for i in range(5, 8):
     listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram")
     listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram.crai")
 create_cram_crai_table("test_cram_crai_table", listing)
-keyed_rows = get_keyed_rows("test_cram_crai_table", "sample")
+cram_crai_keyed_rows = get_keyed_rows("test_cram_crai_table", "sample")
 for i in range(5):
-    assert keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
-                                                crai=f"gs://some-bucket/some-pfx/sample_id_{i}.crai")
+    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
+                                                          crai=f"gs://some-bucket/some-pfx/sample_id_{i}.crai")
 for i in range(5, 8):
-    assert keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
-                                                crai=f"gs://some-bucket/some-pfx/sample_id_{i}.cram.crai")
+    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
+                                                          crai=f"gs://some-bucket/some-pfx/sample_id_{i}.cram.crai")
 
 delete_table("test_metadata_table_a")
 test_metadata_table_a_columns = dict(sample=["sample_id_1", "sample_id_2", "sample_id_3", "sample_id_4"],
@@ -290,12 +297,16 @@ upload_columns("test_metadata_table_b", test_metadata_table_b_columns)
 delete_table("test_joined_table")
 join_data_tables("test_joined_table", ["test_cram_crai_table", "test_metadata_table_a", "test_metadata_table_b"], "sample")
 keyed_rows = get_keyed_rows("test_joined_table", "sample")
-assert set(keyed_rows.keys()) == {"sample_id_1", "sample_id_2", "sample_id_3"}
-for i in [1, 2, 3]:
-    expected_row = dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
-                        crai=f"gs://some-bucket/some-pfx/sample_id_{i}.crai",
-                        firstname=test_metadata_table_a_columns['firstname'][i - 1],
-                        birthday=test_metadata_table_a_columns['birthday'][i - 1],
-                        alpha=test_metadata_table_b_columns['alpha'][i - 1],
-                        beta=test_metadata_table_b_columns['beta'][i - 1])
-    assert expected_row == keyed_rows[f"sample_id_{i}"]
+test_metadata_a_keyed_rows = get_keyed_rows("test_metadata_table_a", "sample")
+test_metadata_b_keyed_rows = get_keyed_rows("test_metadata_table_b", "sample")
+assert set(keyed_rows.keys()) == {f"sample_id_{i}" for i in range(8)}
+
+for i in range(8):
+    sample = f"sample_id_{i}"
+    expected_row = dict(cram=cram_crai_keyed_rows[sample]['cram'],
+                        crai=cram_crai_keyed_rows[sample]['crai'],
+                        firstname=test_metadata_a_keyed_rows.get(sample, dict()).get('firstname', BLANK_CELL_VALUE),
+                        birthday=test_metadata_a_keyed_rows.get(sample, dict()).get('birthday', BLANK_CELL_VALUE),
+                        alpha=test_metadata_b_keyed_rows.get(sample, dict()).get('alpha', BLANK_CELL_VALUE),
+                        beta=test_metadata_b_keyed_rows.get(sample, dict()).get('beta', BLANK_CELL_VALUE))
+    assert expected_row == keyed_rows[sample]
