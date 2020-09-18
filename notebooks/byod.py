@@ -59,6 +59,7 @@ from terra_notebook_utils import gs
 
 google_project = os.environ['GOOGLE_PROJECT']
 workspace = os.environ['WORKSPACE_NAME']
+bucket_clipped = os.environ["WORKSPACE_BUCKET"][len("gs://"):]
 
 
 # Finally, here are the functions we'll be using for creating data tables.
@@ -108,6 +109,27 @@ def create_cram_crai_table(table: str, listing: Iterable[str]):
     upload_columns(table, dict(sample=samples,
                                cram=[crams[s] for s in samples],
                                crai=[crais[s] for s in samples]))
+
+def create_cram_crai_table_pt(subdir: str):
+    #list_dfs = [] # List of dataframes, one df per child extension
+    #for child in unique_children:
+        list_of_list_child = []
+        #progress(child, unique_children)    
+        for blob in storage_client.list_blobs(bucket_clipped, prefix=subdir):
+            if blob.name.endswith(PARENT_FILETYPE):
+                # remove PARENT_FILETYPE extension and search for basename
+                basename = blob.name[:-len(f'.{PARENT_FILETYPE}')]
+                for basename_blob in storage_client.list_blobs(bucket_clipped, prefix=basename):
+                    if basename_blob.name.endswith(child):
+                        parent_filename = blob.name.split('/')[-1]
+                        child_filename = basename_blob.name.split('/')[-1]
+                        parent_location = f'{google_storage_prefix}{bucket_clipped}/{blob.name}'
+                        child_location  = f'{google_storage_prefix}{bucket_clipped}/{basename_blob.name}'
+                        list_child = ([parent_filename, parent_location, child_filename, child_location])
+                        list_of_list_child.append(list_child)
+                        # If no child is found, the parent will not be added to the df at all
+        df_child = pd.DataFrame(list_of_list_child, columns=['parentFile', 'parentLocation',child+'File', child+'Location'])
+        #list_dfs.append(df_child)
 
 
 # # Upload to Your Bucket with gsutil
@@ -172,8 +194,10 @@ get_ipython().system('gsutil ls {bucket}')
 # In[ ]:
 
 
-listing = [key for key in gs.list_bucket("my-crams")]
-create_cram_crai_table("my-table-name", listing)
+subdirectory = "my-crams"
+create_cram_crai_table_pt()
+#listing = [key for key in gs.list_bucket("my-crams")]
+#create_cram_crai_table("my-table-name", listing)
 
 
 # Now, go check the data section of your workspace and you should a data table with the name you have given it, and that table should act as a directory of your files.
