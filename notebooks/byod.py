@@ -1,8 +1,9 @@
+#publish to: "terra-notebook-utils-tests" "test-byod-ash"
 #!/usr/bin/env python
 # coding: utf-8
 
 # # Bring your own data to your Terra workspace and organize it in a data table
-# 
+# *version: 2.0*
 
 # If you are planning to upload many files to your Terra workspace, we recommend you organize your data into a Terra
 # data table. This is especially helpful when you plan to run workflows with this data because you can avoid pasting
@@ -20,7 +21,17 @@
 # | --------- | ---------  | --------- |
 # | NWD1      | NWD1.cram  | NWD1.crai |
 # | NWD2      | NWD2.cram  | NWD2.crai |
+
+# ## Assumptions
+# * You are not trying to overwrite a data table that already exists
+# * Your files follow a naming convention either like this...
+# NWD119844.CRAM
+# NWD119844.CRAM.CRAI
+# ...or this:
+# NWD119844.CRAM
+# NWD119844.CRAI
 # 
+# Files that lack the extension .cram or .crai will not be added to the data table.
 
 # # Install Requirements
 # Whenever `pip install`ing on a notebook on Terra, restart the kernal after the installation.
@@ -35,7 +46,7 @@ get_ipython().run_line_magic('pip', 'install --upgrade --no-cache-dir gs-chunked
 
 # Next come imports and environmental variables.
 
-# In[1]:
+# In[ ]:
 
 
 import io
@@ -52,7 +63,7 @@ workspace = os.environ['WORKSPACE_NAME']
 
 # Finally, here are the functions we'll be using for creating data tables.
 
-# In[20]:
+# In[ ]:
 
 
 def upload_columns(table: str, columns: Dict[str, List[Any]]):
@@ -68,6 +79,8 @@ def upload_data_table(tsv):
     resp.raise_for_status()
 
 def create_cram_crai_table(table: str, listing: Iterable[str]):
+    if not listing:
+        raise AssertionError("No files found in Google bucket.")
     crams = dict()
     crais = dict()
     for key in listing:
@@ -88,6 +101,10 @@ def create_cram_crai_table(table: str, listing: Iterable[str]):
         else:
             continue
     samples = sorted(crams.keys())
+    if not samples:
+        raise AssertionError("No CRAMs found in Google bucket.")
+    if not crais:
+        raise AssertionError("No CRAIs found in Google bucket.")
     upload_columns(table, dict(sample=samples,
                                cram=[crams[s] for s in samples],
                                crai=[crais[s] for s in samples]))
@@ -105,7 +122,7 @@ def create_cram_crai_table(table: str, listing: Iterable[str]):
 # Using the os package, you can print your workspace bucket path.
 # 
 
-# In[3]:
+# In[ ]:
 
 
 bucket = os.environ["WORKSPACE_BUCKET"]
@@ -115,13 +132,13 @@ print(bucket)
 # ### Add a prefix to your bucket path to organize your data
 # In this example, we add the prefix 'test-crai-cram'. In the terminal of your computer, you will call something like:
 # 
-# `gsutil cp /Users/Documents/Example.cram gs://your_bucket_info/my-crams/`
+# `gsutil cp /Users/my-cool-username/Documents/Example.cram gs://your_bucket_info/my-crams/`
 # 
 
 # ## Preview the data in your workspace bucket
 # Be aware that if you have uploaded multiple files, all of them will appear with this ls command. It will also contain one folder for every workflow you have run in this workspace. You may want to skip this step if you're after uploading hundreds of files. However, if you have imported data tables from Gen3, they will not show up here as the files within are only downloaded when their associated TSV tables are called upon by workflows or iPython notebooks.
 
-# In[4]:
+# In[ ]:
 
 
 get_ipython().system('gsutil ls {bucket}')
@@ -151,14 +168,17 @@ get_ipython().system('gsutil ls {bucket}')
 # | NWD1      | NWD1.cram  | NWD1.crai |
 # | NWD2      | NWD2.cram  | NWD2.crai |
 # | NWD3      | NWD3.cram  | NWD3.crai |
-# 
 
-# In[21]:
+# In[ ]:
 
 
 listing = [key for key in gs.list_bucket("my-crams")]
 create_cram_crai_table("my-table-name", listing)
 
+
+# Now, go check the data section of your workspace and you should a data table with the name you have given it, and that table should act as a directory of your files.
+# 
+# If you set the name of your table to a table that already exists, the old table will not be overwritten, but the new table won't be created either. Terra tables cannot be updated, they must be deleted and remade.
 
 # # Merge data tables across sample ids
 # 
