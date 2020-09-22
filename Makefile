@@ -12,7 +12,6 @@ CALLYSTO=callysto
 all: test
 
 test: lint mypy
-	@echo $(CALLYSTO)
 
 lint:
 	flake8 $(MODULES)
