@@ -33,10 +33,10 @@
 # 
 # Files that lack the extension .cram or .crai will not be added to the data table.
 
-# # Install Requirements
+# # Install requirements
 # Whenever `pip install`ing on a notebook on Terra, restart the kernal after the installation.
 
-# In[ ]:
+# In[1]:
 
 
 #install necessary libraries
@@ -46,17 +46,21 @@ get_ipython().run_line_magic('pip', 'install --upgrade --no-cache-dir gs-chunked
 
 # Next come imports and environmental variables.
 
-# In[ ]:
+# In[45]:
 
 
 import io
 import os
+import google.cloud.storage
+import pandas as pd
+import firecloud.api as fapi # is this redundant with fiss? my code uses firecloud.api, should it use fiss?
 from uuid import uuid4
 from firecloud import fiss
 from collections import defaultdict
 from typing import Any, List, Set, Dict, Iterable
 from terra_notebook_utils import gs
 
+storage_client = google.cloud.storage.Client()
 google_project = os.environ['GOOGLE_PROJECT']
 workspace = os.environ['WORKSPACE_NAME']
 bucket_clipped = os.environ["WORKSPACE_BUCKET"][len("gs://"):]
@@ -64,7 +68,7 @@ bucket_clipped = os.environ["WORKSPACE_BUCKET"][len("gs://"):]
 
 # Finally, here are the functions we'll be using for creating data tables.
 
-# In[ ]:
+# In[46]:
 
 
 def upload_columns(table: str, columns: Dict[str, List[Any]]):
@@ -79,60 +83,47 @@ def upload_data_table(tsv):
     resp = fiss.fapi.upload_entities(google_project, workspace, tsv, model="flexible")
     resp.raise_for_status()
 
-def create_cram_crai_table(table: str, listing: Iterable[str]):
-    if not listing:
-        raise AssertionError("No files found in Google bucket.")
-    crams = dict()
-    crais = dict()
-    for key in listing:
-        _, filename = key.rsplit("/", 1)
-
-        parts = filename.split(".")
-        if 3 == len(parts):  # foo.cram.crai branch
-            sample, _, ext = parts
-        elif 2 == len(parts):  # "foo.cram" or "foo.crai" branch
-            sample, ext = parts
-        else:
-            raise ValueError(f"Unable to parse '{filename}'")
-
-        if "cram" == ext:
-            crams[sample] = key
-        elif "crai" == ext:
-            crais[sample] = key
-        else:
-            continue
-    samples = sorted(crams.keys())
-    if not samples:
-        raise AssertionError("No CRAMs found in Google bucket.")
-    if not crais:
-        raise AssertionError("No CRAIs found in Google bucket.")
-    upload_columns(table, dict(sample=samples,
-                               cram=[crams[s] for s in samples],
-                               crai=[crais[s] for s in samples]))
-
 def create_cram_crai_table_pt(subdir: str):
-    #list_dfs = [] # List of dataframes, one df per child extension
-    #for child in unique_children:
-        list_of_list_child = []
-        #progress(child, unique_children)    
-        for blob in storage_client.list_blobs(bucket_clipped, prefix=subdir):
-            if blob.name.endswith(PARENT_FILETYPE):
-                # remove PARENT_FILETYPE extension and search for basename
-                basename = blob.name[:-len(f'.{PARENT_FILETYPE}')]
-                for basename_blob in storage_client.list_blobs(bucket_clipped, prefix=basename):
-                    if basename_blob.name.endswith(child):
-                        parent_filename = blob.name.split('/')[-1]
-                        child_filename = basename_blob.name.split('/')[-1]
-                        parent_location = f'{google_storage_prefix}{bucket_clipped}/{blob.name}'
-                        child_location  = f'{google_storage_prefix}{bucket_clipped}/{basename_blob.name}'
-                        list_child = ([parent_filename, parent_location, child_filename, child_location])
-                        list_of_list_child.append(list_child)
-                        # If no child is found, the parent will not be added to the df at all
-        df_child = pd.DataFrame(list_of_list_child, columns=['parentFile', 'parentLocation',child+'File', child+'Location'])
-        #list_dfs.append(df_child)
+    listOfRows = []
+    PARENT_FILETYPE = "cram"
+    CHILD_FILETYPE = "crai"
+    
+    # For item in Google Storage Bucket...
+    for blob in storage_client.list_blobs(bucket_clipped, prefix=subdir):
+        
+        #If the item ends with the parent filetype (CRAM in this case)
+        if blob.name.endswith(PARENT_FILETYPE):
+            
+            # Remove ".cram" extension and search for the basename (ie NWD2920.cram --> NWD2920)
+            basename = blob.name[:-len(f'.{PARENT_FILETYPE}')]
+            
+            # For item containing the basename in Google Storage Bucket...
+            for basename_blob in storage_client.list_blobs(bucket_clipped, prefix=basename):
+                
+                # If it ends with the child extension (in this case, CRAI)...
+                if basename_blob.name.endswith(CHILD_FILETYPE):
+                    
+                    # Format the table's four cells
+                    parent_filename = blob.name.split('/')[-1]
+                    sample_id = parent_filename[:-5]
+                    parent_location = "gs://"+f'{bucket_clipped}/{blob.name}'
+                    child_location  = "gs://"+f'{bucket_clipped}/{basename_blob.name}'
+                    
+                    # Make a list representing a row (with four cells), and add that to the table list
+                    table_row = ([sample_id, parent_location, child_location])
+                    listOfRows.append(table_row)
+                    
+                # If no CRAI is found, the CRAM will not be added at all
+                
+    # Once all items have been gone through, add to a pandas dataframe
+    dfCramsCrais = pd.DataFrame(listOfRows, 
+                                columns=['sample'+'ID', 
+                                         'cram'+'Location', 
+                                         'crai'+'Location'])
+    return dfCramsCrais
 
 
-# # Upload to Your Bucket with gsutil
+# # Upload to your bucket with gsutil
 
 # ## Install gsutil as directed by this [document](https://support.terra.bio/hc/en-us/articles/360024056512-Uploading-to-a-workspace-Google-bucket#h_01EGP8GR3G10SKRXAC7H1ENXQ3).
 # Use the option "Set up gsutil on your local computer (step-by-step install)" which will allow you to upload files from your computer directly to Terra. Using instructions from this document, you will use the gsutil tool to upload data from your local computer to your Terra workspace. To effectively use the example here, we suggest you upload the data with the suggestions
@@ -144,7 +135,7 @@ def create_cram_crai_table_pt(subdir: str):
 # Using the os package, you can print your workspace bucket path.
 # 
 
-# In[ ]:
+# In[60]:
 
 
 bucket = os.environ["WORKSPACE_BUCKET"]
@@ -156,11 +147,12 @@ print(bucket)
 # 
 # `gsutil cp /Users/my-cool-username/Documents/Example.cram gs://your_bucket_info/my-crams/`
 # 
+# We will be calling what comes after your bucket info, here represented as `my-crams`, as your sudirectory.
 
 # ## Preview the data in your workspace bucket
 # Be aware that if you have uploaded multiple files, all of them will appear with this ls command. It will also contain one folder for every workflow you have run in this workspace. You may want to skip this step if you're after uploading hundreds of files. However, if you have imported data tables from Gen3, they will not show up here as the files within are only downloaded when their associated TSV tables are called upon by workflows or iPython notebooks.
 
-# In[ ]:
+# In[48]:
 
 
 get_ipython().system('gsutil ls {bucket}')
@@ -183,26 +175,79 @@ get_ipython().system('gsutil ls {bucket}')
 # gs://my-workspace-bucket/my-crams/NWD3.cram
 # gs://my-workspace-bucket/my-crams/NWD3.crai
 # ```
-# would produce the table
+# would produce a table that looks like this in Terra.
 # 
-# | sample_id | cram       | crai      |
-# | --------- | ---------  | --------- |
-# | NWD1      | NWD1.cram  | NWD1.crai |
-# | NWD2      | NWD2.cram  | NWD2.crai |
-# | NWD3      | NWD3.cram  | NWD3.crai |
+# | sample_id | cramLocation       | craiLocation      |
+# | --------- | -----------------  | ----------------- |
+# | NWD1      | NWD1.cram          | NWD1.crai         |
+# | NWD2      | NWD2.cram          | NWD2.crai         |
+# | NWD3      | NWD3.cram          | NWD3.crai         |
+# 
+# However, the actual raw data generated will be more like this:
+# 
+# | entity:sample_id | cramLocation       | craiLocation      |
+# | ---------        | -----------------  | ---------         |
+# | NWD1             | gs://my-workspace-bucket/my-crams/NWD1.cram          | gs://my-workspace-bucket/my-crams/NWD1.crai         |
+# | NWD2             | gs://my-workspace-bucket/my-crams/NWD2.cram          | gs://my-workspace-bucket/my-crams/NWD2.crai         |
+# | NWD3             | gs://my-workspace-bucket/my-crams/NWD3.cram          | gs://my-workspace-bucket/my-crams/NWD3.crai         |
 
-# In[ ]:
+# In[49]:
 
 
+# This needs to be the subdirectory that's used in your bucket
 subdirectory = "my-crams"
-create_cram_crai_table_pt()
-#listing = [key for key in gs.list_bucket("my-crams")]
-#create_cram_crai_table("my-table-name", listing)
+dfCramsCrais = create_cram_crai_table_pt(subdirectory)
 
 
 # Now, go check the data section of your workspace and you should a data table with the name you have given it, and that table should act as a directory of your files.
 # 
 # If you set the name of your table to a table that already exists, the old table will not be overwritten, but the new table won't be created either. Terra tables cannot be updated, they must be deleted and remade.
+# 
+# # Upload new table
+# Run the code below to upload your data table to Terra. Then, if you go to the data section of your workspace, you will see a brand new table containing your data. This table can be used as an input to a workflow.
+
+# In[61]:
+
+
+dfCramsCrais.to_csv("dataframe.tsv", sep='\t')
+
+# Format resulting TSV file to play nicely with Terra 
+with open('dataframe.tsv', "r+") as file1:
+    header = file1.readline()
+    everything_else = file1.readlines()
+full_header="entity:"+"cramsAndCrais"+"_id"+header
+with open('final.tsv', "a") as file2:
+    file2.write(full_header)
+    for string in everything_else:
+        # Zfill the index
+        columns = string.split('\t')
+        columns[0] = columns[0].zfill(5)
+        file2.write('\t'.join(columns))
+    
+# Clean up
+response = fapi.upload_entities_tsv(google_project, workspace, "final.tsv", "flexible")
+fapi._check_response_code(response, 200)
+
+
+# Note: If you get a FireCloudServerError that reads "Duplicated entities are not allowed in TSV", this may be because you ran the code more than once without deleting `final.tsv` first. If you don't delete that file before re-running the notebook, Firecloud will consider your second upload to be a duplicate and block it.
+
+# ## Inspect head of the dataframe
+# In addition to seeing the to being able to see the datatable in Terra directly, you can also get a peek at it here. As you can see, we had to do some manipulation, such as making the first row start with "entity" due to Terra's datatable limitations. If you adapt this code for your own purposes, your tables will need to follow the format of `entity:"+TABLE_NAME+"_id`, followed by tab seperating the rest of the columns, for their first line.
+
+# In[54]:
+
+
+get_ipython().system('head final.tsv')
+
+
+# ## Tidy up notebook workspace
+
+# In[55]:
+
+
+get_ipython().system('rm dataframe.tsv')
+get_ipython().system('rm final.tsv')
+
 
 # # Merge data tables across sample ids
 # 
