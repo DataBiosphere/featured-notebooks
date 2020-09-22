@@ -1,0 +1,8 @@
+*.pyc
+__pycache__
+.eggs/
+.cache/
+.pytest_cache/
+.idea/
+.coverage*
+.mypy_cache
