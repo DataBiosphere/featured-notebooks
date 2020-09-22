@@ -1,0 +1,10 @@
+*.pyc
+__pycache__
+.eggs/
+.cache/
+.pytest_cache/
+.idea/
+.venv/
+.v3nv/
+.coverage*
+.mypy_cache
