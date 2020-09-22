@@ -4,12 +4,12 @@ set -euo pipefail
 # Resolve the location of this file and set BDCAT_NOTEBOOKS_HOME to the root
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
-export BDCAT_NOTEBOOKS_HOME="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+export BDCAT_NOTEBOOKS_HOME="$(cd -P "$(dirname "$SOURCE")" && cd .. && pwd)"
 
 IMAGE_NAME="us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.12"
 CONTAINER_NAME="leo-container"
 CONTAINER_REPO_ROOT="/$(basename ${BDCAT_NOTEBOOKS_HOME})"
-wid=$(docker ps -a --latest --filter "name=${CONTAINER_NAME}" --format="{{.ID}}")
+wid=$(docker ps -a --latest  --filter "status=running" --filter "name=${CONTAINER_NAME}" --format="{{.ID}}")
 if [[ -z $wid ]]; then
 	# start new container
     docker pull ${IMAGE_NAME}
