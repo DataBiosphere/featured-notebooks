@@ -2,10 +2,11 @@ include common.mk
 
 MODULES=notebooks
 CONTAINER=$(shell ./scripts/run_leo_container.sh)
-LEO_PYTHON=/home/jupyter-user/miniconda/bin/python
-LEO_PIP=/home/jupyter-user/miniconda/bin/pip
-CALLYSTO=/home/jupyter-user/.local/bin/callysto
-CONTAINER_REPO_ROOT=/$(shell basename $(PWD))
+CONTAINER_ROOT_DIR=/home/jupyter-user
+LOCAL_ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+LEO_PYTHON=$(CONTAINER_ROOT_DIR)/miniconda/bin/python
+LEO_PIP=$(CONTAINER_ROOT_DIR)/miniconda/bin/pip
+CALLYSTO=callysto
 
 all: test
 
@@ -19,11 +20,14 @@ mypy:
 	mypy --ignore-missing-imports --no-strict-optional $(MODULES)
 
 notebooks:=$(wildcard notebooks/*.py)
+PIP_REQS:=$(shell cat $(LOCAL_ROOT_DIR)/requirements.txt | tr "\n" " ")
 $(notebooks): clean lint mypy
-	docker exec -it $(CONTAINER) bash -c "$(LEO_PIP) install --upgrade -r $(CONTAINER_REPO_ROOT)/requirements.txt"
-	docker exec -it $(CONTAINER) bash -c "$(LEO_PYTHON) $(CONTAINER_REPO_ROOT)/$@"
-	docker exec -it $(CONTAINER) bash -c "$(CALLYSTO) $(CONTAINER_REPO_ROOT)/$@ > $(CONTAINER_REPO_ROOT)/$(@:.py=.ipynb)"
-	scripts/publish.sh $@ $(@:.py=.ipynb)
+	docker exec $(CONTAINER) bash -c "$(LEO_PIP) install --upgrade $(PIP_REQS)"
+	docker exec $(CONTAINER) mkdir -p notebooks
+	docker cp $(LOCAL_ROOT_DIR)/$@ $(CONTAINER):$(CONTAINER_ROOT_DIR)/$@
+	docker exec $(CONTAINER) $(LEO_PYTHON) $(CONTAINER_ROOT_DIR)/$@
+	$(CALLYSTO) $(LOCAL_ROOT_DIR)/$@ > $(LOCAL_ROOT_DIR)/$(@:.py=.ipynb)
+	scripts/publish.sh $(LOCAL_ROOT_DIR)/$@ $(LOCAL_ROOT_DIR)/$(@:.py=.ipynb)
 
 clean:
 	git clean -dfx
