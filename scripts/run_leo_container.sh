@@ -11,8 +11,8 @@ CONTAINER_NAME="leo-container"
 CONTAINER_REPO_ROOT="$(basename ${BDCAT_NOTEBOOKS_HOME})"
 wid=$(docker ps -a --latest  --filter "status=running" --filter "name=${CONTAINER_NAME}" --format="{{.ID}}")
 if [[ -z $wid ]]; then
-	# start new container
-    docker pull ${IMAGE_NAME} > /dev/null 2>&1
+    # start new container
+    docker pull ${IMAGE_NAME} 1>&2
     wid=$(docker run \
           --mount type=bind,source=${BDCAT_NOTEBOOKS_HOME},target=/home/jupyter-user/${CONTAINER_REPO_ROOT} \
           -v ~/.config:/home/jupyter-user/.config \
