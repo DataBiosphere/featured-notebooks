@@ -41,10 +41,15 @@ gcloud auth login
 
 ## Authorization for Testing and Publishing
 
-Depending on the content of the notebook, Google application credentials may be required. They can be obtained with the command
+Google user credentials are required to publish notebooks to Terra workspaces. Additinally, notebook execution may
+require Google application default credentials. Both sets can be obtained by executing the commmads
 ```
+gcloud auth login
 gcloud auth application-default login
 ```
+
+Credentials are injected into the local Docker container when testing and publishing notebooks, and are expected to be
+in the standard location `~/.config`.
 
 ## Local Development Environment
 

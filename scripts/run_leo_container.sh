@@ -15,11 +15,12 @@ if [[ -z $wid ]]; then
     docker pull ${IMAGE_NAME} > /dev/null 2>&1
     wid=$(docker run \
           --mount type=bind,source=${BDCAT_NOTEBOOKS_HOME},target=/home/jupyter-user/${CONTAINER_REPO_ROOT} \
+          -v ~/.config:/home/jupyter-user/.config \
           --name "${CONTAINER_NAME}" \
           -it -d \
           ${IMAGE_NAME})
 else
-	# use existing container
-	:
+    # use existing container
+    :
 fi
 echo -n ${wid}
