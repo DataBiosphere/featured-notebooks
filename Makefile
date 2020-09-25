@@ -24,7 +24,6 @@ $(notebooks): clean lint mypy
 	docker exec $(CONTAINER) bash -c "$(LEO_PIP) install --upgrade -r $(CONTAINER_REPO_DIR)/requirements-notebooks.txt"
 	docker exec -it $(CONTAINER) $(LEO_PYTHON) $(CONTAINER_REPO_DIR)/$@
 	$(CALLYSTO) $(LOCAL_ROOT_DIR)/$@ > $(LOCAL_ROOT_DIR)/$(@:.py=.ipynb)
-	docker exec -it $(CONTAINER) gcloud auth login
 	docker exec -it $(CONTAINER) $(CONTAINER_REPO_DIR)/scripts/publish.sh $(CONTAINER_REPO_DIR)/$@ $(CONTAINER_REPO_DIR)/$(@:.py=.ipynb)
 
 clean:
