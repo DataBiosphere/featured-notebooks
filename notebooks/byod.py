@@ -35,7 +35,7 @@ with callysto.Cell("markdown"):
     | NWD2      | NWD2.cram  | NWD2.crai |
 
     ## Naming conventions
-    Your files can follow a naming convention like this...
+    Your files can follow a naming convention like this... <br/>
     NWD119844.CRAM <br/>
     NWD119844.CRAM.CRAI <br/>
     ...or this: <br/>
