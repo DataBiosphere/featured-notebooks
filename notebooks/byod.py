@@ -135,7 +135,7 @@ with callysto.Cell("markdown"):
     # Upload to your bucket with gsutil
 
     ## Install gsutil as directed by this [document](https://support.terra.bio/hc/en-us/articles/360024056512-Uploading-to-a-workspace-Google-bucket#h_01EGP8GR3G10SKRXAC7H1ENXQ3).
-    Use the option "Set up gsutil on your local computer (step-by-step install)" which will allow you to upload files 
+    Use the option "Set up gsutil on your local computer (step-by-step install)" which will allow you to upload files
     from your computer directly to Terra. Files can also be uploaded one-at-a-time by dragging them in to the "Files"
     section in the Data tab, but as `gsutil` can upload more than one file at once and has additional error handling,
     it is recommended to use it over dragging. But before you can upload, we will need to perform a few quick tasks.
@@ -167,22 +167,22 @@ with callysto.Cell("markdown"):
     In Google Cloud, any directories below the top-level gs:// address of the bucket are not "true" directories.
     If one's bucket contained gs://bucket/my-files/file1.txt, and file1.txt was deleted, there would be no
     trace of my-files. That is to say, Google Cloud does not have any equivalent to empty folders.
-    If you would like to know more, [Google has documentation on its filesystem's inner workings](https://cloud.google.com/storage/docs/gsutil/addlhelp/HowSubdirectoriesWork), 
+    If you would like to know more, [Google has documentation on its filesystem's inner workings](https://cloud.google.com/storage/docs/gsutil/addlhelp/HowSubdirectoriesWork),
     but most users will not need to know the details.
 
     ## Begin the upload
-    Now that you know what you will name your subdirectory, turn back to your computer's terminal -- it's time to 
+    Now that you know what you will name your subdirectory, turn back to your computer's terminal -- it's time to
     upload your data. You will likely have to login to your upload to your workspace bucket if you have not done
     so already. You can do so with `gcloud auth` as described in [Google's documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login).
     The syntax you will be using will look like this:
 
     `gsutil cp /Users/my-cool-username/Documents/Example.cram gs://your_bucket_info/my-crams/`
-    
+
     ## Preview the data in your workspace bucket
     Let's first look at the top of the workspace bucket. This will match what you see if you go the "data" tab of
     your Terra workspace and click "Files" under the heading "OTHER DATA." All data you have uploaded or generated in
     your workspace will be here. You will also see your subdirectory.
-    
+
     """
 
 with callysto.Cell("python"):
@@ -196,14 +196,14 @@ with callysto.Cell("markdown"):
     """
 
 with callysto.Cell("python"):
-    fulldir = bucket+"/"+subdirectory
+    fulldir = bucket + "/" + subdirectory
     #!gsutil ls $fulldir
 
 with callysto.Cell("markdown"):
     """
     # Generate a data table that links to the data in your workspace bucket
 
-    To generate a Terra data table associating crams, crais, and sample ids (e.g. "NWD1") from the data in your bucket, 
+    To generate a Terra data table associating crams, crais, and sample ids (e.g. "NWD1") from the data in your bucket,
     use the snippet:
     ```
     listing = [key for key in gs.list_bucket("my-crams")]
@@ -241,7 +241,7 @@ with callysto.Cell("python"):
     create_cram_crai_table("my-table-name", listing)
 with callysto.Cell("markdown"):
     """
-    Now, go check the data section of your workspace. You should see a data table with the name you have given it, 
+    Now, go check the data section of your workspace. You should see a data table with the name you have given it,
     and that table can now act as a directory of your files.
 
     """
