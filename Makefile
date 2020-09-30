@@ -20,13 +20,16 @@ mypy:
 	mypy --ignore-missing-imports --no-strict-optional $(MODULES)
 
 notebooks:=$(wildcard notebooks/*.py)
-$(notebooks): clean lint mypy
+$(notebooks): clean_notebooks lint mypy
 	docker exec $(CONTAINER) bash -c "$(LEO_PIP) install --upgrade -r $(CONTAINER_REPO_DIR)/requirements-notebooks.txt"
 	docker exec -it $(CONTAINER) $(LEO_PYTHON) $(CONTAINER_REPO_DIR)/$@
 	$(CALLYSTO) $(LOCAL_ROOT_DIR)/$@ > $(LOCAL_ROOT_DIR)/$(@:.py=.ipynb)
 	docker exec -it $(CONTAINER) $(CONTAINER_REPO_DIR)/scripts/publish.sh $(CONTAINER_REPO_DIR)/$@ $(CONTAINER_REPO_DIR)/$(@:.py=.ipynb)
 
+clean_notebooks:
+	git clean -dfx notebooks
+
 clean:
 	git clean -dfx
 
-.PHONY: lint mypy clean $(notebooks)
+.PHONY: lint mypy clean clean_notebooks $(notebooks)
