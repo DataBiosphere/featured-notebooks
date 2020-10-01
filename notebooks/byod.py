@@ -172,9 +172,9 @@ with callysto.Cell("markdown"):
 
     ## Begin the upload
     Now that you know what you will name your subdirectory, turn back to your computer's terminal -- it's time to
-    upload your data. You will likely have to login to your upload to your workspace bucket if you have not done
-    so already. You can do so with `gcloud auth` as described in [Google's documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login).
-    The syntax you will be using will look like this:
+    upload your data. To authenticate your access to the Google bucket associated with your Terra workspace, you
+    will need to log in with with`gcloud auth` as described in [Google's documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login).
+    After you are authenticated, the syntax you will be using to upload to your workspace bucket will look like this:
 
     `gsutil cp /Users/my-cool-username/Documents/Example.cram gs://your_bucket_info/my-crams/`
 
