@@ -106,29 +106,53 @@ with callysto.Cell("python"):
         upload_data_table(tsv_data)
 
     def create_cram_crai_table(table: str, listing: Iterable[str]):
-        crams = dict()
-        crais = dict()
+        matched_files = defaultdict(dict)  # type: dict
+        allCrams = []
+        allCrais = []
         for key in listing:
             _, filename = key.rsplit("/", 1)
+            sample, ext = parse_cram_crai(filename)
+            if ext in ['cram', 'crai']:
+                matched_files[sample][ext] = filename
+                if ext == 'cram':
+                    allCrams.append(sample)
+                else:
+                    allCrais.append(sample)
 
-            parts = filename.split(".")
-            if 3 == len(parts):  # foo.cram.crai branch
-                sample, _, ext = parts
-            elif 2 == len(parts):  # "foo.cram" or "foo.crai" branch
-                sample, ext = parts
-            else:
-                raise ValueError(f"Unable to parse '{filename}'")
+        if allCrams != allCrais:
+            # We don't want to iterate an additional time if we don't need to,
+            # so this only runs if there's more crams than crais or vice versa
+            for sample in list(matched_files):
+                try:
+                    if not matched_files[sample]['cram']:
+                        continue
+                except KeyError:
+                    print(f'{sample} is missing a cram file and will be removed')
+                    del matched_files[sample]
+                    break
+                try:
+                    if not matched_files[sample]['crai']:
+                        continue
+                except KeyError:
+                    print(f'{sample} is missing a crai file and will be removed')
+                    del matched_files[sample]
 
-            if "cram" == ext:
-                crams[sample] = key
-            elif "crai" == ext:
-                crais[sample] = key
-            else:
-                continue
-        samples = sorted(crams.keys())
-        upload_columns(table, dict(sample=samples,
-                                   cram=[crams[s] for s in samples],
-                                   crai=[crais[s] for s in samples]))
+        crams = []
+        crais = []
+        samples = []
+        for sample in matched_files:
+            samples.append(sample)
+            for ext in ('cram', 'crai'):
+                if ext == 'cram':
+                    crams.append(f"gs://{bucket}/{subdirectory}/{matched_files[sample][ext]}")
+                else:
+                    crais.append(f"gs://{bucket}/{subdirectory}/{matched_files[sample][ext]}")
+
+        # Upload TSV
+        upload_columns(table, dict(
+            sample=samples,
+            cram=crams,
+            crai=crais))
 
 with callysto.Cell("markdown"):
     """
@@ -182,7 +206,6 @@ with callysto.Cell("markdown"):
     Let's first look at the top of the workspace bucket. This will match what you see if you go the "data" tab of
     your Terra workspace and click "Files" under the heading "OTHER DATA." All data you have uploaded or generated in
     your workspace will be here. You will also see your subdirectory.
-
     """
 
 with callysto.Cell("python"):
@@ -289,6 +312,61 @@ with callysto.Cell("markdown"):
     # Additional functions
     To aid in the creation of your own data tables, we have provided some more functions for you to use and adapt.
     """
+
+with callysto.Cell("python"):
+    def iter_ents(table: str):
+        resp = fiss.fapi.get_entities(google_project, workspace, table)
+        resp.raise_for_status()
+        for item in resp.json():
+            yield item
+
+    def iter_rows(table: str):
+        for item in iter_ents(table):
+            yield item['attributes']
+
+    def get_columns(table: str) -> Dict[str, List[Any]]:
+        columns = defaultdict(list)
+        for row in iter_rows(table):
+            for key, val in row.items():
+                columns[key].append(val)
+        return dict(columns)
+
+    def delete_table(table: str):
+        rows_to_delete = [dict(entityType=e['entityType'], entityName=e['name'])
+                          for e in iter_ents(table)]
+        resp = fiss.fapi.delete_entities(google_project, workspace, rows_to_delete)
+        resp.raise_for_status()
+
+    def get_keyed_rows(table_name: str, key_column: str) -> Dict[str, Dict[str, Any]]:
+        keyed_rows = dict()
+        for row in iter_rows(table_name):
+            key = row[key_column]
+            assert key not in keyed_rows
+            keyed_rows[key] = row
+            del keyed_rows[key][key_column]
+        return keyed_rows
+
+    def keyed_row_columns(keyed_rows: Dict[str, Any]) -> Set[str]:
+        if keyed_rows:
+            random_key = set(keyed_rows.keys()).pop()
+            return set(keyed_rows[random_key].keys())
+        else:
+            return set()
+
+    def join_keyed_rows(keyed_rows_a: Dict[str, Any], keyed_rows_b: Dict[str, Any]) -> Dict[str, Any]:
+        a_columns = keyed_row_columns(keyed_rows_a)
+        b_columns = keyed_row_columns(keyed_rows_b)
+        assert not a_columns.intersection(b_columns), "Keyed rows to join may not share columns"
+        common_keys = set(keyed_rows_a.keys()).union(set(keyed_rows_b.keys()))
+        return {k: dict(**keyed_rows_a.get(k, {c: BLANK_CELL_VALUE for c in a_columns}),
+                        **keyed_rows_b.get(k, {c: BLANK_CELL_VALUE for c in b_columns}))
+                for k in common_keys}
+
+    def join_data_tables(new_table: str, tables_to_join: list, join_column: str):
+        keyed_rows = get_keyed_rows(tables_to_join[0], join_column)
+        for table_name in tables_to_join[1:]:
+            keyed_rows = join_keyed_rows(keyed_rows, get_keyed_rows(table_name, join_column))
+        upload_rows(new_table, [{join_column: k, **row} for k, row in keyed_rows.items()])
 
 with callysto.Cell("python"):
     def iter_ents(table: str):
