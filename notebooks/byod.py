@@ -218,7 +218,7 @@ with callysto.Cell("markdown"):
     """
 
 with callysto.Cell("python"):
-    #%gsutil ls {bucket}
+    #!gsutil ls {bucket}
     pass
 
 with callysto.Cell("markdown"):
