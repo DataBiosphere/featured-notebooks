@@ -153,9 +153,9 @@ with callysto.Cell("python"):
             samples.append(sample)
             for ext in ('cram', 'crai'):
                 if ext == 'cram':
-                    crams.append(f"gs://{bucket}/{subdirectory}/{matched_files[sample][ext]}")
+                    crams.append(f"{bucket}/{subdirectory}/{matched_files[sample][ext]}")
                 else:
-                    crais.append(f"gs://{bucket}/{subdirectory}/{matched_files[sample][ext]}")
+                    crais.append(f"{bucket}/{subdirectory}/{matched_files[sample][ext]}")
 
         # Upload TSV
         upload_columns(table, dict(
@@ -383,19 +383,19 @@ BLANK_CELL_VALUE = f"{uuid4()}"
 delete_table("test_cram_crai_table")
 listing = list()
 for i in range(5):
-    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram")
-    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.crai")
+    listing.append(f"{bucket}/{subdirectory}/sample_id_{i}.cram")
+    listing.append(f"{bucket}/{subdirectory}/sample_id_{i}.crai")
 for i in range(5, 8):
-    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram")
-    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram.crai")
+    listing.append(f"{bucket}/{subdirectory}/sample_id_{i}.cram")
+    listing.append(f"{bucket}/{subdirectory}/sample_id_{i}.cram.crai")
 create_cram_crai_table("test_cram_crai_table", listing)
 cram_crai_keyed_rows = get_keyed_rows("test_cram_crai_table", "sample")
 for i in range(5):
-    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
-                                                          crai=f"gs://some-bucket/some-pfx/sample_id_{i}.crai")
+    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"{bucket}/{subdirectory}/sample_id_{i}.cram",
+                                                          crai=f"{bucket}/{subdirectory}/sample_id_{i}.crai")
 for i in range(5, 8):
-    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
-                                                          crai=f"gs://some-bucket/some-pfx/sample_id_{i}.cram.crai")
+    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"{bucket}/{subdirectory}/sample_id_{i}.cram",
+                                                          crai=f"{bucket}/{subdirectory}/sample_id_{i}.cram.crai")
 
 delete_table("test_metadata_table_a")
 test_metadata_table_a_columns = dict(sample=["sample_id_1", "sample_id_2", "sample_id_3", "sample_id_4"],
