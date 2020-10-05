@@ -115,7 +115,7 @@ with callysto.Cell("python"):
 
 
 ################################################ TESTS ################################################ noqa
-resp = fiss.fapi.get_entities(os.environ['GOOGLE_PROJECT'], os.environ['WORKSPACE_NAME'], "vcf-merge-workflow-input-drs")
+resp = fiss.fapi.get_entities(os.environ['GOOGLE_PROJECT'], os.environ['WORKSPACE_NAME'], "vcf-merge-input-drs")
 resp.raise_for_status()
 rows = resp.json()
 for row in rows:
@@ -126,7 +126,7 @@ assert rows[0]['attributes']['output'] == f"{os.environ['WORKSPACE_BUCKET']}/mer
 assert rows[1]['attributes']['inputs'] == ["drs://dg.4503/93286e47-3d09-47e6-ac87-4c2975ef0c3f", "drs://dg.4503/aba6b011-2ab4-4739-beb4-c1eeaee60c74"]
 assert rows[1]['attributes']['output'] == f"{os.environ['WORKSPACE_BUCKET']}/merged/drs_combined_b.vcf.gz"
 
-resp = fiss.fapi.get_entities(os.environ['GOOGLE_PROJECT'], os.environ['WORKSPACE_NAME'], "vcf-merge-workflow-input-bucket")
+resp = fiss.fapi.get_entities(os.environ['GOOGLE_PROJECT'], os.environ['WORKSPACE_NAME'], "vcf-merge-input-bucket")
 resp.raise_for_status()
 rows = resp.json()
 for row in rows:
