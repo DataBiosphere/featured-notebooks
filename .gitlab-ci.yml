@@ -11,8 +11,8 @@ byod:
   script:
     - . /home/jupyter-user/miniconda/bin/activate
     - pip install --no-cache-dir -r requirements-dev.txt
-    - export GOOGLE_APPLICATION_CREDENTIALS=$TEST_MULE_CREDENTIALS
-    - export GOOGLE_PROJECT=firecloud-cgl
+    - mkdir -p ~/.config/gcloud
+    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - make cicd_notebooks/byod.py
 
 prepare_igv_viewer_input:
@@ -20,7 +20,8 @@ prepare_igv_viewer_input:
   script:
     - . /home/jupyter-user/miniconda/bin/activate
     - pip install --no-cache-dir -r requirements-dev.txt
-    - export GOOGLE_APPLICATION_CREDENTIALS=$TEST_MULE_CREDENTIALS
+    - mkdir -p ~/.config/gcloud
+    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - make cicd_notebooks/prepare_igv_viewer_input.py
 
 vcf_merge_subsample_tutorial:
@@ -28,7 +29,8 @@ vcf_merge_subsample_tutorial:
   script:
     - . /home/jupyter-user/miniconda/bin/activate
     - pip install --no-cache-dir -r requirements-dev.txt
-    - export GOOGLE_APPLICATION_CREDENTIALS=$TEST_MULE_CREDENTIALS
+    - mkdir -p ~/.config/gcloud
+    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - make cicd_notebooks/vcf_merge_subsample_tutorial.py
 
 xvcfmerge-array-input:
@@ -36,5 +38,6 @@ xvcfmerge-array-input:
   script:
     - . /home/jupyter-user/miniconda/bin/activate
     - pip install --no-cache-dir -r requirements-dev.txt
-    - export GOOGLE_APPLICATION_CREDENTIALS=$TEST_MULE_CREDENTIALS
+    - mkdir -p ~/.config/gcloud
+    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - make cicd_notebooks/xvcfmerge_array_input.py
