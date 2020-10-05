@@ -11,6 +11,7 @@ byod:
   script:
     - . /home/jupyter-user/miniconda/bin/activate
     - pip install --no-cache-dir -r requirements-dev.txt
+    - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - unset GOOGLE_APPLICATION_CREDENTIALS; export GOOGLE_PROJECT=firecloud-cgl; export WORKSPACE_NAME=terra-notebook-utils-tests
     - make cicd_notebooks/byod.py
