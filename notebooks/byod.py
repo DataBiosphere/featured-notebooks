@@ -239,7 +239,6 @@ with callysto.Cell("markdown"):
     """
 
 with callysto.Cell("python"):
-    os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
     listing = [key for key in gs.list_bucket(subdirectory)]
     create_cram_crai_table("my-table-name", listing)
 

@@ -11,8 +11,9 @@ byod:
   script:
     - . /home/jupyter-user/miniconda/bin/activate
     - pip install --no-cache-dir -r requirements-dev.txt
+    - mkdir -p ~/.config/gcloud
+    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - export GOOGLE_APPLICATION_CREDENTIALS=$TEST_MULE_CREDENTIALS
-    - export GOOGLE_PROJECT=firecloud-cgl
     - make cicd_notebooks/byod.py
 
 prepare_igv_viewer_input:
@@ -36,5 +37,7 @@ xvcfmerge-array-input:
   script:
     - . /home/jupyter-user/miniconda/bin/activate
     - pip install --no-cache-dir -r requirements-dev.txt
+    - mkdir -p ~/.config/gcloud
+    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - export GOOGLE_APPLICATION_CREDENTIALS=$TEST_MULE_CREDENTIALS
     - make cicd_notebooks/xvcfmerge_array_input.py
