@@ -13,7 +13,7 @@ byod:
     - pip install --no-cache-dir -r requirements-dev.txt
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - unset GOOGLE_APPLICATION_CREDENTIALS; export GOOGLE_PROJECT=firecloud-cgl; export WORKSPACE_NAME=terra-notebook-utils-tests
+    - unset GOOGLE_APPLICATION_CREDENTIALS
     - make cicd_notebooks/byod.py
 
 prepare_igv_viewer_input:
@@ -23,7 +23,7 @@ prepare_igv_viewer_input:
     - pip install --no-cache-dir -r requirements-dev.txt
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - unset GOOGLE_APPLICATION_CREDENTIALS; export GOOGLE_PROJECT=firecloud-cgl; export WORKSPACE_NAME=terra-notebook-utils-tests
+    - unset GOOGLE_APPLICATION_CREDENTIALS
     - make cicd_notebooks/prepare_igv_viewer_input.py
 
 vcf_merge_subsample_tutorial:
@@ -33,7 +33,7 @@ vcf_merge_subsample_tutorial:
     - pip install --no-cache-dir -r requirements-dev.txt
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - unset GOOGLE_APPLICATION_CREDENTIALS; export GOOGLE_PROJECT=firecloud-cgl; export WORKSPACE_NAME=terra-notebook-utils-tests
+    - unset GOOGLE_APPLICATION_CREDENTIALS
     - make cicd_notebooks/vcf_merge_subsample_tutorial.py
 
 xvcfmerge-array-input:
@@ -43,5 +43,5 @@ xvcfmerge-array-input:
     - pip install --no-cache-dir -r requirements-dev.txt
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - unset GOOGLE_APPLICATION_CREDENTIALS; export GOOGLE_PROJECT=firecloud-cgl; export WORKSPACE_NAME=terra-notebook-utils-tests
+    - unset GOOGLE_APPLICATION_CREDENTIALS
     - make cicd_notebooks/xvcfmerge_array_input.py
