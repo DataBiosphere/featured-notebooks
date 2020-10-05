@@ -17,16 +17,16 @@ with callysto.Cell("markdown"):
 
 with callysto.Cell("markdown"):
     """
-    If you are planning to upload many files to your Terra workspace, we recommend you organize your data into a Terra
-    data table. This is especially helpful when you plan to run workflows with this data because you can avoid pasting
+    If you are planning to upload many files to your Terra workspace, we recommend you organize your data into a [Terra
+    data table](https://support.terra.bio/hc/en-us/articles/360025758392-Managing-data-with-tables-). This is
+    especially helpful if you plan to run workflows on your data. With data tables, you can avoid pasting
     in the "gs://" links to every file and instead use Terra's helpful UI features.
-
 
     In this example, we introduce tools to help you:
 
     1. Programmatically upload data from your local machine to your Terra workspace using `gsutil cp`.
 
-    2. Programmatically generate a data table that conatins your samples CRAM and CRAI files. The end result will look
+    2. Programmatically generate a data table that contains your samples' CRAM and CRAI files. The end result will look
        like this table:
 
     | sample_id | cram       | crai      |
@@ -44,7 +44,6 @@ with callysto.Cell("markdown"):
 
     # Install requirements
     Whenever `pip install`ing on a notebook on Terra, restart the kernal after the installation.
-
     """
 
 with callysto.Cell("python"):
@@ -132,18 +131,7 @@ with callysto.Cell("python"):
             # We don't want to iterate an additional time if we don't need to,
             # so this only runs if there's more crams than crais or vice versa
             for sample in list(matched_files):
-                try:
-                    if not matched_files[sample]['cram']:
-                        continue
-                except KeyError:
-                    print(f'{sample} is missing a cram file and will be removed')
-                    del matched_files[sample]
-                    break
-                try:
-                    if not matched_files[sample]['crai']:
-                        continue
-                except KeyError:
-                    print(f'{sample} is missing a crai file and will be removed')
+                if not (matched_files[sample].get('cram') and matched_files[sample].get('crai')):
                     del matched_files[sample]
 
         crams = []
@@ -186,11 +174,10 @@ with callysto.Cell("python"):
 with callysto.Cell("markdown"):
     """
     ### Add a prefix to your bucket path to organize your data
-    In this example, we add the prefix 'my-crams'. In doing this we say that we want our files to exist at the address
-    gs://[your_bucket_info]/my-crams/`, which will help keep our data organized. We will be calling what comes after
+    In this example, we add the prefix `my-crams`. In doing this we say that we want our files to exist at the address
+    `gs://[your_bucket_info]/my-crams/`, which will help keep our data organized. We will be calling what comes after
     your bucket info, here represented as `my-crams`, as your sudirectory. We'll be using that subdirectory name
     later on, so let's make note of it here.
-
     """
 with callysto.Cell("python"):
     subdirectory = "my-crams"
@@ -198,15 +185,15 @@ with callysto.Cell("markdown"):
     """
     #### A technical note on subdirectories in Google Cloud
     In Google Cloud, any directories below the top-level gs:// address of the bucket are not "true" directories.
-    If one's bucket contained gs://bucket/my-files/file1.txt, and file1.txt was deleted, there would be no
-    trace of my-files. That is to say, Google Cloud does not have any equivalent to empty folders.
+    If one's bucket contained `gs://bucket/my-files/file1.txt`, and `file1.txt` was deleted, there would be no
+    trace of `my-files`. That is to say, Google Cloud does not have any equivalent to empty folders.
     If you would like to know more, [Google has documentation on its filesystem's inner workings](https://cloud.google.com/storage/docs/gsutil/addlhelp/HowSubdirectoriesWork),
     but most users will not need to know the details.
 
     ## Begin the upload
     Now that you know what you will name your subdirectory, turn back to your computer's terminal -- it's time to
     upload your data. To authenticate your access to the Google bucket associated with your Terra workspace, you
-    will need to log in with with`gcloud auth` as described in [Google's documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login).
+    will need to log in with with `gcloud auth` as described in [Google's documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login).
     After you are authenticated, the syntax you will be using to upload to your workspace bucket will look like this:
 
     `gsutil cp /Users/my-cool-username/Documents/Example.cram gs://your_bucket_info/my-crams/`
