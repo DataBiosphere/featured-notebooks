@@ -1,11 +1,11 @@
-#publish to: "TEMP-byod-edits" "test-byod-local"
+# publish to: "terra-notebook-utils-tests" "test-byod"
 import os
 import callysto
 
 # Mock the notebook environment
-os.environ['WORKSPACE_NAME'] = "TEMP-byod-edits"
-os.environ['WORKSPACE_BUCKET'] = "gs://fc-8e608b2e-016e-45e3-a254-4d00ad67eac0"
-os.environ['GOOGLE_PROJECT'] = "anvil-stage-demo"
+os.environ['WORKSPACE_NAME'] = "terra-notebook-utils-tests"
+os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
+os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 BLANK_CELL_VALUE = ""
 
