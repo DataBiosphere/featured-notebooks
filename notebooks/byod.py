@@ -1,11 +1,11 @@
-#publish to: "TEMP-byod-edits" "test-byod-local"
+# publish to: "terra-notebook-utils-tests" "test-byod"
 import os
 import callysto
 
 # Mock the notebook environment
-os.environ['WORKSPACE_NAME'] = "TEMP-byod-edits"
-os.environ['WORKSPACE_BUCKET'] = "gs://fc-8e608b2e-016e-45e3-a254-4d00ad67eac0"
-os.environ['GOOGLE_PROJECT'] = "anvil-stage-demo"
+os.environ['WORKSPACE_NAME'] = "terra-notebook-utils-tests"
+os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
+os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 BLANK_CELL_VALUE = ""
 
@@ -171,6 +171,7 @@ with callysto.Cell("markdown"):
 with callysto.Cell("python"):
     bucket = os.environ["WORKSPACE_BUCKET"]
     print(bucket)
+
 with callysto.Cell("markdown"):
     """
     ### Add a prefix to your bucket path to organize your data
@@ -181,6 +182,7 @@ with callysto.Cell("markdown"):
     """
 with callysto.Cell("python"):
     subdirectory = "my-crams"
+
 with callysto.Cell("markdown"):
     """
     #### A technical note on subdirectories in Google Cloud
@@ -258,6 +260,7 @@ with callysto.Cell("markdown"):
 with callysto.Cell("python"):
     listing = [key for key in gs.list_bucket(subdirectory)]
     create_cram_crai_table("my-table-name", listing)
+
 with callysto.Cell("markdown"):
     """
     Now, go check the data section of your workspace. You should see a data table with the name you have given it,

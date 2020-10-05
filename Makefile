@@ -26,10 +26,18 @@ $(notebooks): clean_notebooks lint mypy
 	$(CALLYSTO) $(LOCAL_ROOT_DIR)/$@ > $(LOCAL_ROOT_DIR)/$(@:.py=.ipynb)
 	docker exec -it $(CONTAINER) $(CONTAINER_REPO_DIR)/scripts/publish.sh $(CONTAINER_REPO_DIR)/$@ $(CONTAINER_REPO_DIR)/$(@:.py=.ipynb)
 
+# create make targets with pattern: cicd_notebooks/*.py (i.e. "make cicd_notebooks/byod.py")
+cicd_notebooks:=$(notebooks:%=cicd_%)
+$(cicd_notebooks):
+	$(LEO_PIP) install --upgrade -r requirements-notebooks.txt
+	$(LEO_PYTHON) $(@:cicd_%.py=%.py)
+	git clone https://github.com/xbrianh/callysto.git
+	$(LEO_PYTHON) callysto/scripts/callysto $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.py) > $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.ipynb)
+
 clean_notebooks:
 	git clean -dfx notebooks
 
 clean:
 	git clean -dfx
 
-.PHONY: lint mypy clean clean_notebooks $(notebooks)
+.PHONY: lint mypy clean clean_notebooks $(notebooks) $(cicd_notebooks)
