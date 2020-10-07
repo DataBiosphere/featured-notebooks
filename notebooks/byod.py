@@ -17,16 +17,16 @@ with callysto.Cell("markdown"):
 
 with callysto.Cell("markdown"):
     """
-    If you are planning to upload many files to your Terra workspace, we recommend you organize your data into a Terra
-    data table. This is especially helpful when you plan to run workflows with this data because you can avoid pasting
+    If you are planning to upload many files to your Terra workspace, we recommend you organize your data into a [Terra
+    data table](https://support.terra.bio/hc/en-us/articles/360025758392-Managing-data-with-tables-). This is
+    especially helpful if you plan to run workflows on your data. With data tables, you can avoid pasting
     in the "gs://" links to every file and instead use Terra's helpful UI features.
-
 
     In this example, we introduce tools to help you:
 
     1. Programmatically upload data from your local machine to your Terra workspace using `gsutil cp`.
 
-    2. Programmatically generate a data table that conatins your samples CRAM and CRAI files. The end result will look
+    2. Programmatically generate a data table that contains your samples' CRAM and CRAI files. The end result will look
        like this table:
 
     | sample_id | cram       | crai      |
@@ -44,7 +44,6 @@ with callysto.Cell("markdown"):
 
     # Install requirements
     Whenever `pip install`ing on a notebook on Terra, restart the kernal after the installation.
-
     """
 
 with callysto.Cell("python"):
@@ -105,30 +104,52 @@ with callysto.Cell("python"):
             tsv_data += os.linesep + "\t".join([f"{i}", *[columns[h][i] for h in column_headers]])
         upload_data_table(tsv_data)
 
+    def parse_cram_crai(filename: str):
+        if filename.endswith(".cram.crai"):
+            # double extension in the crai file, ie "foo.cram.crai"
+            sample = filename[:-10]
+        else:
+            sample = filename[:-5]
+        ext = filename[-4:]
+        return sample, ext
+
     def create_cram_crai_table(table: str, listing: Iterable[str]):
-        crams = dict()
-        crais = dict()
+        matched_files = defaultdict(dict)  # type: dict
+        allCrams = []
+        allCrais = []
         for key in listing:
             _, filename = key.rsplit("/", 1)
+            sample, ext = parse_cram_crai(filename)
+            if ext in ['cram', 'crai']:
+                matched_files[sample][ext] = filename
+                if ext == 'cram':
+                    allCrams.append(sample)
+                else:
+                    allCrais.append(sample)
 
-            parts = filename.split(".")
-            if 3 == len(parts):  # foo.cram.crai branch
-                sample, _, ext = parts
-            elif 2 == len(parts):  # "foo.cram" or "foo.crai" branch
-                sample, ext = parts
-            else:
-                raise ValueError(f"Unable to parse '{filename}'")
+        if allCrams != allCrais:
+            # We don't want to iterate an additional time if we don't need to,
+            # so this only runs if there's more crams than crais or vice versa
+            for sample in list(matched_files):
+                if not (matched_files[sample].get('cram') and matched_files[sample].get('crai')):
+                    del matched_files[sample]
 
-            if "cram" == ext:
-                crams[sample] = key
-            elif "crai" == ext:
-                crais[sample] = key
-            else:
-                continue
-        samples = sorted(crams.keys())
-        upload_columns(table, dict(sample=samples,
-                                   cram=[crams[s] for s in samples],
-                                   crai=[crais[s] for s in samples]))
+        crams = []
+        crais = []
+        samples = []
+        for sample in matched_files:
+            samples.append(sample)
+            for ext in ('cram', 'crai'):
+                if ext == 'cram':
+                    crams.append(f"{bucket}/{subdirectory}/{matched_files[sample][ext]}")
+                else:
+                    crais.append(f"{bucket}/{subdirectory}/{matched_files[sample][ext]}")
+
+        # Upload TSV
+        upload_columns(table, dict(
+            sample=samples,
+            cram=crams,
+            crai=crais))
 
 with callysto.Cell("markdown"):
     """
@@ -154,11 +175,10 @@ with callysto.Cell("python"):
 with callysto.Cell("markdown"):
     """
     ### Add a prefix to your bucket path to organize your data
-    In this example, we add the prefix 'my-crams'. In doing this we say that we want our files to exist at the address
-    gs://[your_bucket_info]/my-crams/`, which will help keep our data organized. We will be calling what comes after
+    In this example, we add the prefix `my-crams`. In doing this we say that we want our files to exist at the address
+    `gs://[your_bucket_info]/my-crams/`, which will help keep our data organized. We will be calling what comes after
     your bucket info, here represented as `my-crams`, as your sudirectory. We'll be using that subdirectory name
     later on, so let's make note of it here.
-
     """
 with callysto.Cell("python"):
     subdirectory = "my-crams"
@@ -167,15 +187,15 @@ with callysto.Cell("markdown"):
     """
     #### A technical note on subdirectories in Google Cloud
     In Google Cloud, any directories below the top-level gs:// address of the bucket are not "true" directories.
-    If one's bucket contained gs://bucket/my-files/file1.txt, and file1.txt was deleted, there would be no
-    trace of my-files. That is to say, Google Cloud does not have any equivalent to empty folders.
+    If one's bucket contained `gs://bucket/my-files/file1.txt`, and `file1.txt` was deleted, there would be no
+    trace of `my-files`. That is to say, Google Cloud does not have any equivalent to empty folders.
     If you would like to know more, [Google has documentation on its filesystem's inner workings](https://cloud.google.com/storage/docs/gsutil/addlhelp/HowSubdirectoriesWork),
     but most users will not need to know the details.
 
     ## Begin the upload
     Now that you know what you will name your subdirectory, turn back to your computer's terminal -- it's time to
     upload your data. To authenticate your access to the Google bucket associated with your Terra workspace, you
-    will need to log in with with`gcloud auth` as described in [Google's documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login).
+    will need to log in with with `gcloud auth` as described in [Google's documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login).
     After you are authenticated, the syntax you will be using to upload to your workspace bucket will look like this:
 
     `gsutil cp /Users/my-cool-username/Documents/Example.cram gs://your_bucket_info/my-crams/`
@@ -184,11 +204,10 @@ with callysto.Cell("markdown"):
     Let's first look at the top of the workspace bucket. This will match what you see if you go the "data" tab of
     your Terra workspace and click "Files" under the heading "OTHER DATA." All data you have uploaded or generated in
     your workspace will be here. You will also see your subdirectory.
-
     """
 
 with callysto.Cell("python"):
-    #%gsutil ls {bucket}
+    #!gsutil ls {bucket}
     pass
 
 with callysto.Cell("markdown"):
@@ -354,19 +373,19 @@ BLANK_CELL_VALUE = f"{uuid4()}"
 delete_table("test_cram_crai_table")
 listing = list()
 for i in range(5):
-    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram")
-    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.crai")
+    listing.append(f"{bucket}/{subdirectory}/sample_id_{i}.cram")
+    listing.append(f"{bucket}/{subdirectory}/sample_id_{i}.crai")
 for i in range(5, 8):
-    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram")
-    listing.append(f"gs://some-bucket/some-pfx/sample_id_{i}.cram.crai")
+    listing.append(f"{bucket}/{subdirectory}/sample_id_{i}.cram")
+    listing.append(f"{bucket}/{subdirectory}/sample_id_{i}.cram.crai")
 create_cram_crai_table("test_cram_crai_table", listing)
 cram_crai_keyed_rows = get_keyed_rows("test_cram_crai_table", "sample")
 for i in range(5):
-    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
-                                                          crai=f"gs://some-bucket/some-pfx/sample_id_{i}.crai")
+    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"{bucket}/{subdirectory}/sample_id_{i}.cram",
+                                                          crai=f"{bucket}/{subdirectory}/sample_id_{i}.crai")
 for i in range(5, 8):
-    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"gs://some-bucket/some-pfx/sample_id_{i}.cram",
-                                                          crai=f"gs://some-bucket/some-pfx/sample_id_{i}.cram.crai")
+    assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"{bucket}/{subdirectory}/sample_id_{i}.cram",
+                                                          crai=f"{bucket}/{subdirectory}/sample_id_{i}.cram.crai")
 
 delete_table("test_metadata_table_a")
 test_metadata_table_a_columns = dict(sample=["sample_id_1", "sample_id_2", "sample_id_3", "sample_id_4"],
