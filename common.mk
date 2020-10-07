@@ -1,3 +1,7 @@
 ifeq ($(findstring Python 3.8, $(shell python --version 2>&1)),)
 $(error Please run make commands from a Python 3.8 virtualenv)
 endif
+
+ifeq ($(shell which callysto),)
+$(error Please install dev requirements using "pip install --upgrade -r requirements-dev.txt")
+endif
