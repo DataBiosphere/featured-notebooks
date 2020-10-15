@@ -12,7 +12,12 @@ with callysto.Cell("markdown"):
     # Workflow Cost Estimator
     This notebook demonstrates cost estimation for finished or in-progress workflows.
 
-    This is an experimental feature: cost estimates may not be accurate.
+    This is an experimental feature:
+      - Cost estimates may not be accurate.
+      - CPUs, Memory, and runtime is pulled from Terra's Firecloud API
+        [monitorSubmission](https://api.firecloud.org/#/Submissions/monitorSubmission) endpoint. This information is
+        available for 42 days after workflow completion.
+      - GCP Instance type is assumed custom configurations of eith N1 or N2 instance type.
     """
 
 with callysto.Cell("markdown"):
