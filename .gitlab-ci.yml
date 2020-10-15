@@ -13,4 +13,4 @@ notebooks:
     - pip install --no-cache-dir -r requirements-dev.txt
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - make cicd_notebooks/*
+    - for i in notebooks/*.py; do make cicd_"$i"; done
