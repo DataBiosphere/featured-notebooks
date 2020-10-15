@@ -31,8 +31,7 @@ cicd_notebooks:=$(notebooks:%=cicd_%)
 $(cicd_notebooks):
 	$(LEO_PIP) install --upgrade -r requirements-notebooks.txt
 	$(LEO_PYTHON) $(@:cicd_%.py=%.py)
-	git clone https://github.com/xbrianh/callysto.git
-	$(LEO_PYTHON) callysto/scripts/callysto $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.py) > $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.ipynb)
+	$(LEO_PYTHON) /home/jupyter-user/.local/bin/callysto $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.py) > $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.ipynb)
 
 clean_notebooks:
 	git clean -dfx notebooks
