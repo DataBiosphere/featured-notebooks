@@ -18,6 +18,8 @@ with callysto.Cell("markdown"):
         [monitorSubmission](https://api.firecloud.org/#/Submissions/monitorSubmission) endpoint. This information is
         available for 42 days after workflow completion.
       - GCP Instance type is assumed custom configurations of eith N1 or N2 instance type.
+
+    *author: Brian Hannafious, Genomics Institute, University of California Santa Cruz*
     """
 
 with callysto.Cell("markdown"):
@@ -111,4 +113,12 @@ with callysto.Cell("python"):
               "%7ih" % runtime_hours,
               "%12s" % str(preemptible),
               "%8s" % ("$%.2f" % cost))
+
+with callysto.Cell("markdown"):
+    """
+    ## Contributions
+    Contributions, bug reports, and feature requests are welcome on:
+      - [terra-notebook-utils GitHub](https://github.com/DataBiosphere/terra-notebook-utils) for general functionality.
+      - [bdcat_notebooks GitHub](https://github.com/DataBiosphere/bdcat_notebooks) for this notebook.
+    """
 ################################################ TESTS ################################################ noqa
