@@ -1,10 +1,5 @@
 MODULES=notebooks
 LOCAL_ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-CONTAINER_HOME_DIR=/home/jupyter-user
-CONTAINER_REPO_DIR=$(CONTAINER_HOME_DIR)/$(shell basename ${LOCAL_ROOT_DIR})
-LEO_PYTHON=$(CONTAINER_HOME_DIR)/miniconda/bin/python
-LEO_PIP=$(CONTAINER_HOME_DIR)/miniconda/bin/pip
-CALLYSTO=callysto
 
 all: test
 
@@ -19,10 +14,10 @@ mypy:
 notebooks:=$(wildcard notebooks/*.py)
 $(notebooks): clean_notebooks lint mypy
 	scripts/run_leo_container.sh $(@:notebooks/%.py=%)
-	docker exec $(@:notebooks/%.py=%) bash -c "$(LEO_PIP) install --upgrade -r $(CONTAINER_REPO_DIR)/requirements-notebooks.txt"
-	docker exec -it $(@:notebooks/%.py=%) $(LEO_PYTHON) $(CONTAINER_REPO_DIR)/$@
-	$(CALLYSTO) $(LOCAL_ROOT_DIR)/$@ > $(LOCAL_ROOT_DIR)/$(@:.py=.ipynb)
-	docker exec -it $(@:notebooks/%.py=%) $(CONTAINER_REPO_DIR)/scripts/publish.sh $(CONTAINER_REPO_DIR)/$@ $(CONTAINER_REPO_DIR)/$(@:.py=.ipynb)
+	docker exec $(@:notebooks/%.py=%) bash -c "$(LEO_PIP) install --upgrade -r $(LEO_REPO_DIR)/requirements-notebooks.txt"
+	docker exec -it $(@:notebooks/%.py=%) $(LEO_PYTHON) $(LEO_REPO_DIR)/$@
+	callysto $(LOCAL_ROOT_DIR)/$@ > $(LOCAL_ROOT_DIR)/$(@:.py=.ipynb)
+	docker exec -it $(@:notebooks/%.py=%) $(LEO_REPO_DIR)/scripts/publish.sh $(LEO_REPO_DIR)/$@ $(LEO_REPO_DIR)/$(@:.py=.ipynb)
 
 # create make targets with pattern: cicd_notebooks/*.py (i.e. "make cicd_notebooks/byod.py")
 cicd_notebooks:=$(notebooks:%=cicd_%)

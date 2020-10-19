@@ -9,7 +9,8 @@ before_script:
 notebooks:
   stage: test
   script:
-    - . /home/jupyter-user/miniconda/bin/activate
+    - source environment
+    - source /home/jupyter-user/miniconda/bin/activate
     - pip install --no-cache-dir -r requirements-dev.txt
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
