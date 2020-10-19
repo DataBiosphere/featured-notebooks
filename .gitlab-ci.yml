@@ -6,38 +6,11 @@ stages:
 before_script:
   - date && date -u
 
-byod:
+notebooks:
   stage: test
   script:
     - . /home/jupyter-user/miniconda/bin/activate
     - pip install --no-cache-dir -r requirements-dev.txt
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - make cicd_notebooks/byod.py
-
-prepare_igv_viewer_input:
-  stage: test
-  script:
-    - . /home/jupyter-user/miniconda/bin/activate
-    - pip install --no-cache-dir -r requirements-dev.txt
-    - mkdir -p ~/.config/gcloud
-    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - make cicd_notebooks/prepare_igv_viewer_input.py
-
-vcf_merge_subsample_tutorial:
-  stage: test
-  script:
-    - . /home/jupyter-user/miniconda/bin/activate
-    - pip install --no-cache-dir -r requirements-dev.txt
-    - mkdir -p ~/.config/gcloud
-    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - make cicd_notebooks/vcf_merge_subsample_tutorial.py
-
-xvcfmerge-array-input:
-  stage: test
-  script:
-    - . /home/jupyter-user/miniconda/bin/activate
-    - pip install --no-cache-dir -r requirements-dev.txt
-    - mkdir -p ~/.config/gcloud
-    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - make cicd_notebooks/xvcfmerge_array_input.py
+    - for i in notebooks/*.py; do make cicd_"$i"; done
