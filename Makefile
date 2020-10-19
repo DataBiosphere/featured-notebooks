@@ -1,5 +1,4 @@
 MODULES=notebooks
-LOCAL_ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 all: test
 
@@ -16,7 +15,7 @@ $(notebooks): clean_notebooks lint mypy
 	scripts/run_leo_container.sh $(@:notebooks/%.py=%)
 	docker exec $(@:notebooks/%.py=%) bash -c "$(LEO_PIP) install --upgrade -r $(LEO_REPO_DIR)/requirements-notebooks.txt"
 	docker exec -it $(@:notebooks/%.py=%) $(LEO_PYTHON) $(LEO_REPO_DIR)/$@
-	callysto $(LOCAL_ROOT_DIR)/$@ > $(LOCAL_ROOT_DIR)/$(@:.py=.ipynb)
+	callysto $@ > $(@:.py=.ipynb)
 	docker exec -it $(@:notebooks/%.py=%) $(LEO_REPO_DIR)/scripts/publish.sh $(LEO_REPO_DIR)/$@ $(LEO_REPO_DIR)/$(@:.py=.ipynb)
 
 # create make targets with pattern: cicd_notebooks/*.py (i.e. "make cicd_notebooks/byod.py")
@@ -24,7 +23,7 @@ cicd_notebooks:=$(notebooks:%=cicd_%)
 $(cicd_notebooks):
 	$(LEO_PIP) install --upgrade -r requirements-notebooks.txt
 	$(LEO_PYTHON) $(@:cicd_%.py=%.py)
-	$(LEO_PYTHON) /home/jupyter-user/.local/bin/callysto $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.py) > $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.ipynb)
+	$(LEO_PYTHON) /home/jupyter-user/.local/bin/callysto $(@:cicd_%.py=%.py) > $(@:cicd_%.py=%.ipynb)
 
 clean_notebooks:
 	git clean -dfX notebooks
