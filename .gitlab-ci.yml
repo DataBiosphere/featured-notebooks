@@ -8,10 +8,14 @@ before_script:
 
 notebooks:
   stage: test
-  script:
-    - source environment
-    - source /home/jupyter-user/miniconda/bin/activate
-    - pip install --no-cache-dir -r requirements-dev.txt
+  before_script:
+    - export PATH=/home/jupyter-user/.local/bin:$PATH
+    - unset PIP_USER
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
-    - for i in notebooks/*.py; do make cicd_"$i"; done
+    - source environment
+    - $LEO_PYTHON -m venv ~/venv
+    - source ~/venv/bin/activate
+    - pip install -r requirements-dev.txt
+  script:
+    - make test-cicd
