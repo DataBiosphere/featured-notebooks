@@ -1,29 +1,51 @@
-MODULES=notebooks
+NOTEBOOK_DIRS=$(wildcard notebooks/*)
+NOTEBOOKS=$(NOTEBOOK_DIRS:%=%/notebook.ipynb)             # ipynb targets: "make notebooks/byod/notebook.ipynb"
+PUBLISH=$(subst notebooks,publish,$(NOTEBOOK_DIRS))       # publish targets: "make publish/byod"
+LINT=$(subst notebooks,lint,$(NOTEBOOK_DIRS))             # lint targts: "make lint/byod"
+MYPY=$(subst notebooks,mypy,$(NOTEBOOK_DIRS))             # mypy targts: "make mypy/byod"
+TESTS=$(subst notebooks,test,$(NOTEBOOK_DIRS))            # test targets: "make test/byod"
+CICD_TESTS=$(subst notebooks,cicd_test,$(NOTEBOOK_DIRS))  # cicd_test targets: "make cicd_test/byod"
 
 all: test
 
-test: lint mypy
+test: $(TESTS)
 
-lint:
-	flake8 $(MODULES)
+lint: $(LINT)
 
-mypy:
-	mypy --ignore-missing-imports --no-strict-optional $(MODULES)
+mypy: $(MYPY)
 
-notebooks:=$(wildcard notebooks/*.py)
-$(notebooks): clean_notebooks lint mypy
-	scripts/run_leo_container.sh $(@:notebooks/%.py=%)
-	docker exec $(@:notebooks/%.py=%) bash -c "$(LEO_PIP) install --upgrade -r $(LEO_REPO_DIR)/requirements-notebooks.txt"
-	docker exec -it $(@:notebooks/%.py=%) $(LEO_PYTHON) $(LEO_REPO_DIR)/$@
-	callysto $@ > $(@:.py=.ipynb)
-	docker exec -it $(@:notebooks/%.py=%) $(LEO_REPO_DIR)/scripts/publish.sh $(LEO_REPO_DIR)/$@ $(LEO_REPO_DIR)/$(@:.py=.ipynb)
+test-cicd: $(CICD_TESTS)
 
-# create make targets with pattern: cicd_notebooks/*.py (i.e. "make cicd_notebooks/byod.py")
-cicd_notebooks:=$(notebooks:%=cicd_%)
-$(cicd_notebooks):
-	$(LEO_PIP) install --upgrade -r requirements-notebooks.txt
-	$(LEO_PYTHON) $(@:cicd_%.py=%.py)
-	$(LEO_PYTHON) /home/jupyter-user/.local/bin/callysto $(@:cicd_%.py=%.py) > $(@:cicd_%.py=%.ipynb)
+$(NOTEBOOK_DIRS): clean_notebooks
+	$(MAKE) $(@:notebooks/%=test/%)
+
+$(NOTEBOOKS):
+	callysto $(@:%/notebook.ipynb=%/main.py) > $@
+
+$(PUBLISH):
+	$(MAKE) $(@:publish/%=notebooks/%/notebook.ipynb)
+	scripts/publish.sh $(@:publish/%=notebooks/%/notebook.ipynb) $(@:publish/%=notebooks/%/publish.txt) 
+
+$(TESTS):
+	$(MAKE) $(@:test/%=lint/%)
+	$(MAKE) $(@:test/%=mypy/%)
+	scripts/run_leo_container.sh $(@:test/%=%)
+	docker exec $(@:test/%=%) bash -c "$(LEO_PIP) install --upgrade -r $(LEO_REPO_DIR)/$(@:test/%=notebooks/%/requirements.txt)"
+	docker exec $(@:test/%=%) $(LEO_PYTHON) $(LEO_REPO_DIR)/$(@:test/%=notebooks/%/main.py)
+	$(MAKE) $(@:test/%=notebooks/%/notebook.ipynb)
+
+$(CICD_TESTS):
+	$(MAKE) $(@:cicd_test/%=lint/%)
+	$(MAKE) $(@:cicd_test/%=mypy/%)
+	pip install --upgrade -r $(@:cicd_test/%=notebooks/%/requirements.txt)
+	python $(@:cicd_test/%=notebooks/%/main.py)
+	$(MAKE) $(@:cicd_test/%=notebooks/%/notebook.ipynb)
+
+$(LINT):
+	flake8 $(@:lint/%=notebooks/%)
+
+$(MYPY):
+	mypy --ignore-missing-imports --no-strict-optional $(@:mypy/%=notebooks/%)
 
 clean_notebooks:
 	git clean -dfX notebooks
@@ -31,4 +53,4 @@ clean_notebooks:
 clean:
 	git clean -dfx
 
-.PHONY: lint mypy clean clean_notebooks $(notebooks) $(cicd_notebooks)
+.PHONY: publish $(NOTEBOOK_DIRS) $(NOTEBOOKS) $(PUBLISH) $(TESTS) $(CICD_TESTS) clean clean_notebooks
