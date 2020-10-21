@@ -37,6 +37,7 @@ with callysto.Cell("markdown"):
     """
 
 with callysto.Cell("python"):
+    import pandas as pd
     from terra_notebook_utils import costs, workflows
 
     def list_submissions_chronological():
@@ -47,11 +48,8 @@ with callysto.Cell("python"):
     def cost_for_submission(submission_id: str):
         submission = workflows.get_submission(submission_id)
         for wf in submission['workflows']:
-            shard_number = 1  # keep track of scattered workflows
             for shard_info in workflows.estimate_workflow_cost(submission_id, wf['workflowId']):
                 shard_info['workflow_id'] = wf['workflowId']
-                shard_info['shard'] = shard_number
-                shard_number += 1
                 yield shard_info
 
     def estimate_job_cost(cpus: int, memory_gb: int, runtime_hours: float, preemptible: bool) -> float:
@@ -71,24 +69,17 @@ submissions = [s for s in list_submissions_chronological()]
 submission_id = submissions[-1]['submissionId']
 
 with callysto.Cell("python"):
-    # submission_id = ""  # Uncomment and insert your submission id here
-    total_cost = 0
-    print("%37s" % "workflow_id",
-          "%6s" % "shard",
-          "%5s" % "cpus",
-          "%12s" % "memory",
-          "%13s" % "duration",
-          "%7s" % "cost")
+    # submission_id = "b25c93e8-41ad-4980-b63c-46963b0402bc"  # Uncomment and insert your submission id here
+    report = pd.DataFrame()
     for shard_info in cost_for_submission(submission_id):
-        total_cost += shard_info['cost']
-        print("%37s" % shard_info['workflow_id'],
-              "%6i" % shard_info['shard'],
-              "%5i" % shard_info['number_of_cpus'],
-              "%10iGB" % shard_info['memory'],
-              "%12.2fh" % (shard_info['duration'] / 3600),  # convert from seconds to hours
-              "%7s" % ("$%.2f" % shard_info['cost']))
-        shard_info['duration'] /= 3600  # convert from seconds to hours
-    print("%85s" % ("total_cost: $%.2f" % round(total_cost, 2)))
+        shard_info['duration'] /= 3600
+        report = report.append(shard_info, ignore_index=True)
+
+with callysto.Cell("python"):
+    report.style.format(dict(cost="${:.2f}", duration="{:.2f}h", memory="{:.0f}GB"))
+
+with callysto.Cell("python"):
+    print("Total cost: $%.2f" % report['cost'].sum())
 
 with callysto.Cell("markdown"):
     """
@@ -101,18 +92,14 @@ with callysto.Cell("python"):
                       (8, 32, 10, False),
                       (10, 64, 5, True),
                       (8, 32, 10, True)]
-    print("%8s" % "cpus",
-          "%8s" % "memory",
-          "%8s" % "runtime",
-          "%12s" % "preemptible",
-          "%8s" % "cost")
+    report = pd.DataFrame()
     for cpus, memory_gb, runtime_hours, preemptible in configurations:
         cost = estimate_job_cost(cpus, memory_gb, runtime_hours, preemptible)
-        print("%8i" % cpus,
-              "%6iGB" % memory_gb,
-              "%7ih" % runtime_hours,
-              "%12s" % str(preemptible),
-              "%8s" % ("$%.2f" % cost))
+        report = report.append(dict(cost=cost, cpus=cpus, memory=memory_gb, duration=runtime_hours, preemptible=preemptible), ignore_index=True)
+    report['preemptible'] = report['preemptible'].astype('bool')
+
+with callysto.Cell("python"):
+    report.style.format(dict(cost="${:.2f}", duration="{:.2f}h", memory="{:.0f}GB"))
 
 with callysto.Cell("markdown"):
     """
