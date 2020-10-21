@@ -6,7 +6,7 @@ Jupyter notebook `.ipynb` files are generated from source files with the
 [callysto](https://github.com/xbrianh/callysto) library. 
 
 ## Notebook Source Schema
-A notebook is defined by creating a directory under ${REPO_ROOT}/noteboks containing
+A notebook is defined by creating a directory under ${REPO_ROOT}/notebooks containing
   - `main.py`, the source script for the notebook in [callysto](https://github.com/xbrianh/callysto) format.
   - `requirements.txt`, pip-installable requirements needed for notebook execution.
   - `publish.txt`, a list of destination Google Storage URLs where the notebook will be published.
@@ -46,8 +46,8 @@ into the Terra workspace bucket.
 
 ## Authorization for Testing and Publishing
 
-Google user credentials are required to publish notebooks to Terra workspaces. Additinally, notebook execution may
-require Google application default credentials. Both sets can be obtained by executing the commmads
+Google user credentials are required to publish notebooks to Terra workspaces. Additionally, notebook execution may
+require Google application default credentials. Both sets can be obtained by executing the commands
 ```
 gcloud auth login
 gcloud auth application-default login
@@ -67,7 +67,6 @@ On MacOS or similar systems, this can be done by issuing the commands
 source {vpath}/bin/activate
 pip install -r requirements-dev.txt
 ```
-
 where `{vpath}` should be replaced with the desired location of the virtual environment.
 
 ## Links
