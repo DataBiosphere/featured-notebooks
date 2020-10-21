@@ -1,3 +1,20 @@
+#!/bin/bash
+# This script generates .gitlab-ci.yml
+set -euo pipefail
+
+function usage() {
+    echo 'Given an output filename, generate a GitLab CI/CD yml file'
+    echo 'If the output file exists, it will be overwritten.'
+}
+
+if [[ $# != 1 ]]; then
+    usage
+    exit 1
+fi
+
+out=$1
+
+cat << 'EOF' > $1
 # This file is generated and should not be modified directly.
 # Edit 'scripts/generate_gitlab_yaml.sh' instead
 
@@ -21,23 +38,11 @@ verify-gitlab-yml:
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - source environment
     - $LEO_PIP install --upgrade -r requirements-dev.txt
+EOF
 
-byod:
-  extends: .notebook-test
-  script: make cicd_tests/byod
-
-prepare_igv_viewer_input:
-  extends: .notebook-test
-  script: make cicd_tests/prepare_igv_viewer_input
-
-vcf_merge_subsample_tutorial:
-  extends: .notebook-test
-  script: make cicd_tests/vcf_merge_subsample_tutorial
-
-workflow_cost_estimator:
-  extends: .notebook-test
-  script: make cicd_tests/workflow_cost_estimator
-
-xvcfmerge_array_input:
-  extends: .notebook-test
-  script: make cicd_tests/xvcfmerge_array_input
+for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -z | xargs -r0); do
+    echo "" >> ${out}
+    echo "$(basename ${nb}):" >> ${out}
+    echo "  extends: .notebook-test" >> ${out}
+    echo "  script: make cicd_tests/$(basename ${nb})" >> ${out}
+done
