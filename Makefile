@@ -1,5 +1,3 @@
-include common.mk
-
 MODULES=notebooks
 CONTAINER=$(shell ./scripts/run_leo_container.sh)
 LOCAL_ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
