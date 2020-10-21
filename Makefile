@@ -8,7 +8,7 @@ CICD_TESTS=$(subst notebooks,cicd_test,$(NOTEBOOK_DIRS))  # cicd_test targets: "
 
 all: test
 
-test: $(TESTS)
+test: verify-gitlab-yml $(TESTS)
 
 lint: $(LINT)
 
@@ -37,8 +37,8 @@ $(TESTS):
 $(CICD_TESTS):
 	$(MAKE) $(@:cicd_test/%=lint/%)
 	$(MAKE) $(@:cicd_test/%=mypy/%)
-	pip install --upgrade -r $(@:cicd_test/%=notebooks/%/requirements.txt)
-	python $(@:cicd_test/%=notebooks/%/main.py)
+	${LEO_PIP} install --upgrade -r $(@:cicd_test/%=notebooks/%)/requirements.txt
+	${LEO_PYTHON} $(@:cicd_test/%=notebooks/%)/main.py
 	$(MAKE) $(@:cicd_test/%=notebooks/%/notebook.ipynb)
 
 $(LINT):
@@ -47,10 +47,17 @@ $(LINT):
 $(MYPY):
 	mypy --ignore-missing-imports --no-strict-optional $(@:mypy/%=notebooks/%)
 
+.gitlab-ci.yml:
+	scripts/generate_gitlab_yml.sh .gitlab-ci.yml
+
+verify-gitlab-yml:
+	scripts/generate_gitlab_yml.sh test_gitlab_yml
+	diff .gitlab-ci.yml test_gitlab_yml
+
 clean_notebooks:
 	git clean -dfX notebooks
 
 clean:
 	git clean -dfx
 
-.PHONY: publish $(NOTEBOOK_DIRS) $(NOTEBOOKS) $(PUBLISH) $(TESTS) $(CICD_TESTS) clean clean_notebooks
+.PHONY: .gitlab-ci.yml $(NOTEBOOK_DIRS) $(NOTEBOOKS) $(PUBLISH) $(TESTS) $(CICD_TESTS) clean clean_notebooks
