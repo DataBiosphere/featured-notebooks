@@ -34,7 +34,7 @@ $(cicd_notebooks):
 	$(LEO_PYTHON) /home/jupyter-user/.local/bin/callysto $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.py) > $(LOCAL_ROOT_DIR)/$(@:cicd_%.py=%.ipynb)
 
 clean_notebooks:
-	git clean -dfx notebooks
+	git clean -dfX notebooks
 
 clean:
 	git clean -dfx
