@@ -44,5 +44,5 @@ for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -z | x
     echo "" >> ${out}
     echo "$(basename ${nb}):" >> ${out}
     echo "  extends: .notebook-test" >> ${out}
-    echo "  script: make cicd_tests/$(basename ${nb})" >> ${out}
+    echo "  script: make cicd_test/$(basename ${nb})" >> ${out}
 done
