@@ -6,3 +6,4 @@ __pycache__
 .idea/
 .coverage*
 .mypy_cache
+*.ipynb
