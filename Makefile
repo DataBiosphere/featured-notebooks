@@ -37,8 +37,8 @@ $(TESTS):
 $(CICD_TESTS):
 	$(MAKE) $(@:cicd_test/%=lint/%)
 	$(MAKE) $(@:cicd_test/%=mypy/%)
-	${LEO_PIP} install --upgrade -r $(@:cicd_tests/%=notebooks/%)/requirements.txt
-	${LEO_PYTHON} $(@:cicd_tests/%=notebooks/%)/main.py
+	${LEO_PIP} install --upgrade -r $(@:cicd_test/%=notebooks/%)/requirements.txt
+	${LEO_PYTHON} $(@:cicd_test/%=notebooks/%)/main.py
 	$(MAKE) $(@:cicd_test/%=notebooks/%/notebook.ipynb)
 
 $(LINT):
