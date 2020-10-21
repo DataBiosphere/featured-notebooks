@@ -1,4 +1,13 @@
 #!/bin/bash
+function usage() {
+    echo 'Given a Docker container name, kill and remove existing named'
+    echo 'container and launch a new one.'
+}
+if [[ $# != 1 ]]; then
+    usage
+    exit 1
+fi
+
 set -euo pipefail
 
 # Resolve the location of this file and set BDCAT_NOTEBOOKS_HOME to the root
@@ -7,20 +16,15 @@ while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
 export BDCAT_NOTEBOOKS_HOME="$(cd -P "$(dirname "$SOURCE")" && cd .. && pwd)"
 
 IMAGE_NAME="us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17"
-CONTAINER_NAME="leo-container"
+CONTAINER_NAME=$1
 CONTAINER_REPO_ROOT="$(basename ${BDCAT_NOTEBOOKS_HOME})"
-wid=$(docker ps -a --latest  --filter "status=running" --filter "name=${CONTAINER_NAME}" --format="{{.ID}}")
-if [[ -z $wid ]]; then
-    # start new container
-    docker pull ${IMAGE_NAME} 1>&2
-    wid=$(docker run \
-          --mount type=bind,source=${BDCAT_NOTEBOOKS_HOME},target=/home/jupyter-user/${CONTAINER_REPO_ROOT} \
-          -v ~/.config:/home/jupyter-user/.config \
-          --name "${CONTAINER_NAME}" \
-          -it -d \
-          ${IMAGE_NAME})
-else
-    # use existing container
-    :
-fi
+docker kill $1 1>&2 || :
+docker rm $1 1>&2 || :
+docker pull ${IMAGE_NAME} 1>&2
+wid=$(docker run \
+  -v ${BDCAT_NOTEBOOKS_HOME}:/home/jupyter-user/${CONTAINER_REPO_ROOT} \
+  -v ~/.config:/home/jupyter-user/.config \
+  --name "${CONTAINER_NAME}" \
+  -it -d \
+  ${IMAGE_NAME})
 echo -n ${wid}
