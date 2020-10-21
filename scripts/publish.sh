@@ -3,10 +3,11 @@
 set -euo pipefail
 
 function usage() {
-    echo 'Given a source callysto script and a generated Jupyter notebook'
-    echo 'copy the generated notebook to destination specified in the publish'
-    echo 'directive. The publish directive is the first line of the source callysto script'
-    echo 'with the format: `# publish to: "my workspace name" "my notebook name"`.'
+    echo 'Given a source notebook file and a publish directive file copy the generated'
+    echo 'notebook to destination specified in the publish directive. The publish'
+    echo 'directive file should contain lines specifying Google Storage destination of'
+    echo 'the notebook .ipynb file: gs://bucket_name/pfx/notebook_name.ipynb'
+    echo 'The GS url may contain spaces. Text after "#" in any line is ignored.'
 }
 
 if [[ $# != 2 ]]; then
@@ -14,21 +15,23 @@ if [[ $# != 2 ]]; then
     exit 1
 fi
 
-source_callysto_notebook=$1
-generated_jupyter_notebook=$2
+notebook_ipynb=$1
+publish_directive=$2
 
-tnu=$(which tnu || find / -iname "tnu" -executable 2>/dev/null || :)
-publish_directive=$(head -n 1 $source_callysto_notebook)
-workspace=$(echo -n ${publish_directive} | cut -d '"' -f2)
-notebook_name=$(echo -n ${publish_directive} | cut -d '"' -f4)
-bucket=$(${tnu} workspace get-bucket --workspace "${workspace}")
-dest="gs://${bucket}/notebooks/${notebook_name}.ipynb"
-if [[ -f $generated_jupyter_notebook ]]; then
-	echo ${generated_jupyter_notebook}
-	echo ${dest}
-    gsutil cp "${generated_jupyter_notebook}" "${dest}"
-else
-    usage
-    echo "File does not exist: ${generated_jupyter_notebook}"
+if [[ ! -f ${notebook_ipynb} ]]; then
+    echo "${notebook_ipynb}: No such file"
     exit 1
 fi
+
+if [[ ! -f ${publish_directive} ]]; then
+    echo "${publish_directive}: No such file"
+    exit 1
+
+fi
+
+while read line; do
+    gs_dest=$(echo -n ${line} | cut -d'#' -f1)
+    if [[ ! -z "${gs_dest}" ]]; then
+        gsutil cp "${notebook_ipynb}" "${gs_dest}" || echo "Unable to publish to ${gs_dest}"
+    fi
+done < ${publish_directive}

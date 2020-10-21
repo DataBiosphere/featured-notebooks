@@ -1,4 +1,3 @@
-# publish to: "terra-notebook-utils-tests" "Prepare IGV Viewer Input"
 import os
 import callysto
 from unittest import mock

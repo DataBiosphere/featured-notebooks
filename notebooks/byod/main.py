@@ -1,4 +1,3 @@
-# publish to: "terra-notebook-utils-tests" "test-byod"
 import os
 import callysto
 
