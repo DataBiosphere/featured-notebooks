@@ -40,8 +40,9 @@ make test/byod
 
 These recipes pass the source script through the [flake8](https://flake8.pycqa.org/en/latest/) linter and
 [mypy](https://mypy.readthedocs.io/en/stable/) static analysis tool, and executes with a Docker container that is
-typical of Terra notebook runtime environments for Python. If there are no errors, callysto is used to generate the
-source script into an `.ipynb`, which is copied into the Terra workspace bucket.
+typical of Terra notebook runtime environments for Python. If there are no errors,
+[callysto](https://github.com/xbrianh/callysto) is used to generate the source script into an `.ipynb`, which is copied
+into the Terra workspace bucket.
 
 ## Authorization for Testing and Publishing
 

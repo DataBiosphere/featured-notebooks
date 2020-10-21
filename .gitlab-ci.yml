@@ -10,7 +10,7 @@ notebooks:
   stage: test
   before_script:
     - export PATH=/home/jupyter-user/.local/bin:$PATH
-    - unset PIP_USER
+    - unset PIP_USER  # Prevent misconfigured installation in virtual environments
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - source environment
