@@ -24,20 +24,20 @@ verify-gitlab-yml:
 
 byod:
   extends: .notebook-test
-  script: make cicd_tests/byod
+  script: make cicd_test/byod
 
 prepare_igv_viewer_input:
   extends: .notebook-test
-  script: make cicd_tests/prepare_igv_viewer_input
+  script: make cicd_test/prepare_igv_viewer_input
 
 vcf_merge_subsample_tutorial:
   extends: .notebook-test
-  script: make cicd_tests/vcf_merge_subsample_tutorial
+  script: make cicd_test/vcf_merge_subsample_tutorial
 
 workflow_cost_estimator:
   extends: .notebook-test
-  script: make cicd_tests/workflow_cost_estimator
+  script: make cicd_test/workflow_cost_estimator
 
 xvcfmerge_array_input:
   extends: .notebook-test
-  script: make cicd_tests/xvcfmerge_array_input
+  script: make cicd_test/xvcfmerge_array_input
