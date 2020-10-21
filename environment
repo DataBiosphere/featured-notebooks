@@ -1,0 +1,12 @@
+# Resolve the location of this file and set BDCAT_NOTEBOOKS_HOME to the root
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
+export BDCAT_NOTEBOOKS_HOME="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+
+set -a
+LEO_IMAGE="us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.12"
+LEO_USER_HOME=/home/jupyter-user
+LEO_REPO_DIR=${LEO_USER_HOME}/$(basename ${BDCAT_NOTEBOOKS_HOME})
+LEO_PYTHON=${LEO_USER_HOME}/miniconda/bin/python
+LEO_PIP=${LEO_USER_HOME}/miniconda/bin/pip
+set +a
