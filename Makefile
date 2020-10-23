@@ -1,3 +1,4 @@
+include common.mk
 NOTEBOOK_DIRS=$(wildcard notebooks/*)
 NOTEBOOKS=$(NOTEBOOK_DIRS:%=%/notebook.ipynb)             # ipynb targets: "make notebooks/byod/notebook.ipynb"
 PUBLISH=$(subst notebooks,publish,$(NOTEBOOK_DIRS))       # publish targets: "make publish/byod"

@@ -29,7 +29,9 @@ before_script:
 
 verify-gitlab-yml:
   stage: verify-gitlab-yml
-  script: make verify-gitlab-yml
+  script: 
+    - source environment
+    - make verify-gitlab-yml
 
 .notebook-test:
   stage: test
