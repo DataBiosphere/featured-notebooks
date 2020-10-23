@@ -1,4 +1,0 @@
-Jinja2
-pandas
-terra-notebook-utils
-git+https://github.com/xbrianh/callysto
