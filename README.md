@@ -27,6 +27,12 @@ Notebooks are published with make commands, e.g.
 make publish/byod
 ```
 
+### ad-hoc publication
+A convenience script is provided to generate notebooks into arbitrary Google Storage locations.
+```
+scrips/generate_to_gs.sh notebooks/byod/main.py gs://my-bucket/my-notebook-location
+```
+
 ## Testing Notebooks
 Tests are performed in Docker containers of the expected notebook deployment platform, e.g. Terra, with the command
 ```
