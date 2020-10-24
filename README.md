@@ -65,16 +65,19 @@ in the standard location under `~/.config`.
 
 ## Local Development Environment
 
-Notebook source scripts should be developed using a Python 3.7 virtual environment, which matches the typical Python version
-in the Terra notebook runtime, and `requirement-dev.txt` should be installed.
+1. Notebook source scripts should be developed using a Python 3.7 virtual environment, which matches the typical Python version
+   in the Terra notebook runtime, and `requirement-dev.txt` should be installed.
 
-On MacOS or similar systems, this can be done by issuing the commands
-```
-/usr/local/bin/python3.7 -m venv {vpath}
-source {vpath}/bin/activate
-pip install -r requirements-dev.txt
-```
-where `{vpath}` should be replaced with the desired location of the virtual environment.
+   On MacOS or similar systems, this can be done by issuing the commands
+   ```
+   /usr/local/bin/python3.7 -m venv {vpath}
+   source {vpath}/bin/activate
+   pip install -r requirements-dev.txt
+   ```
+   where `{vpath}` should be replaced with the desired location of the virtual environment.
+
+2. The Google Storage utility "gsutil" should be installed according to the instructions found
+   [here](https://cloud.google.com/storage/docs/gsutil_install).
 
 ## Links
 Project home page [GitHub](https://github.com/DataBiosphere/bdcat_notebooks)  
