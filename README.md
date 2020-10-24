@@ -28,7 +28,8 @@ make publish/byod
 ```
 
 ### ad-hoc publication
-A convenience script is provided to generate notebooks into arbitrary Google Storage locations.
+A convenience script is provided to generate callysto scripts into .ipynb files and copy them into Google Storage
+locations.
 ```
 scrips/generate_to_gs.sh notebooks/byod/main.py gs://my-bucket/my-notebook-location
 ```

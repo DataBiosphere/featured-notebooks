@@ -7,6 +7,11 @@ function usage() {
     echo 'and copy it into the GS url.'
 }
 
+if [[ ! $(command -v gsutil) ]]; then
+    echo "Please install gsutil by following instructions at 'https://cloud.google.com/storage/docs/gsutil_install'"
+    exit 1
+fi
+
 if [[ $# != 2 ]]; then
     usage
     exit 1
