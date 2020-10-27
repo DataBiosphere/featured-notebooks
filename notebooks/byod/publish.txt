@@ -1,2 +1,2 @@
-terra-notebook-utils
-git+https://github.com/xbrianh/callysto
+# terra-notebook-utils-tests
+gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10/notebooks/Bring Your Own Data.ipynb
