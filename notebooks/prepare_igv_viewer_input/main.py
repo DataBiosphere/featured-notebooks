@@ -1,12 +1,12 @@
 import os
-import callysto
+import herzog
 from unittest import mock
 
 os.environ['WORKSPACE_NAME'] = "terra-notebook-utils-tests"
 os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
 os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     # Generate a data table with data from Gen3 for use with the IGV in Terra
 
@@ -38,22 +38,22 @@ with callysto.Cell("markdown"):
     5. You may want to eventually delete the CRAM and CRAI files to avoid paying long-term storage costs.
     """
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Install DRS packages
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     #%pip install --upgrade --no-cache-dir terra-notebook-utils
     #%pip install --upgrade --no-cache-dir gs-chunked-io
     pass
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Import the tooling and define some functions
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     import os
     from firecloud import fiss
     import terra_notebook_utils as tnu
@@ -79,24 +79,24 @@ with callysto.Cell("python"):
 
 get_drs_urls = mock.MagicMock()  # noqa
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     crams = get_drs_urls("submitted_aligned_reads")
     crais = get_drs_urls("aligned_reads_index")
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Select the samples you want to view
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     samples = ["NWD263776", "NWD552521"]
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Check that this worked
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     print(crams["NWD263776"])
     print(crais["NWD263776"])
 
@@ -107,12 +107,12 @@ for s in samples:
     crais[s] = dict(file_name=f"{s}.crai", drs_url="drs://{s}")
 tnu.drs.copy = mock.MagicMock()
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Copy the CRAM and CRAI files for the selected samples to the Terra workspace bucket.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     bucket = os.environ['WORKSPACE_BUCKET']
     pfx = "test-crai-cram"
     tsv_data = "\t".join(["cram_crai_test_id", "inputs", "output"])
@@ -124,12 +124,12 @@ with callysto.Cell("python"):
 
 upload_data_table = mock.MagicMock()  # noqa
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Create a data table called "IGV_viewer" with all CRAM and CRAI files that were copied to the workspace
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     tsv_data = "\t".join(["IGV_viewer_id", "sample", "cram", "crai"])
     for i, sample in enumerate(samples):
         cram = crams[sample]
@@ -140,7 +140,7 @@ with callysto.Cell("python"):
                                             f"{bucket}/{pfx}/{crai['file_name']}"])
     upload_data_table(tsv_data)
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     When you are done viewing, delete the files you copied so you avoid paying long-term storage costs. If you delete
     the data table, this doesn't actually delete the files in your bucket. You will need to navigate to the "file"

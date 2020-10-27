@@ -3,23 +3,23 @@ Example Jupyter notebook source files for the BioData Catalyst consortium. These
 [Terra notebook environment](https://support.terra.bio/hc/en-us/articles/360027237871-Terra-s-Jupyter-Notebooks-environment-Part-I-Key-components).
 
 Jupyter notebook `.ipynb` files are generated from source files with the
-[callysto](https://github.com/xbrianh/callysto) library. 
+[herzog](https://github.com/xbrianh/herzog) library. 
 
 ## Notebook Source Schema
 A notebook is defined by creating a directory under ${REPO_ROOT}/notebooks containing
-  - `main.py`, the source script for the notebook in [callysto](https://github.com/xbrianh/callysto) format.
+  - `main.py`, the source script for the notebook in [herzog](https://github.com/xbrianh/herzog) format.
   - `requirements.txt`, pip-installable requirements needed for notebook execution.
   - `publish.txt`, a list of destination Google Storage URLs where the notebook will be published.
 
-### The Callysto Format
-Notebook source files, `main.py`, are executable Python scripts. Contents of cells are denoted with the callysto
+### The Herzog Format
+Notebook source files, `main.py`, are executable Python scripts. Contents of cells are denoted with the herzog
 Python context managers:
 ```
-with callysto.Cell("{mode}"):
+with herzog.Cell("{mode}"):
 	...
 ```
-where `{mode}` is `python` or `markdown`. Python statements outside of callysto contexts will not be rendered into
-cells. Test code or mock environments should not be placed outside callysto contexts.
+where `{mode}` is `python` or `markdown`. Python statements outside of herzog contexts will not be rendered into
+cells. Test code or mock environments should not be placed outside herzog contexts.
 
 ## Publishing Notebooks
 Notebooks are published with make commands, e.g.
@@ -28,7 +28,7 @@ make publish/byod
 ```
 
 ### ad-hoc publication
-A convenience script is provided to generate callysto scripts into .ipynb files and copy them into Google Storage
+A convenience script is provided to generate herzog scripts into .ipynb files and copy them into Google Storage
 locations.
 ```
 scrips/generate_to_gs.sh notebooks/byod/main.py gs://my-bucket/my-notebook-location
@@ -48,7 +48,7 @@ make test/byod
 These recipes pass the source script through the [flake8](https://flake8.pycqa.org/en/latest/) linter and
 [mypy](https://mypy.readthedocs.io/en/stable/) static analysis tool, and executes with a Docker container that is
 typical of Terra notebook runtime environments for Python. If there are no errors,
-[callysto](https://github.com/xbrianh/callysto) is used to generate the source script into an `.ipynb`, which is copied
+[herzog](https://github.com/xbrianh/herzog) is used to generate the source script into an `.ipynb`, which is copied
 into the Terra workspace bucket.
 
 ## Authorization for Testing and Publishing

@@ -1,5 +1,5 @@
 import os
-import callysto
+import herzog
 
 # Mock the notebook environment
 os.environ['WORKSPACE_NAME'] = "terra-notebook-utils-tests"
@@ -8,13 +8,13 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 BLANK_CELL_VALUE = ""
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     # Bring your own data to your Terra workspace and organize it in a data table
     *version: 2.0*
     """
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     If you are planning to upload many files to your Terra workspace, we recommend you organize your data into a [Terra
     data table](https://support.terra.bio/hc/en-us/articles/360025758392-Managing-data-with-tables-). This is
@@ -45,12 +45,12 @@ with callysto.Cell("markdown"):
     Whenever `pip install`ing on a notebook on Terra, restart the kernal after the installation.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     #%pip install --upgrade --no-cache-dir terra-notebook-utils
     #%pip install --upgrade --no-cache-dir gs-chunked-io
     pass
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Next come imports and environmental variables. You can learn more about Terra Notebook Utils at [its
     respective repository](https://github.com/DataBiosphere/terra-notebook-utils). Firecloud's
@@ -61,7 +61,7 @@ with callysto.Cell("markdown"):
     the name of the workspace itself.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     import io
     import os
     from uuid import uuid4
@@ -74,7 +74,7 @@ with callysto.Cell("python"):
     google_project = os.environ['GOOGLE_PROJECT']
     workspace = os.environ['WORKSPACE_NAME']
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Below, are the functions we'll be using for creating data tables. We'll be using them for a specific
     use case -- the creation of a table containing CRAMs and their respective CRAI files. You can also use
@@ -82,7 +82,7 @@ with callysto.Cell("markdown"):
     use cases.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     def upload_data_table(tsv):
         resp = fiss.fapi.upload_entities(google_project, workspace, tsv, model="flexible")
         resp.raise_for_status()
@@ -150,7 +150,7 @@ with callysto.Cell("python"):
             cram=crams,
             crai=crais))
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     # Upload to your bucket with gsutil
 
@@ -167,11 +167,11 @@ with callysto.Cell("markdown"):
     address that is needed to upload files.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     bucket = os.environ["WORKSPACE_BUCKET"]
     print(bucket)
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     ### Add a prefix to your bucket path to organize your data
     In this example, we add the prefix `my-crams`. In doing this we say that we want our files to exist at the address
@@ -179,10 +179,10 @@ with callysto.Cell("markdown"):
     your bucket info, here represented as `my-crams`, as your sudirectory. We'll be using that subdirectory name
     later on, so let's make note of it here.
     """
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     subdirectory = "my-crams"
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     #### A technical note on subdirectories in Google Cloud
     In Google Cloud, any directories below the top-level gs:// address of the bucket are not "true" directories.
@@ -205,21 +205,21 @@ with callysto.Cell("markdown"):
     your workspace will be here. You will also see your subdirectory.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     #!gsutil ls {bucket}
     pass
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Now, let's take a peek inside the subdirectory, where you can see all of the files you uploaded from your local
     machine.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     fulldir = bucket + "/" + subdirectory
     #!gsutil ls $fulldir
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     # Generate a data table that links to the data in your workspace bucket
 
@@ -256,18 +256,18 @@ with callysto.Cell("markdown"):
     | NWD3             | gs://my-workspace-bucket/my-crams/NWD3.cram   | gs://my-workspace-bucket/my-crams/NWD3.crai |
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     listing = [key for key in gs.list_bucket(subdirectory)]
     create_cram_crai_table("my-table-name", listing)
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Now, go check the data section of your workspace. You should see a data table with the name you have given it,
     and that table can now act as a directory of your files.
 
     """
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     # Merge data tables across sample ids
 
@@ -305,13 +305,13 @@ with callysto.Cell("markdown"):
     Note that the row for `NWD2` is missing from the combined table since it was not present in `diabetic_table`.
     """
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     # Additional functions
     To aid in the creation of your own data tables, we have provided some more functions for you to use and adapt.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     def iter_ents(table: str):
         resp = fiss.fapi.get_entities(google_project, workspace, table)
         resp.raise_for_status()
