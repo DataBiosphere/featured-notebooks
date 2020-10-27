@@ -1,4 +1,3 @@
-# publish to: "terra-notebook-utils-tests" "test-picsure-workspace-setup"
 import os
 import callysto
 
