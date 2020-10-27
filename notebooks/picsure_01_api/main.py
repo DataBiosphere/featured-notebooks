@@ -7,6 +7,28 @@ os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
 os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 
+def initial_setup_from_previous_notebook():
+    import os
+    import requests
+    url = 'https://raw.githubusercontent.com/hms-dbmi/Access-to-Data-using-PIC-SURE-API/master/NHLBI_BioData_Catalyst/python/python_lib/utils.py'
+    r = requests.get(url)
+    dir_name = os.path.join(os.path.dirname(__file__), 'python_lib')
+    os.makedirs(dir_name, exist_ok=True)
+    with open(f'{dir_name}/utils.py', 'wb') as f:
+        f.write(r.content)
+    with open(f'{dir_name}/__init__.py', 'wb') as f:
+        f.write(b'\n')
+    if not os.environ.get('PICSURE_TOKEN'):
+        raise RuntimeError('Please follow the instructions here to set PICSURE_TOKEN: https://terra.biodatacatalyst.nhlbi.nih.gov/#workspaces/biodata-catalyst/BioData%20Catalyst%20PIC-SURE%20API%20Python%20examples/notebooks/launch/Workspace_setup.ipynb')
+    with open('token.txt', 'w') as f:
+        f.write(os.environ.get('PICSURE_TOKEN'))
+
+
+initial_setup_from_previous_notebook()
+
+##########################################
+# begin actual notebook after this point #
+##########################################
 with callysto.Cell("python"):
     #!cat requirements.txt
     pass
@@ -47,7 +69,7 @@ with callysto.Cell("python"):
 with callysto.Cell("python"):
     PICSURE_network_URL = "https://picsure.biodatacatalyst.nhlbi.nih.gov/picsure"
     resource_id = "02e23f52-f354-4e8b-992c-d37c8b9ba140"
-    token_file = os.environ['PICSURE_TOKEN']
+    token_file = 'token.txt'
 
 with callysto.Cell("python"):
     with open(token_file, "r") as f:
