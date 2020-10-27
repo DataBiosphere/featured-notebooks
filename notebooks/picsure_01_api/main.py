@@ -47,7 +47,7 @@ with callysto.Cell("python"):
 with callysto.Cell("python"):
     PICSURE_network_URL = "https://picsure.biodatacatalyst.nhlbi.nih.gov/picsure"
     resource_id = "02e23f52-f354-4e8b-992c-d37c8b9ba140"
-    token_file = "token.txt"
+    token_file = os.environ['PICSURE_TOKEN']
 
 with callysto.Cell("python"):
     with open(token_file, "r") as f:
