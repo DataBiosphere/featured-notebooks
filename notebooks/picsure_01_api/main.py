@@ -25,12 +25,6 @@ def picsure_setup():
         f.write(os.environ.get('PICSURE_TOKEN'))
 
 
-def clean_up_notebook():
-    os.remove('token.txt')
-    dir_name = os.path.join(os.path.dirname(__file__), 'python_lib')
-    shutil.rmtree(dir_name, ignore_errors=True)
-
-
 picsure_setup()
 
 ##########################################
@@ -179,3 +173,15 @@ with callysto.Cell("python"):
 with callysto.Cell("python"):
     #! gsutil cp harmonized_sex_male_data.csv {bucket}
     pass
+
+
+#######################
+# end actual notebook #
+#######################
+def picsure_cleanup():
+    os.remove('token.txt')
+    dir_name = os.path.join(os.path.dirname(__file__), 'python_lib')
+    shutil.rmtree(dir_name, ignore_errors=True)
+
+
+picsure_cleanup()
