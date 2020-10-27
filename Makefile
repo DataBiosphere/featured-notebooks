@@ -21,7 +21,7 @@ $(NOTEBOOK_DIRS): clean_notebooks
 	$(MAKE) $(@:notebooks/%=test/%)
 
 $(NOTEBOOKS):
-	callysto $(@:%/notebook.ipynb=%/main.py) > $@
+	herzog $(@:%/notebook.ipynb=%/main.py) > $@
 
 $(PUBLISH):
 	$(MAKE) $(@:publish/%=notebooks/%/notebook.ipynb)

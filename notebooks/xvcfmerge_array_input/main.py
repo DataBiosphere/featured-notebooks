@@ -1,8 +1,8 @@
 # publish to: "terra-notebook-utils-tests" "test"
 import os
-import callysto
+import herzog
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     This notebook demonstrates the creation of Terra data tables as input to xvcfmerge workflows, referencing input
     VCFs with an `Array[String]` of either DRS URIs or Google Storage URLs, and is meant to be used with the xvcfmerge
@@ -38,7 +38,7 @@ os.environ['WORKSPACE_NAME'] = "terra-notebook-utils-tests"
 os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
 os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     import os
     from firecloud import fiss
 
@@ -61,14 +61,14 @@ with callysto.Cell("python"):
                                        fiss_updates)
         resp.raise_for_status()
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     ## Option A: Prepare the merge workflow input data table for DRS URIs
     This is a typical workflow preparation for merging TOPMed VCFs _without_ downloading them to your workspace bucket.
     Results will be placed in your workspace bucket.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     bucket = os.environ['WORKSPACE_BUCKET']
     table = "vcf-merge-input-drs"
 
@@ -85,7 +85,7 @@ with callysto.Cell("python"):
                                                                       "drs://dg.4503/aba6b011-2ab4-4739-beb4-c1eeaee60c74"],
                                                               output=f"{bucket}/merged/drs_combined_b.vcf.gz"))
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     ## Option B: Prepare the merge workflow input data table for VCFs already in bucket
     This workflow preparation uses VCFs that are present in your workspace bucket. Results will be placed in your workspace bucket.
@@ -98,7 +98,7 @@ with callysto.Cell("markdown"):
     `gs://[your-bucket's-name]/vcfsb/chr2.vcf.gz`
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     bucket = os.environ['WORKSPACE_BUCKET']
     table = "vcf-merge-input-bucket"
 

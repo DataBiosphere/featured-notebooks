@@ -1,13 +1,13 @@
 # publish to: "terra-notebook-utils-tests" "test-workflow-cost-estimator"
 import os
-import callysto
+import herzog
 
 # Mock the notebook environment
 os.environ['WORKSPACE_NAME'] = "terra-notebook-utils-tests"
 os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
 os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     # Workflow Cost Estimator
     This notebook demonstrates cost estimation for finished or in-progress workflows.
@@ -22,21 +22,21 @@ with callysto.Cell("markdown"):
     *author: Brian Hannafious, Genomics Institute, University of California Santa Cruz*
     """
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Install the newest version of [terra-notebook-utils](https://github.com/DataBiosphere/terra-notebook-utils)
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     #%pip install --upgrade --no-cache-dir git+https://github.com/DataBiosphere/terra-notebook-utils
     pass
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Define some useful functions.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     import pandas as pd
     from terra_notebook_utils import costs, workflows
 
@@ -55,12 +55,12 @@ with callysto.Cell("python"):
     def estimate_job_cost(cpus: int, memory_gb: int, runtime_hours: float, preemptible: bool) -> float:
         return costs.GCPCustomN1Cost.estimate(cpus, memory_gb, runtime_hours * 3600, preemptible)
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     List submissions in chronological order.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     for s in list_submissions_chronological():
         print(s['submissionId'], s['submissionDate'], s['status'])
 
@@ -68,25 +68,25 @@ with callysto.Cell("python"):
 submissions = [s for s in list_submissions_chronological()]
 submission_id = submissions[-1]['submissionId']
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     # submission_id = "b25c93e8-41ad-4980-b63c-46963b0402bc"  # Uncomment and insert your submission id here
     report = pd.DataFrame()
     for shard_info in cost_for_submission(submission_id):
         shard_info['duration'] /= 3600
         report = report.append(shard_info, ignore_index=True)
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     report.style.format(dict(cost="${:.2f}", duration="{:.2f}h", memory="{:.0f}GB"))
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     print("Total cost: $%.2f" % report['cost'].sum())
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     Explore costs for potential workflow configurations and runtimes.
     """
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     # Define configurations for: cpus, memory(GB), runtime(hours), preemptible
     configurations = [(10, 64, 5, False),
                       (8, 32, 10, False),
@@ -98,10 +98,10 @@ with callysto.Cell("python"):
         report = report.append(dict(cost=cost, cpus=cpus, memory=memory_gb, duration=runtime_hours, preemptible=preemptible), ignore_index=True)
     report['preemptible'] = report['preemptible'].astype('bool')
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     report.style.format(dict(cost="${:.2f}", duration="{:.2f}h", memory="{:.0f}GB"))
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     ## Contributions
     Contributions, bug reports, and feature requests are welcome on:

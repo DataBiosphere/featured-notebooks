@@ -1,4 +1,4 @@
 pandas
 Jinja2
 terra-notebook-utils
-git+https://github.com/xbrianh/callysto
+herzog >= 0.0.2, < 0.1.0

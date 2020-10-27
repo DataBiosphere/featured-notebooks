@@ -1,8 +1,8 @@
 # publish to: "terra-notebook-utils-tests" "VCF Merge and Subsample Tutorial"
 import os
-import callysto
+import herzog
 
-with callysto.Cell("markdown"):
+with herzog.Cell("markdown"):
     """
     # Cohort VCF Merge and Subsample
 
@@ -34,14 +34,14 @@ os.environ['WORKSPACE_NAME'] = "terra-notebook-utils-tests"
 os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
 os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     # Install the [terra-notebook-utils](https://github.com/DataBiosphere/terra-notebook-utils) package and import libraries
     #%pip install --upgrade --no-cache-dir terra-notebook-utils
     import os
     from firecloud import fiss
     import terra_notebook_utils as tnu
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     # Create a useful function to upload a tsv to a Terra Data Table
     def upload_data_table(tsv):
         billing_project = os.environ['GOOGLE_PROJECT']
@@ -49,14 +49,14 @@ with callysto.Cell("python"):
         resp = fiss.fapi.upload_entities(billing_project, workspace, tsv, model="flexible")
         resp.raise_for_status()
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     # List the VCFs to be merged
     #!gsutil ls $WORKSPACE_BUCKET/vcfsa
     #!echo
     #!gsutil ls $WORKSPACE_BUCKET/vcfsb
     pass
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     # Prepare the merge workflow input data table.
     # There should be one row per chromosome VCF
     bucket = os.environ['WORKSPACE_BUCKET']
@@ -71,17 +71,17 @@ with callysto.Cell("python"):
                                         f"{bucket}/merged/chr2.vcf.gz"])
     upload_data_table(tsv_data)
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     # List the merged VCFs
     #!gsutil ls $WORKSPACE_BUCKET/merged
     pass
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     # Use the terra_notebook_utils package to list the samples in the merged VCFs
     #!~/.local/bin/tnu vcf samples gs://fc-f4cc20e1-26ef-4eb9-9c55-aa8deb2d794b/merged/chr21.vcf.gz
     pass
 
-with callysto.Cell("python"):
+with herzog.Cell("python"):
     # Prepare the subsample workflow input data table
     # There should be one row per chromosome VCF
     tsv_data = "\t".join(["subsample_input_id", "input", "output", "samples"])
