@@ -28,6 +28,10 @@ byod:
   extends: .notebook-test
   script: make cicd_test/byod
 
+picsure_00_workspace_setup:
+  extends: .notebook-test
+  script: make cicd_test/picsure_00_workspace_setup
+
 prepare_igv_viewer_input:
   extends: .notebook-test
   script: make cicd_test/prepare_igv_viewer_input
