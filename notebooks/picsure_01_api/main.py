@@ -1,4 +1,5 @@
 import os
+import shutil
 import callysto
 
 # Mock the notebook environment
@@ -7,7 +8,7 @@ os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
 os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 
-def initial_setup_from_previous_notebook():
+def picsure_setup():
     import os
     import requests
     url = 'https://raw.githubusercontent.com/hms-dbmi/Access-to-Data-using-PIC-SURE-API/master/NHLBI_BioData_Catalyst/python/python_lib/utils.py'
@@ -24,7 +25,13 @@ def initial_setup_from_previous_notebook():
         f.write(os.environ.get('PICSURE_TOKEN'))
 
 
-initial_setup_from_previous_notebook()
+def clean_up_notebook():
+    os.remove('token.txt')
+    dir_name = os.path.join(os.path.dirname(__file__), 'python_lib')
+    shutil.rmtree(dir_name, ignore_errors=True)
+
+
+picsure_setup()
 
 ##########################################
 # begin actual notebook after this point #
