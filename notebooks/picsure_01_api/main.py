@@ -107,7 +107,7 @@ with callysto.Cell("python"):
     yo_stop_smoking_varname = variablesDict.loc[mask, "name"]
 
 with callysto.Cell("python"):
-    mask_cat = variablesDict["categorical"] == True
+    mask_cat = variablesDict["categorical"] is True
     mask_count = variablesDict["observationCount"].between(100, 2000)
     varnames = variablesDict.loc[mask_cat & mask_count, "name"]
 
