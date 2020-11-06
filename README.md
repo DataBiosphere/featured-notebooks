@@ -5,7 +5,7 @@ Example Jupyter notebook source files for the BioData Catalyst consortium. These
 Jupyter notebook `.ipynb` files are generated from source files with the
 [herzog](https://github.com/xbrianh/herzog) library. 
 
-## Notebook Source Schema
+### Notebook Source Schema
 A notebook is defined by creating a directory under ${REPO_ROOT}/notebooks containing
   - `main.py`, the source script for the notebook in [herzog](https://github.com/xbrianh/herzog) format.
   - `requirements.txt`, pip-installable requirements needed for notebook execution.
@@ -21,11 +21,14 @@ with herzog.Cell("{mode}"):
 where `{mode}` is `python` or `markdown`. Python statements outside of herzog contexts will not be rendered into
 cells. Test code or mock environments should not be placed outside herzog contexts.
 
-## Publishing Notebooks
+## Publishing & Testing
+
+### Publishing Notebooks
 Notebooks are published with make commands, e.g.
 ```
 make publish/byod
 ```
+Before publishing, make sure that the Google Bucket in the publish.txt file matches that of the destination workspace. 
 
 ### ad-hoc publication
 A convenience script is provided to generate herzog scripts into .ipynb files and copy them into Google Storage
@@ -34,7 +37,7 @@ locations.
 scrips/generate_to_gs.sh notebooks/byod/main.py gs://my-bucket/my-notebook-location
 ```
 
-## Testing Notebooks
+### Testing Notebooks
 Tests are performed in Docker containers of the expected notebook deployment platform, e.g. Terra, with the command
 ```
 make test
@@ -51,7 +54,7 @@ typical of Terra notebook runtime environments for Python. If there are no error
 [herzog](https://github.com/xbrianh/herzog) is used to generate the source script into an `.ipynb`, which is copied
 into the Terra workspace bucket.
 
-## Authorization for Testing and Publishing
+### Authorization for Testing and Publishing
 
 Google user credentials are required to publish notebooks to Terra workspaces. Additionally, notebook execution may
 require Google application default credentials. Both sets can be obtained by executing the commands
@@ -63,7 +66,7 @@ gcloud auth application-default login
 Credentials are injected into the local Docker container when testing and publishing notebooks, and are expected to be
 in the standard location under `~/.config`.
 
-## Local Development Environment
+### Local Development Environment
 
 1. Notebook source scripts should be developed using a Python 3.7 virtual environment, which matches the typical Python version
    in the Terra notebook runtime, and `requirement-dev.txt` should be installed.
@@ -79,7 +82,8 @@ in the standard location under `~/.config`.
 2. The Google Storage utility "gsutil" should be installed according to the instructions found
    [here](https://cloud.google.com/storage/docs/gsutil_install).
 
-## Links
+## Other
+### Links
 Project home page [GitHub](https://github.com/DataBiosphere/bdcat_notebooks)  
 
 ### Bugs
