@@ -6,7 +6,7 @@
 import herzog
 
 with herzog.Cell("markdown"):
-	'''
+	"""
 	# Set up your notebook
 	----
 
@@ -35,41 +35,37 @@ with herzog.Cell("markdown"):
 	Learn more about [how not to lose data in notebooks](https://support.terra.bio/hc/en-us/articles/360027300571-Notebooks-101-How-not-to-lose-data-output-files). For tasks that take hours, like the ones below, we suggest keeping your computer connected to the internet so that you do not lose connection with the notebook VM and lose updates to the processes you started.
 
 	## Install a package to access DRS URLs to genomic files
-	'''
+	"""
 
 with herzog.Cell("python"):
-	# %pip3 install --upgrade gs-chunked-io
-	# %pip install --upgrade pip\n! pip install terra-notebook-utils')
-	pass
+	get_ipython().run_cell_magic('capture', '', '! pip3 install --upgrade gs-chunked-io\n! pip install --upgrade pip\n! pip install terra-notebook-utils')
 
 with herzog.Cell("markdown"):
-	'''
+	"""
 	Restart kernel after every pip install. You can do this using the toolbar above. 
-	'''
+	"""
 
 with herzog.Cell("python"):
 	from terra_notebook_utils import table, drs
 
 with herzog.Cell("markdown"):
-	'''
+	"""
 	The time packages and code below help you monitor how long tasks take.
-	'''
+	"""
 
 with herzog.Cell("python"):
 	import time
 	from datetime import timedelta
 	start_notebook_time = time.time()
 
-
 with herzog.Cell("markdown"):
-	'''
+	"""
 	## Load multi-sample VCF via DRS URL to your workspace
 
 	The TOPMed genomic data that you import from Gen3 is controlled access and imported into Terra as a Data Repository Service (DRS) URL to the controlled access bucket that holds the file. The code below allows you to share your credentials and download the file to your workspace so that you can interact with the file in a notebook.
 
 	See which files are available in the Reference File data table
-	'''
-
+	"""
 
 with herzog.Cell("python"):
 	from terra_notebook_utils import table
@@ -77,9 +73,9 @@ with herzog.Cell("python"):
 	table.print_column(data_table, "file_name")
 
 with herzog.Cell("markdown"):
-	'''
+	"""
 	Select which VCF you would like to use in your analysis from the printed list above.
-	'''
+	"""
 
 with herzog.Cell("python"):
 	# Get a drs url from our workspace data table
