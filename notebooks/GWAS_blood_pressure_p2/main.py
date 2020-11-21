@@ -3,27 +3,29 @@
 
 # Title: 2-GWAS-preliminary-analysis
 
+import herzog
+
 with herzog.Cell("markdown"):
     """
     # Data disclaimer
 
-    All data in this notebook is restricted access. You are responsible for the protection and proper use of any data or files downloaded from this workspace. 
+    All data in this notebook is restricted access. You are responsible for the protection and proper use of any data or files downloaded from this workspace.
 
     # Introduction
 
-    This notebook demonstrates typical initial steps in a genetic association analysis: exploring phenotype distributions, filtering and LD-pruning, and Principal Component analysis. 
+    This notebook demonstrates typical initial steps in a genetic association analysis: exploring phenotype distributions, filtering and LD-pruning, and Principal Component analysis.
 
     This notebook hopes to help you understand the following steps in performing an association test in BioData Catalyst:
 
-    1. First, we discover all of the metadata available from our Gen3 export. We then use a set of functions created to merge and reformat the metadata to create a consolidated data table. We reformat a bit of the Gen3 graph language to be more familiar TOPMed nomenclature. 
+    1. First, we discover all of the metadata available from our Gen3 export. We then use a set of functions created to merge and reformat the metadata to create a consolidated data table. We reformat a bit of the Gen3 graph language to be more familiar TOPMed nomenclature.
 
-    2. We then import the metadata from the data table to the notebook compute environment using the FISS API.  
+    2. We then import the metadata from the data table to the notebook compute environment using the FISS API.
 
-    3. We explore and process the phenotypic data to understand their underlying structure. To do this, we subset the specific phenotype data that we are interested in and generate plots to examine the distribution and structure of these phenotypes. 
+    3. We explore and process the phenotypic data to understand their underlying structure. To do this, we subset the specific phenotype data that we are interested in and generate plots to examine the distribution and structure of these phenotypes.
 
     4. We define an outcome and a set of covariates to use when modeling genotype-phenotype associations.
 
-    5. Next, we import, explore, and perform quality control on genotypic data. 
+    5. Next, we import, explore, and perform quality control on genotypic data.
 
     6. Once we're satisfied that everything looks reasonable, we process the genetic data to better adjust for relatedness within our set of samples. Relatedness can easily confound GWAS results and we must take care to account for it in our analysis.
 
@@ -40,11 +42,11 @@ with herzog.Cell("markdown"):
 
     ## Set your runtime configuration based on your cost and time needs
 
-    * Your compute needs will be based on the size of your VCF and your cost concerns. 
-    * You can learn more about Terra's [runtime environment](https://support.terra.bio/hc/en-us/articles/360027237871) and how to [control cloud costs](https://support.terra.bio/hc/en-us/articles/360029772212). 
+    * Your compute needs will be based on the size of your VCF and your cost concerns.
+    * You can learn more about Terra's [runtime environment](https://support.terra.bio/hc/en-us/articles/360027237871) and how to [control cloud costs](https://support.terra.bio/hc/en-us/articles/360029772212).
     * Configure your notebook runtime using the gear wheel at the top right to use a spark cluster for parallel processing. You can learn more about Spark in the Hail section below.
     * A suggested custom configuration using a 100GB VCF file is below. For larger files, consider using more workers.
-    * Using pre-emptibles is not recommended for analyses that take longer than 6 hours. For large-scale GWAS data preparation, this may be the case depending on the number of workers you request for parallel processing of your variant matrix. 
+    * Using pre-emptibles is not recommended for analyses that take longer than 6 hours. For large-scale GWAS data preparation, this may be the case depending on the number of workers you request for parallel processing of your variant matrix.
 
     | Attributes | Value |
     | --- | --- |
@@ -72,9 +74,9 @@ with herzog.Cell("markdown"):
 
     ## Install and update packages
     """
-
 with herzog.Cell("python"):
-    get_ipython().run_line_magic('pip', 'install tenacity')
+    #%pip install tenacity
+    pass
 
 with herzog.Cell("markdown"):
     """
@@ -85,15 +87,27 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    get_ipython().run_cell_magic('capture', '', "from firecloud import fiss\nimport pandas as pd \npd.set_option('display.max_row', 10)\nimport os \nimport io\nimport numpy as np\nfrom pprint import pprint\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n%matplotlib inline\nimport time\nfrom datetime import timedelta\nimport tenacity")
-
+    #%%capture
+    from firecloud import fiss
+    import pandas as pd
+    pd.set_option('display.max_row', 10)
+    import os
+    import io
+    import numpy as np
+    from pprint import pprint
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    #%matplotlib inline
+    import time
+    from datetime import timedelta
+    import tenacity
 with herzog.Cell("markdown"):
     """
     # Load workspace data
 
-    Phenotypic data for each individual in the study are stored in the workspace data table. To analyze inside this notebook, we have to explicitly load the data in our notebook environment. To do this, we'll need some information about the Terra Workspace. We use the Fiss API to access environmental variables. 
+    Phenotypic data for each individual in the study are stored in the workspace data table. To analyze inside this notebook, we have to explicitly load the data in our notebook environment. To do this, we'll need some information about the Terra Workspace. We use the Fiss API to access environmental variables.
 
-    The billing project, workspace, and bucket filepaths are neccessary to define in every python Jupyter notebook you run in Terra. 
+    The billing project, workspace, and bucket filepaths are neccessary to define in every python Jupyter notebook you run in Terra.
 
     ## Define filepaths and environmental variables
     """
@@ -127,18 +141,18 @@ with herzog.Cell("python"):
     kinship_out = 'bp-kinship.csv'
     notebook_out = 'bp-phenotypes.ipynb'
     html_out = 'bp-phenotypes.html'
-    samples_out= 'samples_traits.csv'
+    samples_out = 'samples_traits.csv'
 
 
 with herzog.Cell("python"):
     # Take a look at all of the entities in of our workspace
     ent_types = fiss.fapi.list_entity_types(PROJECT, WORKSPACE).json()
     for t in ent_types.keys():
-        print (t, "count:", ent_types[t]['count'])
+        print(t, "count:", ent_types[t]['count'])
 
 with herzog.Cell("markdown"):
     """
-    Note: If you receive an error here about the Firecloud model. Try restarting the notebook kernel and reruning the prior lines of code. 
+    Note: If you receive an error here about the Firecloud model. Try restarting the notebook kernel and reruning the prior lines of code.
 
     # Consolidate the Gen3 clinical entities into a single Terra data model using functions in the "terra_data_util" python notebook
 
@@ -176,8 +190,8 @@ with herzog.Cell("python"):
     samples
 
 with herzog.Cell("python"):
-    # We modify the first column of the dataframe to be relevant to TOPMed nomenclature 
-    samples.rename(columns={'entity:consolidated_metadata_id':'subject_id'}, inplace=True)
+    # We modify the first column of the dataframe to be relevant to TOPMed nomenclature
+    samples.rename(columns={'entity:consolidated_metadata_id': 'subject_id'}, inplace=True)
 
 with herzog.Cell("python"):
     # Verify the data
@@ -186,20 +200,20 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     # Examine sample phenotypes
-    
+
     Now let's take a look at the phenotype distributions. In a GWAS - and statistical genetics more generally - we should always be on the lookout for correlations within our dataset. Correlations between phenotypic values can confound our analysis, leading to results that may not represent true genetic associations with our traits. Exploring these relationships may help in choosing a reasonable set of covariates to model.
-    
-    When generating plots, try to think about what we would expect a trait distribution to look like. Should it be uniform? skewed? normal? What about the distribution of two traits? What would this look like if the traits are correlated? uncorrelated? What axes of variation might confound a clear conclusion about a trait? More plotting functions for exploring phenotype data is available in [this featured workspace](https://app.terra.bio/#workspaces/fc-product-demo/2019_ASHG_Reproducible_GWAS). 
-    
+
+    When generating plots, try to think about what we would expect a trait distribution to look like. Should it be uniform? skewed? normal? What about the distribution of two traits? What would this look like if the traits are correlated? uncorrelated? What axes of variation might confound a clear conclusion about a trait? More plotting functions for exploring phenotype data is available in [this featured workspace](https://app.terra.bio/#workspaces/fc-product-demo/2019_ASHG_Reproducible_GWAS).
+
     Let's take a look at the distribution of an outcome, diastolic blood pressure values, across other categorical phenotypic variables that may covary with this phenotype.
 
     ## Plot diastolic blood pressure by gender in this cohort
 
-    Depending on the project you imported and your phenotypes of interest, you will need to update the inputs for x, y, and hue. 
+    Depending on the project you imported and your phenotypes of interest, you will need to update the inputs for x, y, and hue.
     """
 
 with herzog.Cell("python"):
-    plt.rcParams["figure.figsize"] = [12,9]
+    plt.rcParams["figure.figsize"] = [12, 9]
     ax = sns.boxplot(x="demographic_annotated_sex", y="blood_pressure_test_bp_diastolic", hue="medication_antihypertensive_meds", data=samples, palette=sns.xkcd_palette(["windows blue", "amber"]))
 
 with herzog.Cell("markdown"):
@@ -226,18 +240,18 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     #Select the metadata we want to use and check our output
-    samples_traits_for_analysis = samples[["subject_id","sample_submitter_id","demographic_annotated_sex", "blood_pressure_test_age_at_bp_systolic", "medication_antihypertensive_meds", "blood_pressure_test_bp_diastolic","blood_pressure_test_bp_systolic"]]
+    samples_traits_for_analysis = samples[["subject_id", "sample_submitter_id", "demographic_annotated_sex", "blood_pressure_test_age_at_bp_systolic", "medication_antihypertensive_meds", "blood_pressure_test_bp_diastolic", "blood_pressure_test_bp_systolic"]]
     samples_traits_for_analysis.head()
 
 with herzog.Cell("python"):
     #Rename the second column to TOPMed nomenclature
-    samples_traits_for_analysis.rename(columns = {'sample_submitter_id':'nwd_id'}, inplace = True)
+    samples_traits_for_analysis.rename(columns={'sample_submitter_id': 'nwd_id'}, inplace=True)
     samples_traits_for_analysis.head()
 
 with herzog.Cell("python"):
     #Reformat some of the data for downstream analyses
-    samples_traits_for_analysis.medication_antihypertensive_meds = samples_traits_for_analysis.medication_antihypertensive_meds.replace(['Not taking antihypertensive medication', "Taking antihypertensive medication"], [0,1])
-    samples_traits_for_analysis.demographic_annotated_sex = samples_traits_for_analysis.demographic_annotated_sex.replace(['male','female'], ['M','F'])
+    samples_traits_for_analysis.medication_antihypertensive_meds = samples_traits_for_analysis.medication_antihypertensive_meds.replace(['Not taking antihypertensive medication', "Taking antihypertensive medication"], [0, 1])
+    samples_traits_for_analysis.demographic_annotated_sex = samples_traits_for_analysis.demographic_annotated_sex.replace(['male', 'female'], ['M', 'F'])
 
 with herzog.Cell("python"):
     #Check that formatting is correct
@@ -260,8 +274,8 @@ with herzog.Cell("python"):
 
 
 with herzog.Cell("python"):
-    #Drop duplicates 
-    samples_traits_for_analysis = samples_traits_for_analysis.drop_duplicates(subset = 'subject_id')
+    #Drop duplicates
+    samples_traits_for_analysis = samples_traits_for_analysis.drop_duplicates(subset='subject_id')
 
 
 with herzog.Cell("python"):
@@ -277,42 +291,42 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     # Work with genotype data using Hail
-    
-    Now that we have a handle on the phenotype data, we can begin to work with the genotype data. We will make use of the [Hail](hail.is) software package, an "open-source, general-purpose, Python-based data analysis tool with additional data types and methods for working with genomic data." Hail utilizes distributed computing with Apache Spark for efficient genome-wide analysis.  
-    
+
+    Now that we have a handle on the phenotype data, we can begin to work with the genotype data. We will make use of the [Hail](hail.is) software package, an "open-source, general-purpose, Python-based data analysis tool with additional data types and methods for working with genomic data." Hail utilizes distributed computing with Apache Spark for efficient genome-wide analysis.
+
     ## Goals of this section
-    1. Load genotype data from variant call format (VCF) files into the compute environment  
-    2. Understand how to access genotype and variant information  
+    1. Load genotype data from variant call format (VCF) files into the compute environment
+    2. Understand how to access genotype and variant information
     3. Generate variant quality control metrics
     4. Keep only those samples with phenotype data
-    
+
 
     ### A short primer on Hail:
     Hail uses distributed computing -- a way of parallelizing tasks that can greatly decrease the **real** time it takes to complete an analysis. While distributed computing decreases **real** time, the time that you or I experience, it does not decrease **computational** time, the product of *# machines* and *time each machine was running*. Distributed computing relies on an operation called *partitioning*, dividing a object into many, many pieces. The number of partitions determines, in part, the number of operations that can run in parallel. In the code below, you will see syntax like `min_partitions = 200`. In English, this is saying "at the minimum, divide my data into 200 pieces". This parameter can vary and should be determined based on the data and the particular operations that you want to do -- more partitions is not always better.
-    
-    It is important to note that Hail expressions are **lazy** -- they are not evalutated until absolutely needed. For example, using Python for the expression `x = 2+2` would immediately store the value of `x` as `4`. However, calling the same expression using Hail would instead store `x` as `2+2` until the variable `x` was explicitly used. When using some of the code below, you will notice that some code blocks will run astoundingly quickly. This does not mean that the operation is complete, rather that the operation's result was not yet needed. When a results is needed, the operation will run. This should become more clear when working through this notebook.  
-    
-    For more information, checkout the [Hail documentation](http://www.nealelab.is/tools-and-software) and this [helpful video](https://youtu.be/0RTgBYL5x_E).  
+
+    It is important to note that Hail expressions are **lazy** -- they are not evalutated until absolutely needed. For example, using Python for the expression `x = 2+2` would immediately store the value of `x` as `4`. However, calling the same expression using Hail would instead store `x` as `2+2` until the variable `x` was explicitly used. When using some of the code below, you will notice that some code blocks will run astoundingly quickly. This does not mean that the operation is complete, rather that the operation's result was not yet needed. When a results is needed, the operation will run. This should become more clear when working through this notebook.
+
+    For more information, checkout the [Hail documentation](http://www.nealelab.is/tools-and-software) and this [helpful video](https://youtu.be/0RTgBYL5x_E).
 
     ## Import VCF from workspace
 
-    In the notebook 1-copy-vcf-to-workspace, you copied your VCF of interest to your Terra workspace bucket and extracted the contents of the tar file. After extraction, you should see 23 VCFs (that represent a single VCF per chromsoome) in the "Files" section of the data tab of your workspace (or the variable 'bucket' below). Next, you will create an array to these files in the bucket and interact with them using Hail. 
+    In the notebook 1-copy-vcf-to-workspace, you copied your VCF of interest to your Terra workspace bucket and extracted the contents of the tar file. After extraction, you should see 23 VCFs (that represent a single VCF per chromsoome) in the "Files" section of the data tab of your workspace (or the variable 'bucket' below). Next, you will create an array to these files in the bucket and interact with them using Hail.
     """
 
 with herzog.Cell("python"):
-    vcf_base= bucket + 'ph*/ph*/*.vcf.gz'
+    vcf_base = bucket + 'ph*/ph*/*.vcf.gz'
     vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')
     vcf_paths = vcf_paths
     vcf_paths
 
 with herzog.Cell("markdown"):
     """
-    Note, if you downloaded multiple VCFs to your workspace using the 1-copy-vcf-to-workspace notebook, or if you brought a VCF into the workspace with a different method, you will need to update the path in the vcf_base variable. 
+    Note, if you downloaded multiple VCFs to your workspace using the 1-copy-vcf-to-workspace notebook, or if you brought a VCF into the workspace with a different method, you will need to update the path in the vcf_base variable.
 
     ## Import packages and start a Hail session
-    
-    * **Hail** - an open-source, general-purpose, Python-based data analysis tool with additional data types and methods for working with genomic data  
-    * **Bokeh** - an interactive visualization library 
+
+    * **Hail** - an open-source, general-purpose, Python-based data analysis tool with additional data types and methods for working with genomic data
+    * **Bokeh** - an interactive visualization library
     """
 
 with herzog.Cell("python"):
@@ -321,40 +335,40 @@ with herzog.Cell("python"):
     import bokeh.io
     from bokeh.io import *
     from bokeh.resources import INLINE
-    bokeh.io.output_notebook(INLINE) 
-    hl.init(default_reference = "GRCh38", log = 'population-genetics.log')
+    bokeh.io.output_notebook(INLINE)
+    hl.init(default_reference="GRCh38", log='population-genetics.log')
 
 with herzog.Cell("markdown"):
     """
     ## Load VCF data and perform variant QC
-    
-    To load genotype data from VCF files, use the <font color='red'>import_vcf</font> function. This will convert the VCF files into a distributed data type, a **matrix table** (**mt**), storing small pieces of each file independently to allow for fast access and computation. A matrix table is composed of 3 parts: sample annotations (columns), variant annotations (rows), and entries (genotypes). Use the following syntax to load the 1000 Genomes data:  
-    
+
+    To load genotype data from VCF files, use the <font color='red'>import_vcf</font> function. This will convert the VCF files into a distributed data type, a **matrix table** (**mt**), storing small pieces of each file independently to allow for fast access and computation. A matrix table is composed of 3 parts: sample annotations (columns), variant annotations (rows), and entries (genotypes). Use the following syntax to load the 1000 Genomes data:
+
     ```python
     mt = hl.import_vcf(vcf_paths)
     ```
-    
-    The structure of the matrix table can be viewed by <font color='red'>describing</font> the object:  
-    
+
+    The structure of the matrix table can be viewed by <font color='red'>describing</font> the object:
+
     ```python
     mt.describe()
     ```
-    
-    The number variants and samples (rows and columns) can be seen by calling <font color='red'>count</font>:  
-    
+
+    The number variants and samples (rows and columns) can be seen by calling <font color='red'>count</font>:
+
     ```python
     mt.count()
     ```
-    
-    You can merge phenotypes with the VCF data by matching sample IDs between objects. Recall that the *sample* column of the phenotype data held unique IDs for each sample. These same sample IDs are stored in the VCF files and index the matrix table columns. <font color='red'>annotate_cols</font> can be used to add the phenotypes to the matrix table columns. `samples[mt.s]` matches samples IDs between objects and <font color='red'>annotate_cols</font> merges into the VCF:  
-    
+
+    You can merge phenotypes with the VCF data by matching sample IDs between objects. Recall that the *sample* column of the phenotype data held unique IDs for each sample. These same sample IDs are stored in the VCF files and index the matrix table columns. <font color='red'>annotate_cols</font> can be used to add the phenotypes to the matrix table columns. `samples[mt.s]` matches samples IDs between objects and <font color='red'>annotate_cols</font> merges into the VCF:
+
     ```python
     samples = hl.Table.from_pandas(samples, key = 'sample')
     mt = mt.annotate_cols(pheno = samples[mt.s])
     ```
-    
-    To generate variant level summary statistics, use <font color='red'>variant_qc</font>. This will compute useful metrics like allele frequencies, call rate, and homozygote counts, among many others. Run variant_qc and take a look at how the matrix table structure changes.  
-    
+
+    To generate variant level summary statistics, use <font color='red'>variant_qc</font>. This will compute useful metrics like allele frequencies, call rate, and homozygote counts, among many others. Run variant_qc and take a look at how the matrix table structure changes.
+
     ```python
     mt = hl.variant_qc(mt)
     ```
@@ -367,13 +381,13 @@ with herzog.Cell("python"):
     mt = (
         hl
         .import_vcf(
-            vcf_paths, force_bgz=True, min_partitions = 200
+            vcf_paths, force_bgz=True, min_partitions=200
         )
     )
 
 with herzog.Cell("markdown"):
     """
-    ### View matrix table structure  
+    ### View matrix table structure
     Use the <font color='red'>describe</font> function to view the structure of the matrix table:
     """
 
@@ -391,17 +405,17 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     ### Merge phenotype and VCF data
-    Follow the syntax above to match the phenotypes with the correct genotypes.   
-    
+    Follow the syntax above to match the phenotypes with the correct genotypes.
+
     First convert the phenotypes pandas dataframe (samples_traits_for_analysis) to a Hail table:
     """
 
 with herzog.Cell("python"):
-    samples_traits_for_analysis= (
+    samples_traits_for_analysis = (
         hl
         .Table.from_pandas(
-            samples_traits_for_analysis, 
-            key = 'nwd_id'
+            samples_traits_for_analysis,
+            key='nwd_id'
         )
     )
 
@@ -412,7 +426,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     mt = (
-        mt.annotate_cols(pheno = samples_traits_for_analysis[mt.s])
+        mt.annotate_cols(pheno=samples_traits_for_analysis[mt.s])
     )
 
 with herzog.Cell("markdown"):
@@ -425,9 +439,9 @@ with herzog.Cell("python"):
 
 with herzog.Cell("markdown"):
     """
-    ### Generate variant level summary statistics 
-    
-    Run <font color='red'>variant_qc</font> first: 
+    ### Generate variant level summary statistics
+
+    Run <font color='red'>variant_qc</font> first:
     """
 
 with herzog.Cell("python"):
@@ -435,26 +449,26 @@ with herzog.Cell("python"):
 
 with herzog.Cell("markdown"):
     """
-    Next take a look at how the matrix table structure changes: use <fibt color="red">describe</font> and you should see a new set of annotations added to the table (under variant_qc). Then use `mt.rows().show(5)` to see the first few variants and their annotations (scroll down to the end). 
+    Next take a look at how the matrix table structure changes: use <fibt color="red">describe</font> and you should see a new set of annotations added to the table (under variant_qc). Then use `mt.rows().show(5)` to see the first few variants and their annotations (scroll down to the end).
     """
 
 with herzog.Cell("python"):
     mt.describe()
 
 with herzog.Cell("python"):
-    mt.rows().show(5) 
+    mt.rows().show(5)
 
 with herzog.Cell("markdown"):
     """
     ## Variant filtering
-    
-    Variants can be filtered using <font color='red'>filter_rows</font> and conditioning on allele frequency. <font color='red'>filter_rows</font> takes an expression, something like:  
-    
+
+    Variants can be filtered using <font color='red'>filter_rows</font> and conditioning on allele frequency. <font color='red'>filter_rows</font> takes an expression, something like:
+
     ```python
     mt = mt.filter_rows(mt.info.rsid == ".", keep = False)
     ```
-    
-    To find where allele frequency is stored, use the <font color='red'>describe</font> function again.  Allele frequency is stored as a tuple. In our biallelic dataset, the reference frequency is the first value and the alternate frequency the second.)  
+
+    To find where allele frequency is stored, use the <font color='red'>describe</font> function again.  Allele frequency is stored as a tuple. In our biallelic dataset, the reference frequency is the first value and the alternate frequency the second.)
 
     ### Filter for only common variants
     Because this tutorial uses few individuals, we have poor statistical power for identifying rare variant associaitons. We filter to only common variants, those with a minor allele frequency greater than 0.01.
@@ -463,7 +477,7 @@ with herzog.Cell("python"):
     mt = (
         mt
         .filter_rows(
-           mt.variant_qc.AF[1] > 0.01
+            mt.variant_qc.AF[1] > 0.01
         )
     )
 
@@ -481,14 +495,14 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     ### Write the Hail matrix to the workspace bucket to save your work
-    
-    For very large analyses, we recommend that you save your work along the way. Due to the interactive nature of notebooks, you may lose your work if it is in the Notebook's RAM and not saved to the Workspace bucket. 
+
+    For very large analyses, we recommend that you save your work along the way. Due to the interactive nature of notebooks, you may lose your work if it is in the Notebook's RAM and not saved to the Workspace bucket.
     """
 
 with herzog.Cell("python"):
     start_matrix_write_time = time.time()
-    mt.write(bucket + 'MyProject_MAFgt0.01.mt', overwrite = True)
-    elapsed_write_time= time.time()- start_matrix_write_time
+    mt.write(bucket + 'MyProject_MAFgt0.01.mt', overwrite=True)
+    elapsed_write_time = time.time() - start_matrix_write_time
 
 
 with herzog.Cell("python"):
@@ -496,8 +510,8 @@ with herzog.Cell("python"):
 
 
 with herzog.Cell("python"):
-    # Read the Hail matrix back in. 
-    mt= hl.read_matrix_table(bucket + 'MyProject_MAFgt0.01.mt')
+    # Read the Hail matrix back in.
+    mt = hl.read_matrix_table(bucket + 'MyProject_MAFgt0.01.mt')
 
 
 with herzog.Cell("python"):
@@ -512,10 +526,12 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    mt = mt.annotate_rows(info = mt.info.annotate(AC=mt.variant_qc.AC))
+    mt = mt.annotate_rows(info=mt.info.annotate(AC=mt.variant_qc.AC))
 
 with herzog.Cell("markdown"):
-    # We export the VCF as several files (shards) to speed up the process. 
+    """
+    We export the VCF as several files (shards) to speed up the process.
+    """
 
 with herzog.Cell("python"):
     start_vcf_write_time = time.time()
@@ -525,7 +541,7 @@ with herzog.Cell("python"):
     hl.export_vcf(mt, bucket + 'MyProject_MAFgt0.01.vcf.bgz', parallel='header_per_shard')
 
 with herzog.Cell("python"):
-    elapsed_vcf_write_time= time.time()- start_vcf_write_time
+    elapsed_vcf_write_time = time.time() - start_vcf_write_time
 
 with herzog.Cell("python"):
     print(timedelta(seconds=elapsed_vcf_write_time))
@@ -553,38 +569,38 @@ with herzog.Cell("markdown"):
     """
     # Understanding population structure within our sample
     ----
-    
+
     Many of our statistical tests are built on the assumption of unrelated data points and require adjustment to account for population structure. There are various ways to quantify population structure, but most start by generating a set of markers (variants) that are nearly independent of one another. For this, we will use an operation called *Linkage Disequalibrium pruning* to extract a set of variants that we can use for calculating relatedness. See [this resource](https://en.wikipedia.org/wiki/Linkage_disequilibrium) for more information on LD.
-    
-    Next, we will use principal component analysis (PCA) to transform the genetic data into a space that will aid in modeling by allowing us to more easily visualize genetic distance between individuals. 
-    
-    ## Goals of this section  <a class="tocSkip">
-    1. Generate a list of variants for calculated relatedness by filtering and LD-pruning  
-    2. Calculate principal components using Hail  
-    3. Visualize individuals within PC space  
+
+    Next, we will use principal component analysis (PCA) to transform the genetic data into a space that will aid in modeling by allowing us to more easily visualize genetic distance between individuals.
+
+    ## Goals of this section
+    1. Generate a list of variants for calculated relatedness by filtering and LD-pruning
+    2. Calculate principal components using Hail
+    3. Visualize individuals within PC space
 
     ## LD-pruning
-    
-    We'll want to only include variants that are (nearly) independent of each other. We'll accomplish this using linkage disequalibrium pruning with the <font color='red'>ld_prune</font> function. Inputs are the genotypes, an r^2 threshold, and a window size. These last two parameters control how strict we are in our definition of independence. The final parameter *block_size* relates to parallelization and should not be changed. More information can be found in the [Hail documentation](https://www.hail.is).  
-    
+
+    We'll want to only include variants that are (nearly) independent of each other. We'll accomplish this using linkage disequalibrium pruning with the <font color='red'>ld_prune</font> function. Inputs are the genotypes, an r^2 threshold, and a window size. These last two parameters control how strict we are in our definition of independence. The final parameter *block_size* relates to parallelization and should not be changed. More information can be found in the [Hail documentation](https://www.hail.is).
+
     ```python
     pruned_variants = hl.ld_prune(mt.GT, r2 = 0.2, bp_window_size = 100000, block_size = 1024)
     ```
-    
-    The last step is to filter the matrix table again by the pruned variants list. For this, <font color='red'>is_defined</font> is useful:  
-    
+
+    The last step is to filter the matrix table again by the pruned variants list. For this, <font color='red'>is_defined</font> is useful:
+
     ```python
     mt = mt.filter_rows(hl.is_defined(pruned_variants[mt.row_key]))
     ```
-    
+
     Be sure to take a look at how pruning changes the number of variants in your dataset using the <font color='red'>count</font> function.
     """
 
 with herzog.Cell("python"):
     #We added code to help you monitor the time it takes for pruning. We currently estimate over an hour.
     start_prune_write_time = time.time()
-    pruned_variant_table = hl.ld_prune(mt.GT, r2=0.2, bp_window_size=500000, block_size = 1024)
-    elapsed_prune_write_time= time.time()- start_prune_write_time
+    pruned_variant_table = hl.ld_prune(mt.GT, r2=0.2, bp_window_size=500000, block_size=1024)
+    elapsed_prune_write_time = time.time() - start_prune_write_time
     print(timedelta(seconds=elapsed_prune_write_time))
 
 
@@ -594,19 +610,19 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     ## Principal Component Analysis
-    
+
     In this next section, we'll cover a method for easily visualizing and adjusting for population structure in an association analysis: Principal Component Analysis (PCA).
-    
+
     You run PCA using the function <font color='red'>hwe_normalized_pca</font>. For this analysis, we are mainly interested in the scores, and can disregard the eigenvalues and loadings. The `k` parameter determines the number of PCs to return -- as `k` grows, so does the computation time.
-    
+
     ```python
     _, pcs, _ = hl.hwe_normalized_pca(mt.GT, k=5)
     ```
-    
+
     The PCs can then be added to the matrix table in much the same way as phenotypes. Use <font color='red'>annotate_cols</font>. (<font color='blue'>Hint:</font> the pcs object has multiple fields, use <font color='red'>describe</font> to find the field that you want to keep. Don't forget to match over the sample IDs.)
-    
-    Finally, let's visualize the results. Hail has some efficient built-in plotting functions -- let's use <font color='red'>plot.scatter</font>. Choose which PCs you'd like to plot and a categorical phenotype value to color the points.  
-    
+
+    Finally, let's visualize the results. Hail has some efficient built-in plotting functions -- let's use <font color='red'>plot.scatter</font>. Choose which PCs you'd like to plot and a categorical phenotype value to color the points.
+
     ```python
     p = hl.plot.scatter(mt.scores[0],
                         mt.scores[1],
@@ -614,7 +630,7 @@ with herzog.Cell("markdown"):
                         title = 'PCA', xlabel = 'PC1', ylabel = 'PC2')
     show(p)
     ```
-    
+
 
     ### Run the PCA
     """
@@ -630,25 +646,25 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     p = hl.plot.scatter(pcs.scores[0],
-                    pcs.scores[1],
-                    xlabel='PC1', ylabel='PC2')
+                        pcs.scores[1],
+                        xlabel='PC1', ylabel='PC2')
     show(p)
 
 with herzog.Cell("markdown"):
     """
     ### Decide whether genetic stratification should be included in your association tests
 
-    If your project shows distinct clusters of samples in your PCA, you need to account for this genetic stratification by including the first principal components as covariates in your analysis. This can be done using the annotate_cols function. 
+    If your project shows distinct clusters of samples in your PCA, you need to account for this genetic stratification by including the first principal components as covariates in your analysis. This can be done using the annotate_cols function.
     """
 
 with herzog.Cell("python"):
-    # Use describe to find the PC fields you want to keep 
+    # Use describe to find the PC fields you want to keep
     pcs.describe()
 
 
 with herzog.Cell("python"):
     # Add to the matrix table
-    mt = mt.annotate_cols(scores = pcs[mt.s].scores)
+    mt = mt.annotate_cols(scores=pcs[mt.s].scores)
 
 with herzog.Cell("markdown"):
     """
@@ -669,8 +685,8 @@ with herzog.Cell("python"):
 with herzog.Cell("python"):
     # GRM to data frame
     rel_pd = pd.DataFrame(data=grm,
-            index=ind_order,
-            columns=ind_order)
+                          index=ind_order,
+                          columns=ind_order)
 
 
 with herzog.Cell("python"):
@@ -681,7 +697,7 @@ with herzog.Cell("markdown"):
     """
     # Save sample metadata and update data table
     Now that we've explored the phenotypes and generated relatedness measures, the next step is to save and push our results back to the workspace data model. Once we populate the data model, we can use it for downstream analyses.
-    
+
     ## Convert the phenotype data to the correct format
     """
 
@@ -710,19 +726,19 @@ with herzog.Cell("python"):
 with herzog.Cell("python"):
     # Change the column names of our data
     # You can see what column headers are required for the Genesis workflows (for example, sex)
-    col_map = {'s': 'nwd_id', 
+    col_map = {'s': 'nwd_id',
                'pheno.subject_id': 'subject_id',
-               'pheno.blood_pressure_test_age_at_bp_systolic': 'age_at_bp_systolic', 
+               'pheno.blood_pressure_test_age_at_bp_systolic': 'age_at_bp_systolic',
                'pheno.demographic_annotated_sex': 'sex',
-               'pheno.medication_antihypertensive_meds': 'antihypertensive_meds', 
-               'pheno.blood_pressure_test_bp_diastolic': 'bp_diastolic', 
+               'pheno.medication_antihypertensive_meds': 'antihypertensive_meds',
+               'pheno.blood_pressure_test_bp_diastolic': 'bp_diastolic',
                'pheno.blood_pressure_test_bp_systolic': 'bp_systolic',
-                }
+               }
     samples_traits_for_analysis.rename(columns=col_map, inplace=True)
 
 with herzog.Cell("python"):
     # Check that this work
-    # Note that because we used the nwd_id as the key to match the phenotypic to genotypic data, 
+    # Note that because we used the nwd_id as the key to match the phenotypic to genotypic data,
     # nwd_id is now the firt column
     samples_traits_for_analysis.head()
 
@@ -732,7 +748,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    samples_traits_for_analysis.to_csv(phenotype_out, index = False)
+    samples_traits_for_analysis.to_csv(phenotype_out, index=False)
 
 with herzog.Cell("markdown"):
     """
@@ -745,15 +761,15 @@ with herzog.Cell("python"):
 
 with herzog.Cell("markdown"):
     """
-    ## Generate a new Terra data model called "sample_set" and add all of our derived data files to this entity. 
+    ## Generate a new Terra data model called "sample_set" and add all of our derived data files to this entity.
 
     The last step in the analysis is to update **your** workspace data table with the data generated in this notebook. For downstream analysis, you'll want to set up all the needed parameters and input data directly in the data table. As you will see, analysis workflows look to the data table for configuration and inputs.
 
-    Recall that each *sample* in the data table corresponded to a single individual. To run a GWAS requires a set of samples, or in Terra terms, a **sample_set**. This entity should include everything you might need to run a workflow for genotype-phenotype modeling: a list of samples to include, phenotype data, a list of covariates, an outcome, a genetic relatedness matrix, and a label. The particular workflow that you will soon run looks for inputs in specific columns of the data table. 
+    Recall that each *sample* in the data table corresponded to a single individual. To run a GWAS requires a set of samples, or in Terra terms, a **sample_set**. This entity should include everything you might need to run a workflow for genotype-phenotype modeling: a list of samples to include, phenotype data, a list of covariates, an outcome, a genetic relatedness matrix, and a label. The particular workflow that you will soon run looks for inputs in specific columns of the data table.
 
     Below is a helpful function for generating a sample set in the correct format so you will have success in the next part this template. To look at the full code, click the arrow at the top left of the cell.
 
-    In a GWAS, you may iterate through an analysis multiple times by filtering your data differently or including/excluding covariates. For each separate run, you can cange the values in the columns, specifically the value in the sample_set_id column to reflect a new analysis. You will see that you can save each notebook you used for each iteration as well. 
+    In a GWAS, you may iterate through an analysis multiple times by filtering your data differently or including/excluding covariates. For each separate run, you can cange the values in the columns, specifically the value in the sample_set_id column to reflect a new analysis. You will see that you can save each notebook you used for each iteration as well.
     """
 with herzog.Cell("python"):
     # Make a new "sample set" entity type and create an entity within called "systloicbp"
@@ -781,7 +797,7 @@ with herzog.Cell("python"):
             bucket + kinship_out]
 
     #create the entity and upload it using the API
-    entity = '\n'.join(['\t'.join(cols),'\t'.join(vals)])
+    entity = '\n'.join(['\t'.join(cols), '\t'.join(vals)])
     fiss.fapi.upload_entities(PROJECT, WORKSPACE, entity)
 
 with herzog.Cell("markdown"):
@@ -792,7 +808,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    common_variants_attribute= [fiss.fapi._attr_set("common_variants", vcf_filtered_array)]
+    common_variants_attribute = [fiss.fapi._attr_set("common_variants", vcf_filtered_array)]
     fiss.fapi.update_entity(PROJECT, WORKSPACE, 'sample_set', 'systolicbp', common_variants_attribute)
 
 with herzog.Cell("markdown"):
@@ -810,4 +826,3 @@ with herzog.Cell("python"):
 with herzog.Cell("python"):
     elapsed_notebook_time = time.time() - start_notebook_time
     print(timedelta(seconds=elapsed_notebook_time))
-
