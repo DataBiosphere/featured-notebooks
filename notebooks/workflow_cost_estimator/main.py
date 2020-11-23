@@ -30,7 +30,6 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     #%pip install --upgrade --no-cache-dir git+https://github.com/DataBiosphere/terra-notebook-utils
     pass
-
 with herzog.Cell("markdown"):
     """
     Define some useful functions.
@@ -54,7 +53,6 @@ with herzog.Cell("python"):
 
     def estimate_job_cost(cpus: int, memory_gb: int, runtime_hours: float, preemptible: bool) -> float:
         return costs.GCPCustomN1Cost.estimate(cpus, memory_gb, runtime_hours * 3600, preemptible)
-
 with herzog.Cell("markdown"):
     """
     List submissions in chronological order.
@@ -67,20 +65,16 @@ with herzog.Cell("python"):
 # Insert a test submission id
 submissions = [s for s in list_submissions_chronological()]
 submission_id = submissions[-1]['submissionId']
-
 with herzog.Cell("python"):
     # submission_id = "b25c93e8-41ad-4980-b63c-46963b0402bc"  # Uncomment and insert your submission id here
     report = pd.DataFrame()
     for shard_info in cost_for_submission(submission_id):
         shard_info['duration'] /= 3600
         report = report.append(shard_info, ignore_index=True)
-
 with herzog.Cell("python"):
     report.style.format(dict(cost="${:.2f}", duration="{:.2f}h", memory="{:.0f}GB"))
-
 with herzog.Cell("python"):
     print("Total cost: $%.2f" % report['cost'].sum())
-
 with herzog.Cell("markdown"):
     """
     Explore costs for potential workflow configurations and runtimes.
@@ -97,10 +91,8 @@ with herzog.Cell("python"):
         cost = estimate_job_cost(cpus, memory_gb, runtime_hours, preemptible)
         report = report.append(dict(cost=cost, cpus=cpus, memory=memory_gb, duration=runtime_hours, preemptible=preemptible), ignore_index=True)
     report['preemptible'] = report['preemptible'].astype('bool')
-
 with herzog.Cell("python"):
     report.style.format(dict(cost="${:.2f}", duration="{:.2f}h", memory="{:.0f}GB"))
-
 with herzog.Cell("markdown"):
     """
     ## Contributions
