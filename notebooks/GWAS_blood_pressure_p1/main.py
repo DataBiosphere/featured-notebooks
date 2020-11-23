@@ -69,7 +69,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     data_table = "reference_file"
-    table.print_column(data_table, "file_name")
+    table.print_column(data_table, "pfb:file_name")
 with herzog.Cell("markdown"):
     """
     Select which VCF you would like to use in your analysis from the printed list above.
