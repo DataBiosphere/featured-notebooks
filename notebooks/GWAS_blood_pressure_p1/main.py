@@ -6,28 +6,39 @@
 import herzog
 
 with herzog.Cell("markdown"):
-    """
-    # Set up your notebook
-    ----
+	"""
+	# Unarchive VCF tar bundles
 
-    ## Set runtime values
-    If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you will now need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below:
+	## Goal of this notebook
+	Gen3 uploaded tar compressed bundles, as they are provided by dbGAP, into cloud buckets owned by BioData Catalyst. In order to make these tar files actionable and ready for use in an analysis, users will need to run this notebook to unarchive the tar files. Please understand that this step may be time consuming since TOPMed multi-sample VCF files are several hundred gigabytes in size. 
 
-    | Option | Value |
-    | ------ | ------ |
-    | Environment | New Default (Python 3.7.7) |
-    | Profile | Default (Moderate Compute Power) |
-    | Master CPUs | 4 |
-    | Master Memory | 15 GB |
-    | Master Disk size | 50 |
-    | Startup Script | leave blank |
+	If you do not wish to use this option, you can use your credentials to download these files directly from dbGAP, extract them locally, and upload them to your Terra workspace. 
+	"""
 
-    Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
+with herzog.Cell("markdown"):
+	"""
+	# Set up your notebook
+	----
 
-    ## Check kernel type
+	## Set runtime values
+	If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you may need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below: 
 
-    A kernel is a _computational engine_ that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a `Python 3` kernel. In the upper right corner of the notebook, just under the Notebook Runtime, it should say `Python 3`. If it doesn't, you can switch it by navigating to the Kernel menu and selecting `Change kernel`.
+	| Option | Value |
+	| ------ | ------ |
+	| Application configuration | Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3) |
+	| CPUs | 4 |
+	| Memory (GB) | 15 |
+	| Startup Script | *leave blank* |
+	| Compute type | Standard VM |
+	| Persistent disk size (GB) | 50 |
 
+  Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
+
+	## Check kernel type
+
+	A kernel is a _computational engine_ that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a `Python 3` kernel. In the upper right corner of the notebook, just under the Notebook Runtime, it should say `Python 3`. If it doesn't, you can switch it by navigating to the Kernel menu and selecting `Change kernel`. (Note that unlike runtime values, you will not be able to see the kernal if you are just viewing the notebook rather than running it.)
+
+	## Additional tips
     Gen3 uploaded tar compressed bundles, as they are provided by dbGAP, into cloud buckets owned by BioData Catalyst. In order to make these tar files actionable and ready for use in an analysis, users will need to run this notebook to unarchive the tar files. Please understand that this step may be time consuming since TOPMed multi-sample VCF files are several hundred gigabytes in size.
 
     If you do not wish to use this option, you can use your credentials to download these files directly from dbGAP, extract them locally, and upload them to your Terra workspace.
