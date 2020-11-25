@@ -32,7 +32,7 @@ with herzog.Cell("markdown"):
 	| Compute type | Standard VM |
 	| Persistent disk size (GB) | 50 |
 
-  Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
+    Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
 
 	## Check kernel type
 

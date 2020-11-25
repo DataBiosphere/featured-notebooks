@@ -49,16 +49,17 @@ with herzog.Cell("markdown"):
 
     | Attributes | Value |
     | --- | --- |
-    | Profile | Custom |
-    | Spark Cluster | Yes |
-    | Master-CPUs | 8 |
-    | Master-Memory | 30 GB |
-    | Master-Disk size | 500 GB |
+    | Application configuration | Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.57) |
+    | CPUs | 8 |
+    | Memory (GB) | 30 |
+    | Disk size (GB) | 500 |
+    | Startup script | (leave blank) |
+    | Compute type | Spark cluster |
     | Workers | 120 |
-    | Pre-emptibles | 50 |
+    | Preemptible | 50 |
     | Workers-CPUs | 8 |
-    | Workers-Memory | 15 GB |
-    | Workers-Disk size | 100 GB |
+    | Workers-Memory (GB) | 30 |
+    | Workers-Disk size (GB) | 100 |
 
     ## Check kernel type
     A kernel is a computational engine that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a special type of Python 3 kernel, labeled PySpark 3. More details on that later. In the upper right corner of the notebook, just under the Notebook Runtime, it should say PySpark 3. If it doesn't, you can switch it by navigating to the Kernel menu and selecting Change kernel.
