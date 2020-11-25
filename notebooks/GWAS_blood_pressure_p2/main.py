@@ -269,7 +269,7 @@ with herzog.Cell("markdown"):
     """
 with herzog.Cell("python"):
     vcf_base = bucket + 'ph*/ph*/*.vcf.gz'
-    vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')
+    vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')  # noqa: F821
     vcf_paths = vcf_paths
     vcf_paths
 with herzog.Cell("markdown"):
@@ -470,14 +470,14 @@ with herzog.Cell("markdown"):
     Check that these files were successfully loaded to the bucket:
     """
 with herzog.Cell("python"):
-    get_ipython().system(" gsutil ls {bucket + 'MyProject_MAFgt0.01.vcf.bgz/*'}")
+    get_ipython().system(" gsutil ls {bucket + 'MyProject_MAFgt0.01.vcf.bgz/*'}")  # noqa: F821
 with herzog.Cell("markdown"):
     """
     Here, we create an array pointing to all of the shards that make up the common variants for our dataset. We use this array in the last section of this notebook called "Generate a new Terra data model called "sample_set" and add all of our derived data files to this entity."
     """
 with herzog.Cell("python"):
     vcf_filtered_base = bucket + 'MyProject_MAFgt0.01.vcf.bgz/*.bgz'
-    vcf_filtered_path = get_ipython().getoutput('gsutil ls {vcf_filtered_base}')
+    vcf_filtered_path = get_ipython().getoutput('gsutil ls {vcf_filtered_base}')  # noqa: F821
     vcf_filtered_array = vcf_filtered_path
     vcf_filtered_array
 with herzog.Cell("markdown"):
@@ -646,8 +646,9 @@ with herzog.Cell("markdown"):
     ## Move the phenotype and GRM files to the workspace bucket
     """
 with herzog.Cell("python"):
-    get_ipython().system(' gsutil cp {phenotype_out} {bucket + phenotype_out}')
-    get_ipython().system(' gsutil cp {kinship_out} {bucket + kinship_out}')
+    #!gsutil cp {phenotype_out} {bucket + phenotype_out}
+    #!gsutil cp {kinship_out} {bucket + kinship_out}
+    pass
 with herzog.Cell("markdown"):
     """
     ## Generate a new Terra data model called "sample_set" and add all of our derived data files to this entity.
@@ -703,9 +704,10 @@ with herzog.Cell("markdown"):
     """
 with herzog.Cell("python"):
     #%notebook {notebook_out}
-    #%jupyter nbconvert --to html {notebook_out}
-    #%gsutil cp {notebook_out} {bucket + notebook_out}
-    #%gsutil cp {html_out} {bucket + html_out}
+    #!jupyter nbconvert --to html {notebook_out}
+    #!gsutil cp {notebook_out} {bucket + notebook_out}
+    #!gsutil cp {html_out} {bucket + html_out}
+    pass
 
 with herzog.Cell("python"):
     elapsed_notebook_time = time.time() - start_notebook_time
