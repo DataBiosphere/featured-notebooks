@@ -18,14 +18,14 @@ with herzog.Cell("markdown"):
 	## Set runtime values
 	If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you will now need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below: 
 	
-	| Option         | Values                           |
-	|----------------|----------------------------------|
-	| Environment    | New Default (Python 3.7.7)       |
-	| Compute Power  | Default (Moderate Compute Power) |
-	| CPUs           | 4                                |
-	| Memory         | 15 GB                            |
-	| Disk size      | 50                               |
-	| Startup script | Leave blank                      |
+	| Option                    | Values                                        |
+	|---------------------------|-----------------------------------------------|
+	| Environment               | Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3) |
+	| CPUs                      | 4                                             |
+	| Memory (GB)               | 15                                            |
+	| Startup script            | (leave blank)                                 |
+	| Compute type              | Standard VM                                   |
+	| Persistent disk size (GB) | 50                                            |
 
 	Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.  
 	
