@@ -34,6 +34,8 @@ with herzog.Cell("markdown"):
 
     Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
 
+    Although playing around with notebook settings to control costs can be a good idea, we want to note that the settings used by the second notebook in this workspace will not work on this notebook. For this notebook, your application configuration must be Default, not Hail, and you must be using a standard VM, not a Spark cluster.
+
     ## Check kernel type
 
     A kernel is a _computational engine_ that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a `Python 3` kernel. In the upper right corner of the notebook, just under the Notebook Runtime, it should say `Python 3`. If it doesn't, you can switch it by navigating to the Kernel menu and selecting `Change kernel`. (Note that unlike runtime values, you will not be able to see the kernal if you are just viewing the notebook rather than running it.)
@@ -49,7 +51,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    #%pip3 install --upgrade gs-chunked-io
+    #%pip install --upgrade gs-chunked-io
     #%pip install --upgrade pip
     #%pip install terra-notebook-utils
     pass
@@ -87,8 +89,11 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    # Get a drs url from our workspace data table
+    # Get a drs url from our workspace data table (make sure to put in a file name!)
     file_name = "YOUR_FILE_NAME_.tar.gz"
+
+    # If this next step throws a key error, make sure you are not on a Spark cluster
+    # See notes in the "set up your notebook" heading above
     drs_url = table.fetch_drs_url(data_table, file_name)
     print(drs_url)
 
