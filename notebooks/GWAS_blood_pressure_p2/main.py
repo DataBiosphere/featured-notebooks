@@ -577,6 +577,7 @@ with herzog.Cell("markdown"):
     """
 with herzog.Cell("python"):
     # Calculate the GRM
+    # WARNING: This can take a very long time to complete!
     grm = hl.genetic_relatedness_matrix(mt.GT).to_numpy()
 
 with herzog.Cell("python"):
