@@ -28,6 +28,10 @@ byod:
   extends: .notebook-test
   script: make cicd_test/byod
 
+GWAS_1000_genomes_p1:
+  extends: .notebook-test
+  script: make cicd_test/GWAS_1000_genomes_p1
+
 prepare_igv_viewer_input:
   extends: .notebook-test
   script: make cicd_test/prepare_igv_viewer_input
