@@ -27,15 +27,22 @@ with herzog.Cell("markdown"):
     ## Set runtime values
     If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you may need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below:
 
-    | Option | Value |
-    | ------ | ------ |
-    | Application configuration | Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3) |
-    | CPUs | 4 |
-    | Memory (GB) | 15 |
-    | Startup Script | *leave blank* |
-    | Compute type | Standard VM |
-    | Persistent disk size (GB) | 50 |
-
+    <table style="float:left">
+        <thead>
+            <tr><th>Option</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+            <tr><td> Application configuration</td><td>Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3) </tr></td>
+            <tr><td> CPUs</td><td>4</tr></td>
+            <tr><td> Memory (GB)</td><td>15</tr></td>
+            <tr><td> Startup script</td><td>(leave blank)</tr></td>
+            <tr><td> Compute type</td><td>Standard VM</tr></td>
+            <tr><td> Persistent disk size (GB)</td><td>500</tr></td>
+        </tbody>
+    </table>
+    """
+with herzog.Cell("markdown"):
+    """
     Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
 
     Although playing around with notebook settings to control costs can be a good idea, we want to note that the settings used by the second notebook in this workspace will not work on this notebook. For this notebook, your application configuration must be Default, not Hail, and you must be using a standard VM, not a Spark cluster.
