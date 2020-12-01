@@ -8,10 +8,9 @@ import os
 import herzog
 
 # Mock the environment
-# UPDATE TO A TEST WORKSPACE
-#os.environ['WORKSPACE_NAME'] = "terra-notebook-utils-tests"
-#os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
-#os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
+os.environ['WORKSPACE_NAME'] = "CICD TESTER - PUBLIC DATA ONLY - BDC GWAS 1000G Tutorial"
+os.environ['WORKSPACE_BUCKET'] = "gs://fc-7d1224a1-1770-4db9-9904-137efcd412c5"
+os.environ['GOOGLE_PROJECT'] = "anvil-stage-demo"
 
 with herzog.Cell("markdown"):
     """
