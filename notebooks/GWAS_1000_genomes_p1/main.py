@@ -39,7 +39,6 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     #%pip install tenacity
     pass
-
 with herzog.Cell("markdown"):
     """
     ## Import all the packages this notebook will use
@@ -54,23 +53,19 @@ with herzog.Cell("python"):
     import io
     import numpy as np
     import seaborn as sns
-
 with herzog.Cell("markdown"):
     ## Define filepaths and environmental variables
 
 with herzog.Cell("python"):
     PROJECT = os.environ['GOOGLE_PROJECT']
     PROJECT
-
 with herzog.Cell("python"):
     WORKSPACE = os.path.basename(os.path.dirname(os.getcwd()))
     WORKSPACE
-
 with herzog.Cell("python"):
     bucket = os.environ['WORKSPACE_BUCKET']
     bucket = bucket + '/'
     bucket
-
 with herzog.Cell("markdown"):
     """
     Consolidate the Gen3 clinical entities into a single Terra data model using functions in the "terra_data_util" python notebook
@@ -80,17 +75,14 @@ with herzog.Cell("python"):
     # Run the companion notebook. Note: it must be in the same workspace you're currently working in.
     #%run terra_data_table_util.ipynb
     pass
-
 with herzog.Cell("python"):
     # Take a look at all the entities (tables) in the workspace
     ent_types = fiss.fapi.list_entity_types(PROJECT, WORKSPACE).json()
     for t in ent_types.keys():
         print (t, "count:", ent_types[t]['count'])
-
 with herzog.Cell("python"):
     # Set the name for your consolidated table
     consolidated_table_name = "consolidated_metadata"
-
 with herzog.Cell("markdown"):
     """
     The consolidate_gen3_pheno_tables function:
