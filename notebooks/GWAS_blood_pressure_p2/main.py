@@ -284,8 +284,8 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     # Start Hail context using Spark
     import hail as hl
-    import bokeh.io
-    #from bokeh.io import *
+    from bokeh.io import *
+    #import bokeh.io  # don't use; this breaks the PCA
     from bokeh.resources import INLINE
     bokeh.io.output_notebook(INLINE)
     hl.init(default_reference="GRCh38", log='population-genetics.log')
@@ -430,20 +430,17 @@ with herzog.Cell("markdown"):
     """
     ### Write the Hail matrix to the workspace bucket to save your work
 
-    For very large analyses, we recommend that you save your work along the way. Due to the interactive nature of notebooks, you may lose your work if it is in the Notebook's RAM and not saved to the Workspace bucket.
+    For very large analyses, we recommend that you save your work along the way. Due to the interactive nature of notebooks, you may lose your work if it is in the Notebook's RAM and not saved to the Workspace bucket. This may take a several minutes -- for comparison, saving the results when running on chromosome 1 of a 1111 member TOPMed study took just over four minutes.
     """
 with herzog.Cell("python"):
     start_matrix_write_time = time.time()
     mt.write(bucket + 'MyProject_MAFgt0.01.mt', overwrite=True)
     elapsed_write_time = time.time() - start_matrix_write_time
-
 with herzog.Cell("python"):
     print(timedelta(seconds=elapsed_write_time))
-
 with herzog.Cell("python"):
     # Read the Hail matrix back in.
     mt = hl.read_matrix_table(bucket + 'MyProject_MAFgt0.01.mt')
-
 with herzog.Cell("python"):
     #Visualize variants
     hl.summarize_variants(mt)
@@ -513,6 +510,8 @@ with herzog.Cell("markdown"):
 
     Be sure to take a look at how pruning changes the number of variants in your dataset using the <font color='red'>count</font> function.
     """
+
+# When testing on Amish chromosome one, this took 38 minutes
 with herzog.Cell("python"):
     #We added code to help you monitor the time it takes for pruning. We currently estimate over an hour.
     start_prune_write_time = time.time()
@@ -550,7 +549,6 @@ with herzog.Cell("markdown"):
     """
 with herzog.Cell("python"):
     _, pcs, _ = hl.hwe_normalized_pca(mt.GT, k=5)
-
 with herzog.Cell("markdown"):
     """
     ### Visualize the PCA
@@ -569,7 +567,6 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     # Use describe to find the PC fields you want to keep
     pcs.describe()
-
 with herzog.Cell("python"):
     # Add to the matrix table
     mt = mt.annotate_cols(scores=pcs[mt.s].scores)
@@ -578,21 +575,24 @@ with herzog.Cell("markdown"):
     # Generate a genetic relatedness matrix (GRM)
     Hail has built-in functions for generating a GRM. A GRM can also account for population stratification and cryptic genetic relatedness in our cohort.
     """
+# On chr 1 from Amish this only took 46 seconds but on all Amish chromosomes it seemed to have hung
 with herzog.Cell("python"):
     # Calculate the GRM
     # WARNING: This can take a very long time to complete!
+    start_grm_time = time.time()
+
     grm = hl.genetic_relatedness_matrix(mt.GT).to_numpy()
 
+    elapsed_grm_time = time.time() - start_grm_time
+    print(timedelta(seconds=elapsed_grm_time))
 with herzog.Cell("python"):
     # Get the right sample order
     ind_order = mt.s.collect()
-
 with herzog.Cell("python"):
     # GRM to data frame
     rel_pd = pd.DataFrame(data=grm,
                           index=ind_order,
                           columns=ind_order)
-
 with herzog.Cell("python"):
     # Export GRM
     rel_pd.to_csv(kinship_out)
@@ -608,7 +608,6 @@ with herzog.Cell("python"):
     samples_traits_for_analysis = (
         mt.cols()
     )
-
 with herzog.Cell("python"):
     # Select only the columns we want to keep
     samples_traits_for_analysis = (
