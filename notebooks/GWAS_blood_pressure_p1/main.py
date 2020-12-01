@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# notebook title: 1-unarchive-vcf-tar-file-to-workspace.py
+# Title: 1-unarchive-vcf-tar-file-to-workspace.py
 
+# Notebook author: Beth Sheets
+# Herzogification: Ash O'Farrell
+
+import os
 import herzog
 
 with herzog.Cell("markdown"):

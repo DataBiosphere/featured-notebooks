@@ -3,6 +3,9 @@
 
 # Title: 2-GWAS-preliminary-analysis
 
+# Notebook author: Beth Sheets
+# Herzogification: Ash O'Farrell
+
 import herzog
 with herzog.Cell("markdown"):
     """
@@ -60,9 +63,6 @@ with herzog.Cell("markdown"):
     | Workers-CPUs | 8 |
     | Workers-Memory (GB) | 30 |
     | Workers-Disk size (GB) | 100 |
-
-    ## Check kernel type
-    A kernel is a computational engine that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a special type of Python 3 kernel, labeled PySpark 3. More details on that later. In the upper right corner of the notebook, just under the Notebook Runtime, it should say PySpark 3. If it doesn't, you can switch it by navigating to the Kernel menu and selecting Change kernel.
 
     # Load useful packages
 
@@ -328,6 +328,9 @@ with herzog.Cell("markdown"):
     Use <font color='red'>import_vcf</font> with the syntax described above to define the matrix table, `mt`:
     """
 with herzog.Cell("python"):
+    # If you get an error here, double check sure your application configuration is set to Hail,
+    # not the default GATK/python/R setup -- that default will not work here!
+    # See the application configuration at the top of this notebook for more details
     mt = (
         hl
         .import_vcf(
