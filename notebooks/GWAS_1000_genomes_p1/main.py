@@ -77,7 +77,7 @@ with herzog.Cell("python"):
     bucket
 with herzog.Cell("markdown"):
     """
-    Consolidate the Gen3 clinical entities into a single Terra data model using functions in the "terra_data_util" python notebook
+    Consolidate the Gen3 clinical entities into a single Terra data model using functions in the "terra_data_table_util" python notebook
     """
 
 with herzog.Cell("python"):
