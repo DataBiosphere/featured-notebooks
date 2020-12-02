@@ -23,15 +23,19 @@ with herzog.Cell("markdown"):
 
     ## Set runtime values
     If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you will now need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below:
-    | Option                    | Values                                        |
-    |---------------------------|-----------------------------------------------|
-    | Environment               | Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3) |
-    | CPUs                      | 4                                             |
-    | Memory (GB)               | 15                                            |
-    | Startup script            | (leave blank)                                 |
-    | Compute type              | Standard VM                                   |
-    | Persistent disk size (GB) | 50                                            |
-
+    <table style="float:left">
+        <thead>
+            <tr><th>Option</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+             <tr><td>ENVIRONMENT</td><td>Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3)</td></tr>
+              <tr><td>CPUs</td><td>4</td></tr>
+              <tr><td>Memory (GB)</td><td>15</td></tr>
+              <tr><td>Disk size (GB)</td><td>50</td></tr>
+              <tr><td>Startup script</td><td>(leave blank)</td></tr>
+              <tr><td>Compute Type</td><td>Standard VM</td></tr>
+        </tbody>
+    </table>
     Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
 
     ## Check kernel type
@@ -82,13 +86,13 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Run the companion notebook. Note: it must be in the same workspace you're currently working in.
-    #%run terra_data_table_util.ipynb
+    #%######run terra_data_table_util.ipynb
     pass
 with herzog.Cell("python"):
     # Take a look at all the entities (tables) in the workspace
     ent_types = fiss.fapi.list_entity_types(PROJECT, WORKSPACE).json()
     for t in ent_types.keys():
-        print(t, "count:", ent_types[t]['count'])  #type: ignore  # noqa
+        print(t, "count:", ent_types[t]['count'])
 with herzog.Cell("python"):
     # Set the name for your consolidated table
     consolidated_table_name = "consolidated_metadata"
