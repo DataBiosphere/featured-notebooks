@@ -23,7 +23,6 @@ with herzog.Cell("markdown"):
 
     ## Set runtime values
     If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you will now need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below:
-
     | Option                    | Values                                        |
     |---------------------------|-----------------------------------------------|
     | Environment               | Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3) |
@@ -47,6 +46,8 @@ with herzog.Cell("python"):
     pass
 with herzog.Cell("markdown"):
     """
+    Make sure to restart the kernel whenever you pip install things in a Jupyter notebook.
+
     ## Import all the packages this notebook will use
     """
 
@@ -87,7 +88,7 @@ with herzog.Cell("python"):
     # Take a look at all the entities (tables) in the workspace
     ent_types = fiss.fapi.list_entity_types(PROJECT, WORKSPACE).json()
     for t in ent_types.keys():
-        print(t, "count:", ent_types[t]['count'])
+        print(t, "count:", ent_types[t]['count'])  #type: ignore  # noqa
 with herzog.Cell("python"):
     # Set the name for your consolidated table
     consolidated_table_name = "consolidated_metadata"

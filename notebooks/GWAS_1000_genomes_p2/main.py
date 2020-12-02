@@ -42,7 +42,7 @@ with herzog.Cell("markdown"):
 
     ## Set runtime values
     If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you will now need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below:
-        <table style="float:left">
+    <table style="float:left">
         <thead>
             <tr><th>Option</th><th>Value</th></tr>
         </thead>
@@ -65,8 +65,8 @@ with herzog.Cell("markdown"):
 with herzog.Cell("markdown"):
     """
     Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
-        ## Check kernel type
-        A kernel is a _computational engine_ that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a `Python 3` kernel. In the upper right corner of the notebook, just under the Notebook Runtime, it should say `Python 3`. If it doesn't, you can switch it by navigating to the Kernel menu and selecting `Change kernel`.
+    ## Check kernel type
+    A kernel is a _computational engine_ that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a `Python 3` kernel. In the upper right corner of the notebook, just under the Notebook Runtime, it should say `Python 3`. If it doesn't, you can switch it by navigating to the Kernel menu and selecting `Change kernel`.
 
     ## Install packages
     """
@@ -100,7 +100,6 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     # Load phenotypes
-        ----
 
     Phenotypic data for each individual in the study are stored in the workspace data table. To analyze inside this notebook, we have to explicitly load the data in our notebook environment. To do this, we'll need some information about the Terra Workspace. This can be access programmatically using some environmental variables.
 
@@ -175,12 +174,16 @@ with herzog.Cell("markdown"):
     ## Goals of this section
 
     1. Visualize the distribution of phenotype values
-            - Within each continuous trait (using the kdplot function)
-            - Within each continuous trait, organized by dichotomous data (ex: the distribution of BMI in each ancestry group - using the boxPlot function)
-            - Between two continuous traits (with the bivariateDistributionPlot function)
+            - Within each continuous trait
+                - using the kdplot function
+            - Within each continuous trait, organized by dichotomous data
+                - ex: the distribution of BMI in each ancestry group 
+                - using the boxPlot function
+            - Between two continuous traits
+                - with the bivariateDistributionPlot function
     2. Determine whether trait distributions follow patterns we might expect
     3. Choose an outcome and covariates to model in the second part of this workshop
-    ## Code for plotting functions <a class="tocSkip">
+    ## Code for plotting functions
 
     The next code block defines the plotting functions. Because running the plotting functions doesn't require understanding the syntax of the code, we have collapsed this block. Feel free to uncollapse (click the purple arrow at the right) if you're interested in all the details!
     """
@@ -302,21 +305,20 @@ with herzog.Cell("markdown"):
     ----
 
     Now that we have a handle on the phenotype data, we can begin to work with the genotype data. We will make use of the [Hail](hail.is) software, an "open-source, general-purpose, Python-based data analysis tool with additional data types and methods for working with genomic data." Hail utilizes distributed computing with Apache Spark for efficient genome-wide analysis.
-        ## Goals of this section  <a class="tocSkip">
+    ## Goals of this section
     1. Load genotype data from variant call format (VCF) files into the compute environment
-        2. Understand how to access genotype and variant information
-        3. Generate variant quality control metrics for the 1000 Genomes data
+    2. Understand how to access genotype and variant information
+    3. Generate variant quality control metrics for the 1000 Genomes data
 
-    ### A short Hail primer<a class="tocSkip">
-    (Click the arrow at left to expand)
+    ### A short Hail primer
 
     Hail uses distributed computing -- a way of parallelizing tasks that can greatly decrease the **real** time it takes to complete an analysis. While distributed computing decreases **real** time, the time that you or I experience, it does not decrease **computational** time, the product of *# machines* and *time each machine was running*. Distributed computing relies on an operation called *partitioning*, dividing a object into many, many pieces. The number of partitions determines, in part, the number of operations that can run in parallel. In the code below, you will see syntax like `min_partitions = 200`. In English, this is saying "at the minimum, divide my data into 200 pieces". This parameter can vary and should be determined based on the data and the particular operations that you want to do -- more partitions is not always better.
 
     It is important to note that Hail expressions are **lazy** -- they are not evalutated until absolutely needed. For example, using Python for the expression `x = 2+2` would immediately store the value of `x` as `4`. However, calling the same expression using Hail would instead store `x` as `2+2` until the variable `x` was explicitly used. When using some of the code below, you will notice that some code blocks will run astoundingly quickly. This does not mean that the operation is complete, rather that the operation's result was not yet needed. When a results is needed, the operation will run. This should become more clear when working through this notebook.
-        For more information, checkout the [Hail documentation](http://www.nealelab.is/tools-and-software) and this [helpful video](https://youtu.be/0RTgBYL5x_E).
+    For more information, checkout the [Hail documentation](http://www.nealelab.is/tools-and-software) and this [helpful video](https://youtu.be/0RTgBYL5x_E).
 
     ## Query workspace storage for VCF files
-        To find the correct VCF files for the analysis, use [Gsutil](https://cloud.google.com/storage/docs/gsutil), a command line program for accessing data from Google Cloud Storage, directly within a notebook. The <font color='red'>!</font> character has special meaning within this Jupyter notebook. It can be used to call command line functions directly and often is referred to as a [magic command](https://ipython.readthedocs.io/en/stable/interactive/magics.html).
+    To find the correct VCF files for the analysis, use [Gsutil](https://cloud.google.com/storage/docs/gsutil), a command line program for accessing data from Google Cloud Storage, directly within a notebook. The <font color='red'>!</font> character has special meaning within this Jupyter notebook. It can be used to call command line functions directly and often is referred to as a [magic command](https://ipython.readthedocs.io/en/stable/interactive/magics.html).
 
     For this notebook, we've hard-coded the VCF paths. **If you wanted to use different data, you would need to change this**.
     """
@@ -334,7 +336,7 @@ with herzog.Cell("markdown"):
     ##### Import packages and start a Hail session
 
     * **Hail** - an open-source, general-purpose, Python-based data analysis tool with additional data types and methods for working with genomic data
-        * **Bokeh** - an interactive visualization library
+    * **Bokeh** - an interactive visualization library
     """
 
 with herzog.Cell("python"):
@@ -352,9 +354,8 @@ with herzog.Cell("markdown"):
     """
     ## Load VCF data and perform variant QC
 
-
     ### Load 1000 Genomes data
-        To load genotype data from VCF files, use the <font color='red'>import_vcf</font> function. This will convert the VCF files into a **matrix table** (**mt**). A matrix table is composed of 3 parts: sample annotations (columns), variant annotations (rows), and entries (genotypes). They are optimized to allow for fast access and computation by storing small pieces of each file independently. Use the following syntax to load the 1000 Genomes data from the variable `vcf_paths` we created earlier. `vcf_paths` lists the links to all the genotype files.
+    To load genotype data from VCF files, use the <font color='red'>import_vcf</font> function. This will convert the VCF files into a **matrix table** (**mt**). A matrix table is composed of 3 parts: sample annotations (columns), variant annotations (rows), and entries (genotypes). They are optimized to allow for fast access and computation by storing small pieces of each file independently. Use the following syntax to load the 1000 Genomes data from the variable `vcf_paths` we created earlier. `vcf_paths` lists the links to all the genotype files.
     """
 
 with herzog.Cell("python"):
@@ -362,8 +363,8 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     ### View matrix table structure
-        Use the <font color='red'>describe</font> function to view the structure of the matrix table:
-        """
+    Use the <font color='red'>describe</font> function to view the structure of the matrix table:
+    """
 
 with herzog.Cell("python"):
     mt.describe()
@@ -416,10 +417,12 @@ with herzog.Cell("markdown"):
     Many of our statistical tests are built on the assumption that data points are unrelated and require adjustment to account for population structure. There are various ways to quantify population structure, but most start by generating a set of markers (variants) that are nearly independent of one another. For this, we will use an operation called *Linkage Disequalibrium pruning* to extract a set of variants that we can use for calculating relatedness. See [this resource](https://en.wikipedia.org/wiki/Linkage_disequilibrium) for more information on LD.
 
     Next, we will use principal component analysis (PCA) to transform the genetic data into a space that will aid in modeling by allowing us to more easily visualize genetic distance between individuals.
-        ## Goals of this section  <a class="tocSkip">
+    
+    ## Goals of this section
+    
     1. Generate a list of variants for calculated relatedness by filtering and LD-pruning
-        2. Calculate principal components using Hail
-        3. Visualize individuals within PC space
+    2. Calculate principal components using Hail
+    3. Visualize individuals within PC space
 
     ## Variant filtering
 
@@ -474,15 +477,15 @@ with herzog.Cell("markdown"):
     Since this is a count of how many variants we are pruning down to, the amount we are retaining is 25409.
 
     ### Exercise: Filter the matrix table
-        The last step is to filter the matrix table again by the pruned variants list. For this, <font color='red'>is_defined</font> is useful:
-        """
+    The last step is to filter the matrix table again by the pruned variants list. For this, <font color='red'>is_defined</font> is useful:
+    """
 
 with herzog.Cell("python"):
     mt = mt.filter_rows(hl.is_defined(pruned_variants[mt.row_key]))
 with herzog.Cell("markdown"):
     """
     **Sanity check**:
-        How many variants are left after pruning? Use the count function to see the effect of pruning on the size of the matrix table:
+    How many variants are left after pruning? Use the count function to see the effect of pruning on the size of the matrix table:
     """
 
 with herzog.Cell("python"):
@@ -508,7 +511,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Use describe to find the PC fields you want to keep
-        pcs.describe()
+    pcs.describe()
 with herzog.Cell("python"):
     # Add to the matrix table
     mt = mt.annotate_cols(scores=pcs[mt.s].scores)
@@ -552,11 +555,13 @@ with herzog.Cell("markdown"):
 
     Now that you've explored the phenotypes and a measure of population stratification, the next step is to save the results and push them back to the workspace data table. Once it's in the data table, you can use the data for downstream analyses.
 
-    ## Goals of this section  <a class="tocSkip">
+    ## Goals of this section
+
     1. Create a final phenotype file that includes only the outcomes and covariates desired for modeling
-        2. Generate a sample set for the workspace data table
-        3. Push all results generated in this notebook back to the workspace storage bucket, and update the data table
-        ## Convert the phenotype data to the correct format
+    2. Generate a sample set for the workspace data table
+    3. Push all results generated in this notebook back to the workspace storage bucket, and update the data table
+    
+    ## Convert the phenotype data to the correct format
 
     Now that the hard computation work is done, we need to choose the data you'd like to keep, and export to a format that can be read downstream. Earlier in this notebook, you should have been thinking about which outcome and covariates you would like to model. You'll use these in a call to <font color='red'>select</font> to generate a single phenotype file with only the data you want.
 
@@ -597,7 +602,7 @@ with herzog.Cell("markdown"):
     """
     ### Convert data and check results
     Finally, convert the data to local dataframe and checkout the results in much the same way as with the GRM above. Write the data out and push it back to the workspace storage. (<font color='blue'>Hint:</font> The column names in the resulting data frame will reflect the nested structure of the table.)
-        """
+    """
 
 with herzog.Cell("python"):
     col_map = {'s': 'subject_id',
@@ -625,7 +630,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Save to your kinship matrix to workspace bucket
-    get_ipython().system(' gsutil cp kinship.csv {bucket}')
+    #%gsutil cp kinship.csv {bucket}
 with herzog.Cell("python"):
     # Write Hail matrix as a VCF to your notebook VM
     mt = mt.repartition(25)
@@ -695,9 +700,9 @@ with herzog.Cell("markdown"):
 
     1. a label, or some short discriptor, for the sample set
     2. the phenotype filepath in the workspace storage (this should start with *gs://*)
-        3. the column name in the phenotype file that corresponds to the sample IDs (if you followed the hint above, this should be *sample_id*)
-        4. the outcome you would like to model (this must be a column name in the phenotype file)
-        5. a list of covariates to include in the model (these should be column names in the phenotype file separated by commons)
+    3. the column name in the phenotype file that corresponds to the sample IDs (if you followed the hint above, this should be *sample_id*)
+    4. the outcome you would like to model (this must be a column name in the phenotype file)
+    5. a list of covariates to include in the model (these should be column names in the phenotype file separated by commons)
 
     You can <font color='red'>makeSampleSet</font> with the following syntax. If you'd like to track different covariates and outcomes, you can change those values
     """
