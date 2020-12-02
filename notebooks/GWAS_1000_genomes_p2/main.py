@@ -34,7 +34,7 @@ with herzog.Cell("markdown"):
     All data in this notebook (and this workspace) are publicly available thanks to the effort of many dedicated individuals:
     * Genotype and some phenotypic data were produced by the [1000 Genomes Project (phase 3)](https://www.internationalgenome.org/)
     * Individual phenotypes were modeling using the [GCTA software](cnsgenomics.com/software/gcta) and variant-level summary statistics from [MAGIC](https://www.magicinvestigators.org/), the [GIANT Consortium](https://portals.broadinstitute.org/collaboration/giant/index.php/Main_Page), the [UK Biobank](https://www.ukbiobank.ac.uk/), and the [MVP](https://www.research.va.gov/mvp/)
-    
+
     Phenotypes were modeled to reflect the actual genetic architecture of these complex traits as closely as possible. Most single variant association results should correspond well to published GWAS, but others may not. **Results produced from these data should not be taken as representing real, replicable genetic associations. These data are provided for demonstration and training purposes only.**
 
     # Set up your notebook
@@ -47,18 +47,17 @@ with herzog.Cell("markdown"):
             <tr><th>Option</th><th>Value</th></tr>
         </thead>
         <tbody>
-             <tr><td>ENVIRONMENT</td><td>Hail: (Python 3.7.6, hail 0.2.30)</td></tr>
-             <tr><td>COMPUTE POWER Profile</td><td>Custom</td></tr>
+             <tr><td>ENVIRONMENT</td><td>Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.57)</td></tr>
                           <tr><td>CPUs</td><td>8</td></tr>
-                          <tr><td>Memory</td><td>30 GB</td></tr>
-                          <tr><td>Disk size</td><td>100</td></tr>
-                          <tr><td>Startup Script</td><td>leave blank</td></tr>
-                          <tr><td>Runtime Type</td><td>Configure as Spark Cluster</td></tr>
+                          <tr><td>Memory (GB)</td><td>30</td></tr>
+                          <tr><td>Disk size (GB)</td><td>100</td></tr>
+                          <tr><td>Startup script</td><td>(leave blank)</td></tr>
+                          <tr><td>Compute Type</td><td>Spark cluster</td></tr>
              <tr><td>Workers</td><td>4</td></tr>
                           <tr><td>Preemptible</td><td>0</td></tr>
                           <tr><td>Workers CPUs</td><td>4</td></tr>
-                          <tr><td>Workers Memory</td><td>15 GB</td></tr>
-             <tr><td>Workers Disk size</td><td>50 GB</td></tr>
+                          <tr><td>Workers Memory (GB)</td><td>15</td></tr>
+             <tr><td>Workers Disk size (GB)</td><td>50</td></tr>
         </tbody>
     </table>
     """
