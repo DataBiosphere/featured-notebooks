@@ -11,6 +11,7 @@ import herzog
 os.environ['WORKSPACE_NAME'] = "CICD TESTER - PUBLIC DATA ONLY - BDC GWAS 1000G Tutorial"
 os.environ['WORKSPACE_BUCKET'] = "gs://fc-7d1224a1-1770-4db9-9904-137efcd412c5"
 os.environ['GOOGLE_PROJECT'] = "anvil-stage-demo"
+
 with herzog.Cell("markdown"):
     """
     # Introduction
@@ -28,13 +29,13 @@ with herzog.Cell("markdown"):
         6. How to prepare a full set of input parameters and data for a genomewide association analysis pipeline
         7. How to configure the Terra data model to easily run the association pipeline
 
-    ## Data disclaimer <a class="tocSkip">
+    ## Data disclaimer
 
     All data in this notebook (and this workspace) are publicly available thanks to the effort of many dedicated individuals:
-        - Genotype and some phenotypic data were produced by the [1000 Genomes Project (phase 3)](https://www.internationalgenome.org/)
-
-    - Individual phenotypes were modeling using the [GCTA software](cnsgenomics.com/software/gcta) and variant-level summary statistics from [MAGIC](https://www.magicinvestigators.org/), the [GIANT Consortium](https://portals.broadinstitute.org/collaboration/giant/index.php/Main_Page), the [UK Biobank](https://www.ukbiobank.ac.uk/), and the [MVP](https://www.research.va.gov/mvp/)
-        Phenotypes were modeled to reflect the actual genetic architecture of these complex traits as closely as possible. Most single variant association results should correspond well to published GWAS, but others may not. **Results produced from these data should not be taken as representing real, replicable genetic associations. These data are provided for demonstration and training purposes only.**
+    * Genotype and some phenotypic data were produced by the [1000 Genomes Project (phase 3)](https://www.internationalgenome.org/)
+    * Individual phenotypes were modeling using the [GCTA software](cnsgenomics.com/software/gcta) and variant-level summary statistics from [MAGIC](https://www.magicinvestigators.org/), the [GIANT Consortium](https://portals.broadinstitute.org/collaboration/giant/index.php/Main_Page), the [UK Biobank](https://www.ukbiobank.ac.uk/), and the [MVP](https://www.research.va.gov/mvp/)
+    
+    Phenotypes were modeled to reflect the actual genetic architecture of these complex traits as closely as possible. Most single variant association results should correspond well to published GWAS, but others may not. **Results produced from these data should not be taken as representing real, replicable genetic associations. These data are provided for demonstration and training purposes only.**
 
     # Set up your notebook
     ----
@@ -60,7 +61,10 @@ with herzog.Cell("markdown"):
              <tr><td>Workers Disk size</td><td>50 GB</td></tr>
         </tbody>
     </table>
+    """
 
+with herzog.Cell("markdown"):
+    """
     Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
         ## Check kernel type
         A kernel is a _computational engine_ that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a `Python 3` kernel. In the upper right corner of the notebook, just under the Notebook Runtime, it should say `Python 3`. If it doesn't, you can switch it by navigating to the Kernel menu and selecting `Change kernel`.
@@ -101,7 +105,7 @@ with herzog.Cell("markdown"):
 
     Phenotypic data for each individual in the study are stored in the workspace data table. To analyze inside this notebook, we have to explicitly load the data in our notebook environment. To do this, we'll need some information about the Terra Workspace. This can be access programmatically using some environmental variables.
 
-    ## Goal of this section<a class="tocSkip">
+    ## Goal of this section
 
     Use the FISS package to import data referenced in the workspace data table into the notebook environment
 
@@ -123,7 +127,7 @@ with herzog.Cell("markdown"):
     ## Load phenotype data
 
     We'll use <font color='red'>read_csv</font> to load the phenotypes from the workspace data table. The columns correspond to:
-        * **sample:** a unique label for each individual sample in our dataset
+    * **sample:** a unique label for each individual sample in our dataset
     * **age:** numerical age of the individual at the time of each phenotype measure
     * **bmi:** body mass index
     * **fg:** fasting glucose
@@ -139,7 +143,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Run the companion notebook to define useful functions.
-        # Note: it must be in the same workspace you are currently working in.
+    # Note: it must be in the same workspace you are currently working in.
     get_ipython().run_line_magic('run', 'terra_data_table_util.ipynb')
     consolidated_table_name = "consolidated_metadata"
 with herzog.Cell("python"):
@@ -150,7 +154,7 @@ with herzog.Cell("python"):
     samples.head()
 with herzog.Cell("markdown"):
     """
-    ### If you get an error when running the code above<a class="tocSkip">
+    ### If you get an error when running the code above
     Expand this section by clicking the arrow at left for troubleshooting help
 
     Note: The command above uses the FISS API. Sometimes the Terra Firecloud Service gets an error that requests you retry after 30 seconds. If you get an error in the 500 range, we suggest that you restart the notebook kernel. If that doesn't work, you can restart you notebook runtime (but remember to save your work using gsutil whenever you do this option).
@@ -158,7 +162,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # We modify the first column of the dataframe to be relevant to TOPMed nomenclature
-        samples.rename(columns={'entity:consolidated_metadata_id':'subject_id'}, inplace=True)
+    samples.rename(columns={'entity:consolidated_metadata_id':'subject_id'}, inplace=True)
 with herzog.Cell("markdown"):
     """
     # Examine phenotype data
@@ -169,7 +173,7 @@ with herzog.Cell("markdown"):
     When generating plots, try to think about what we would expect a trait distribution to look like. Should it be uniform? skewed? normal? What about the distribution of two traits? What would this look like if the traits are correlated? uncorrelated? What axes of variation might confound a clear conclusion about a trait?
 
     We've included a number of plotting functions below to make this as easy as possible. Feel free to modify - or write your own functions - as you explore the data.
-        ## Goals of this section  <a class="tocSkip">
+    ## Goals of this section
 
     1. Visualize the distribution of phenotype values
             - Within each continuous trait (using the kdplot function)
@@ -214,13 +218,13 @@ with herzog.Cell("python"):
         if (make_plot is True):
             sns.set_style("whitegrid")
             sns.set_context("poster",
-                                        font_scale=0.7,
-                                        rc={"grid.linewidth": 0.6, 'lines.linewidth': 1.6})
+                            font_scale=0.7,
+                            rc={"grid.linewidth": 0.6, 'lines.linewidth': 1.6})
             sns.boxplot(x=catagorical_var,
-                                    y=continuous_var,
-                                    hue=color_by,
-                                    data=data,
-                                    palette=["#275F9A", "#A2C353"],
+                        y=continuous_var,
+                        hue=color_by,
+                        data=data,
+                        palette=["#275F9A", "#A2C353"],
                         saturation=1)
             plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 with herzog.Cell("markdown"):
@@ -254,7 +258,7 @@ with herzog.Cell("markdown"):
     ### Exercise: Univariate distributions
 
     Use the code cells below to plot the distribution of single variables of your choice (such as ldl or bmi). You may need to refer to section 3.2 above for the list of variables and to section 4.1 for the plotting syntax.
-        """
+    """
 
 with herzog.Cell("python"):
     kdPlot(samples, var="lab_result_ldl")
@@ -265,7 +269,7 @@ with herzog.Cell("markdown"):
     ### Exercise: Bivariate distributions
 
     Generate scatter plots with different combinations of variables. Think about what you would expect versus what you see in the plot. You may need to refer to 3.2 for the list of variables and to section 4.1 for the plotting syntax.
-        """
+    """
 
 with herzog.Cell("python"):
     bivariateDistributionPlot(samples, var1="demographic_bmi_baseline", var2="demographic_height_baseline", kind="scatter")
@@ -316,7 +320,7 @@ with herzog.Cell("markdown"):
         To find the correct VCF files for the analysis, use [Gsutil](https://cloud.google.com/storage/docs/gsutil), a command line program for accessing data from Google Cloud Storage, directly within a notebook. The <font color='red'>!</font> character has special meaning within this Jupyter notebook. It can be used to call command line functions directly and often is referred to as a [magic command](https://ipython.readthedocs.io/en/stable/interactive/magics.html).
 
     For this notebook, we've hard-coded the VCF paths. **If you wanted to use different data, you would need to change this**.
-        """
+    """
 
 with herzog.Cell("python"):
     vcf_base = "gs://terra-featured-workspaces/GWAS/1kg-genotypes/subset/*.vcf.bgz"
@@ -332,7 +336,7 @@ with herzog.Cell("markdown"):
 
     * **Hail** - an open-source, general-purpose, Python-based data analysis tool with additional data types and methods for working with genomic data
         * **Bokeh** - an interactive visualization library
-        """
+    """
 
 with herzog.Cell("python"):
     # Import some packages we will use, and set some parameters so plots render nicely
@@ -376,7 +380,7 @@ with herzog.Cell("markdown"):
     ### Merge phenotype and VCF data
 
     You can merge phenotypes with the VCF data by matching sample IDs between objects. Recall that the *sample* column of the phenotype data held unique IDs for each sample. These same sample IDs are stored in the VCF files and index the matrix table columns. <font color='red'>annotate_cols</font> can be used to add the phenotypes to the matrix table columns. `samples[mt.s]` matches samples IDs between objects and <font color='red'>annotate_cols</font> merges into the VCF:
-        """
+    """
 
 with herzog.Cell("python"):
     # First convert the phenotypes to a Hail table
@@ -392,14 +396,14 @@ with herzog.Cell("markdown"):
     ### Generate variant level summary statistics
 
     To generate variant level summary statistics, use <font color='red'>variant_qc</font>. This will compute useful metrics like allele frequencies, call rate, and homozygote counts, among many others. Run variant_qc and take a look at how the matrix table structure changes.
-        """
+    """
 
 with herzog.Cell("python"):
     mt = hl.variant_qc(mt)
 with herzog.Cell("markdown"):
     """
     Then take a look at how the matrix table structure changes: use <fibt color="red">describe</font> and you should see a new set of annotations added to the table (under variant_qc). Then use `mt.rows().show(5)` to see the first few variants and their annotations (scroll down to the end).
-        """
+    """
 
 with herzog.Cell("python"):
     mt.describe()
@@ -519,8 +523,8 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     p = hl.plot.scatter(mt.scores[0],
                     mt.scores[1],
-                    label = mt.pheno.demographic_population,
-                    title = 'PCA', xlabel = 'PC1', ylabel = 'PC2')
+                    label=mt.pheno.demographic_population,
+                    title='PCA', xlabel='PC1', ylabel='PC2')
     show(p)
 with herzog.Cell("markdown"):
     """
@@ -559,7 +563,7 @@ with herzog.Cell("markdown"):
 
     ### Extract sample metadata
     First, extract the sample metadata from the matrix table using <font color='red'>cols</font>:
-        """
+    """
 
 with herzog.Cell("python"):
     samples = mt.cols()
@@ -569,7 +573,7 @@ with herzog.Cell("markdown"):
     The *samples* table generated in the last bit of code needs a little post processing. These steps are just to get the data into a format that is easier to work with, and their explanation is beyond the scope of this workshop.
 
     **Note:** If you saved the phenotypes or PCA scores to different variable names, you will need to adjust the code below. <font color='red'>describe</font> may help in finding the right column names.
-        """
+    """
 
 with herzog.Cell("python"):
     samples = samples.key_by().select('s', 'pheno', 'scores')
@@ -577,7 +581,7 @@ with herzog.Cell("markdown"):
     """
     ### Flatten the PC array
     If you would like to use PCs in downstream modeling, you will need to *flatten* the PC array (<font color='red'>describe</font> the table and see the type of the *scores* attribute). You can assign data to new columns in the table by using <font color='red'>annotate</font>:
-        """
+    """
 
 with herzog.Cell("python"):
     samples = samples.annotate(PC1=samples.scores[0], PC2=samples.scores[1])
@@ -600,15 +604,15 @@ with herzog.Cell("python"):
     col_map = {'s': 'subject_id',
                'pheno.lab_result_age_at_ldl': 'age',
                'pheno.demographic_population': 'population',
-           'pheno.demographic_bmi_baseline': 'bmi',
-           #'pheno.lab_result_glucos1c': 'glucose',
-           #'pheno.lab_result_inslnr1t': 'insulin',
-           #'pheno.lab_result_hdl': 'hdl',
-           #'pheno.demographic_height_baseline': 'height',
-           #'pheno.lab_result_ldl': 'ldl',
-           'pheno.demographic_annotated_sex': 'sex'
-           #'pheno.lab_result_total_cholestrol': 'total_cholestrol',
-           #'pheno.lab_result_triglycerides': 'triglycerides'
+               'pheno.demographic_bmi_baseline': 'bmi',
+               #'pheno.lab_result_glucos1c': 'glucose',
+               #'pheno.lab_result_inslnr1t': 'insulin',
+               #'pheno.lab_result_hdl': 'hdl',
+               #'pheno.demographic_height_baseline': 'height',
+               #'pheno.lab_result_ldl': 'ldl',
+               'pheno.demographic_annotated_sex': 'sex'
+               #'pheno.lab_result_total_cholestrol': 'total_cholestrol',
+               #'pheno.lab_result_triglycerides': 'triglycerides'
           }
     samples.rename(columns=col_map, inplace=True)
 with herzog.Cell("python"):
@@ -618,7 +622,7 @@ with herzog.Cell("markdown"):
     ### Write derived data out to files and upload to the workspace storage
 
     Use *gsutil* to move the new genotype and phenotype files to the workspace storage. Name each file something meaningful to your analysis.
-        """
+    """
 
 with herzog.Cell("python"):
     # Save to your kinship matrix to workspace bucket
