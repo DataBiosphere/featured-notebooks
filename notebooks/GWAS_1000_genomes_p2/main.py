@@ -293,7 +293,7 @@ with herzog.Cell("python"):
     boxPlot(samples, catagorical_var="demographic_population", continuous_var="demographic_height_baseline", color_by="demographic_annotated_sex", force_x=True)
 with herzog.Cell("python"):
     # Select the metadata we want to use and check our output
-    samples = samples[["subject_id", "lab_result_age_at_ldl", "demographic_population", "demographic_bmi_baseline", "demographic_annotated_sex"]]
+    samples = samples[["subject_id", "demographic_age_at_index", "demographic_population", "demographic_bmi_baseline", "demographic_annotated_sex"]]
     samples.head()
 
     # Uncomment the code below to use all available phenotypes instead
