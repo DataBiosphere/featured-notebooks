@@ -520,7 +520,7 @@ with herzog.Cell("markdown"):
     ### Visualize samples in PCA space
 
     Finally, let's visualize the results. Hail has some efficient built-in plotting functions -- let's use <font color='red'>plot.scatter</font>. Choose which PCs you'd like to plot and a categorical phenotype value to color the points.
-        """
+    """
 
 with herzog.Cell("python"):
     p = hl.plot.scatter(mt.scores[0],
@@ -722,7 +722,7 @@ with herzog.Cell("markdown"):
     """
     # Next steps
     Congratulations on completing the first steps in your GWAS analysis! You've loaded and explored the phenotype data to understand how the data are distributed, loaded the VCF data and performed variant QC, filtered variants and done LD-pruning to filer the matrix table, run a PCA, and added PCA values to the matrix table. You've saved the sample data and updated it to your workspace data table.
-        The next step is to use the data to do a mixed-model association test in a workflow. Save and close this notebook and proceed to the dashboard for instructions of how to do this.
+    The next step is to use the data to do a mixed-model association test in a workflow. Save and close this notebook and proceed to the dashboard for instructions of how to do this.
 
     ## Citations:
         1. A global reference for human genetic variation, The 1000 Genomes Project Consortium, Nature 526, 68-74 (01 October 2015) doi:10.1038/nature15393

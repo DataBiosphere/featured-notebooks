@@ -36,6 +36,10 @@ with herzog.Cell("markdown"):
               <tr><td>Compute Type</td><td>Standard VM</td></tr>
         </tbody>
     </table>
+    """  # HTML tables should be followed by a new cell because otherwise text gets jammed next to them
+    
+with herzog.Cell("markdown"):
+    """
     Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
 
     ## Check kernel type
@@ -48,6 +52,7 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     #%pip install tenacity
     pass
+
 with herzog.Cell("markdown"):
     """
     Make sure to restart the kernel whenever you pip install things in a Jupyter notebook.
@@ -64,6 +69,7 @@ with herzog.Cell("python"):
     import io
     import numpy as np
     import seaborn as sns
+
 with herzog.Cell("markdown"):
     """
     ## Define filepaths and environmental variables
@@ -72,13 +78,16 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     PROJECT = os.environ['GOOGLE_PROJECT']
     PROJECT
+
 with herzog.Cell("python"):
     WORKSPACE = os.path.basename(os.path.dirname(os.getcwd()))
     WORKSPACE
+
 with herzog.Cell("python"):
     bucket = os.environ['WORKSPACE_BUCKET']
     bucket = bucket + '/'
     bucket
+
 with herzog.Cell("markdown"):
     """
     Consolidate the Gen3 clinical entities into a single Terra data model using functions in the "terra_data_table_util" python notebook
@@ -86,16 +95,19 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Run the companion notebook. Note: it must be in the same workspace you're currently working in.
-    #%######run terra_data_table_util.ipynb
+    #%run terra_data_table_util.ipynb
     pass
+
 with herzog.Cell("python"):
     # Take a look at all the entities (tables) in the workspace
     ent_types = fiss.fapi.list_entity_types(PROJECT, WORKSPACE).json()
     for t in ent_types.keys():
         print(t, "count:", ent_types[t]['count'])
+
 with herzog.Cell("python"):
     # Set the name for your consolidated table
     consolidated_table_name = "consolidated_metadata"
+
 with herzog.Cell("markdown"):
     """
     The consolidate_gen3_pheno_tables function:
@@ -107,3 +119,4 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     # Consolidate the phenotypic data using the function defined in the terra-util notebook
     consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)  #type: ignore  # noqa
+
