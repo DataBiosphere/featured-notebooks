@@ -693,12 +693,12 @@ with herzog.Cell("python"):
             del sample_set['covariates']  
 
         entity = '\n'.join(['\t'.join(sample_set.keys()), '\t'.join(sample_set.values())])
-        fiss.fapi.upload_entities(billing_project, workspace, entity)
+        fiss.fapi.upload_entities(PROJECT, WORKSPACE, entity)
 
         membership = 'membership:sample_set_id\tsample\n'
         for i in range(0, samples.shape[0]):
             membership += label + '\t' + samples.iloc[i, 0] + '\n'
-        fiss.fapi.upload_entities(billing_project, workspace, membership) 
+        fiss.fapi.upload_entities(PROJECT, WORKSPACE, membership) 
 
 with herzog.Cell("markdown"):
     """
