@@ -287,6 +287,9 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
+    # Increase plot size to avoid overcrowding
+    plt.rcParams["figure.figsize"] = [30, 10]
+    
     boxPlot(samples, catagorical_var="demographic_population", continuous_var="demographic_height_baseline", color_by="demographic_annotated_sex", force_x=True)
 with herzog.Cell("python"):
     # Select the metadata we want to use and check our output
@@ -295,10 +298,12 @@ with herzog.Cell("python"):
 
     # Uncomment the code below to use all available phenotypes instead
     #samples = samples[["subject_id", "lab_result_age_at_ldl", "demographic_population", "demographic_bmi_baseline", "lab_result_glucos1c", "lab_result_inslnr1t", "lab_result_hdl", "demographic_height_baseline", "lab_result_ldl", "demographic_annotated_sex", "lab_result_total_cholesterol", "lab_result_triglycerides"]]
+
 with herzog.Cell("python"):
     # Replace "male" and "female" with "M" and "F"
     samples.demographic_annotated_sex = samples.demographic_annotated_sex.replace(['male', 'female'], ['M', 'F'])
     samples.head()
+
 with herzog.Cell("markdown"):
     """
     # Working with genotype data using Hail
