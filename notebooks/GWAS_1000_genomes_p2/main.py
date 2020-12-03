@@ -289,7 +289,7 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     # Increase plot size to avoid overcrowding
     plt.rcParams["figure.figsize"] = [30, 10]
-    
+
     boxPlot(samples, catagorical_var="demographic_population", continuous_var="demographic_height_baseline", color_by="demographic_annotated_sex", force_x=True)
 with herzog.Cell("python"):
     # Select the metadata we want to use and check our output
@@ -335,7 +335,8 @@ with herzog.Cell("python"):
     vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')
 
     # Print a few of the paths to verify
-        pprint(vcf_paths[1:3])
+    pprint(vcf_paths[1:3])
+
 with herzog.Cell("markdown"):
     """
     ##### Import packages and start a Hail session
@@ -351,10 +352,12 @@ with herzog.Cell("python"):
     from bokeh.io import *
     from bokeh.resources import INLINE
     bokeh.io.output_notebook(INLINE)
-        get_ipython().run_line_magic('matplotlib', 'inline')
+    get_ipython().run_line_magic('matplotlib', 'inline')
+
 with herzog.Cell("python"):
     # After importing, start a Hail session
     hl.init(default_reference="GRCh37", log='tutorial-analysis.log')
+    
 with herzog.Cell("markdown"):
     """
     ## Load VCF data and perform variant QC
