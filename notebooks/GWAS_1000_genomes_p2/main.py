@@ -357,7 +357,7 @@ with herzog.Cell("python"):
 with herzog.Cell("python"):
     # After importing, start a Hail session
     hl.init(default_reference="GRCh37", log='tutorial-analysis.log')
-    
+
 with herzog.Cell("markdown"):
     """
     ## Load VCF data and perform variant QC
@@ -638,7 +638,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Save to your kinship matrix to workspace bucket
-    #%gsutil cp kinship.csv {bucket}
+    #!gsutil cp kinship.csv {bucket}
 with herzog.Cell("python"):
     # Write Hail matrix as a VCF to your notebook VM
     mt = mt.repartition(25)
