@@ -22,7 +22,7 @@ with herzog.Cell("markdown"):
 
     ## Notebook Overview
 
-    This notebook consolidates the phentotypic data in tables imported to Terra from Gen3 into one consolidated table of metadata with familiar subject IDs for downstream analysis. It uses functions defined in the terra-util notebook, and can be adapted to consolidate different metadata.
+    This notebook consolidates the phentotypic data in tables imported to Terra from Gen3 into one consolidated table of metadata with familiar subject IDs for downstream analysis. It uses functions defined in the terra_data_table_util notebook, and can be adapted to consolidate different metadata.
 
     ## Set up your notebook
     ----
@@ -123,7 +123,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    # Consolidate the phenotypic data using the function defined in the terra-util notebook
+    # Consolidate the phenotypic data using the function defined in the terra_data_table_util notebook
     consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)  #type: ignore  # noqa
 
 with herzog.Cell("markdown"):
