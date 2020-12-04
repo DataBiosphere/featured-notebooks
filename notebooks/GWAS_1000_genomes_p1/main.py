@@ -4,6 +4,9 @@
 # Notebook author: Beth Sheets
 # Herzog version: Ash O'Farrell
 
+# The notebook didn't have a markdown title at the time but I've dubbed it Phenotype Consolidator.
+# The name of the actual file is 1-Prepare-Gen3-Data-For-Exploration
+
 import os
 import herzog
 
@@ -14,14 +17,17 @@ os.environ['GOOGLE_PROJECT'] = "anvil-stage-demo"
 
 with herzog.Cell("markdown"):
     """
-    # Notebook Overview
+    # Phenotype Consolidater
+    *version: 2.0*
 
-    This notebook consolidates the phentotypic data in tables imported to Terra from Gen3 into one consolidated table of metadata with familiar subject IDs for downstream analysis. It uses functions defined in the terra-util notebook, nd can be adapted to consolidate different metadata. I
+    ## Notebook Overview
 
-    # Set up your notebook
+    This notebook consolidates the phentotypic data in tables imported to Terra from Gen3 into one consolidated table of metadata with familiar subject IDs for downstream analysis. It uses functions defined in the terra-util notebook, and can be adapted to consolidate different metadata.
+
+    ## Set up your notebook
     ----
 
-    ## Set runtime values
+    ### Set runtime values
     If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you will now need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below:
     <table style="float:left">
         <thead>
@@ -36,17 +42,17 @@ with herzog.Cell("markdown"):
               <tr><td>Compute Type</td><td>Standard VM</td></tr>
         </tbody>
     </table>
-    """  # HTML tables should be followed by a new cell because otherwise text gets jammed next to them
-    
+    """
+# HTML tables should be followed by a new cell because otherwise text gets jammed next to them
 with herzog.Cell("markdown"):
     """
     Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
 
-    ## Check kernel type
+    ### Check kernel type
 
     A kernel is a _computational engine_ that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a `Python 3` kernel. In the upper right corner of the notebook, just under the Notebook Runtime, it should say `Python 3`. If it doesn't, you can switch it by navigating to the Kernel menu and selecting `Change kernel`.
 
-    ## Install packages
+    ### Install packages
     """
 
 with herzog.Cell("python"):
@@ -57,7 +63,7 @@ with herzog.Cell("markdown"):
     """
     Make sure to restart the kernel whenever you pip install things in a Jupyter notebook.
 
-    ## Import all the packages this notebook will use
+    ### Import all the packages this notebook will use
     """
 
 with herzog.Cell("python"):
@@ -120,3 +126,12 @@ with herzog.Cell("python"):
     # Consolidate the phenotypic data using the function defined in the terra-util notebook
     consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)  #type: ignore  # noqa
 
+with herzog.Cell("markdown"):
+    """
+    With your phenotypic data now consolidated, you can move on to the second notebook in this workspace.
+
+
+    ### Info
+    Author: Beth Sheets (UCSC)
+    Update: Ash O'Farrell (UCSC)
+    The authorship and updating of this notebook was performed under the BioData Catalyst grant.
