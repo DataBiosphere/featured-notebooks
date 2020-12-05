@@ -792,7 +792,7 @@ with herzog.Cell("markdown"):
         5. Hail Team. Hail 0.2.13-81ab564db2b4. https://github.com/hail-is/hail/releases/tag/0.2.13.
 
     ## Authorship
-    These notebooks were converted by Beth Sheets (UCSC) and Ash O'Farrell (UCSC) as part of the Biodata Catalyst grant.
+    Much of the source code and tutorial was developed by Tim Majarian in the Manning Lab at the Broad Institute. The notebooks were developed to work in the BioData Catalyst ecosystem by Beth Sheets (UCSC) and Ash O'Farrell (UCSC) as part of the NHLBI BioData Catalyst grant.
 
     ## License
     Copyright Broad Institute, 2019 | BSD-3
