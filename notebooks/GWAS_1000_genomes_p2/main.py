@@ -69,6 +69,10 @@ with herzog.Cell("markdown"):
 with herzog.Cell("markdown"):
     """
     Click the "Replace" button when you are done, and Terra will begin to create a new runtime with your settings. When it is finished, it will pop up asking you to apply the new settings.
+
+    ### A note on runtime settings
+    We're catering this VM to a relatively small dataset. When using your own data, you need to consider the file size of your VCFs, which will affect not just disk size but also memory. Additionally, more workers will help the analysis go quicker.
+
     ## Check kernel type
     A kernel is a _computational engine_ that executes the code in the notebook. You can think of it as defining the programming language. For this notebook, we'll use a `Python 3` kernel. In the upper right corner of the notebook, just under the Notebook Runtime, it should say `Python 3`. If it doesn't, you can switch it by navigating to the Kernel menu and selecting `Change kernel`.
 
