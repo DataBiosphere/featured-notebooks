@@ -17,7 +17,7 @@ os.environ['GOOGLE_PROJECT'] = "anvil-stage-demo"
 with herzog.Cell("markdown"):
     """
     # Introduction
-    
+
     *version: 2.0*
     ----
 
