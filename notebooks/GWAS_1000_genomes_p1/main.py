@@ -120,6 +120,8 @@ with herzog.Cell("markdown"):
     * Joins all clinical data tables into a single consolidated_metadata table in the Terra data section
     * This join forces all entities (individuals) to be present in every clinical table, so some individuals may be removed. Consider how this affects your dataset.
     * Renames attribute fields to have a prefix of the original entity type (for example: "demographic_annotated_sex", where demographic is the original entity type, annotated_sex is the attribute field)
+
+    When working on data imported from Gen3, you will see most columns have names beginning with "pfb:" before the rest of the column name such as pfb:demographic_annotated_sex. PFB, which stands for Portable Format for Bioinfomatics, is a common namespace attribute that aids in interoperability with other NIH ecosystems.
     """
 
 with herzog.Cell("python"):
