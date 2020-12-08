@@ -25,14 +25,13 @@ $(NOTEBOOKS):
 
 $(PUBLISH):
 	$(MAKE) $(@:publish/%=notebooks/%/notebook.ipynb)
-	scripts/publish.sh $(@:publish/%=notebooks/%/notebook.ipynb) $(@:publish/%=notebooks/%/publish.txt) 
+	$(BDCAT_NOTEBOOKS_HOME)/scripts/publish.sh $(@:publish/%=notebooks/%/notebook.ipynb) $(@:publish/%=notebooks/%/publish.txt) 
 
 $(TESTS):
 	$(BDCAT_NOTEBOOKS_HOME)/scripts/run_leo_container.sh $(@:test/%=%)
 	$(MAKE) $(@:test/%=notebooks/%/notebook.ipynb)
 
 $(CICD_TESTS):
-	${LEO_PIP} install --upgrade -r $(@:cicd_test/%=notebooks/%)/requirements.txt
 	${LEO_PYTHON} $(@:cicd_test/%=notebooks/%)/main.py
 	$(MAKE) $(@:cicd_test/%=notebooks/%/notebook.ipynb)
 

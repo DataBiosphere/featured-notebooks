@@ -36,13 +36,14 @@ verify-gitlab-yml:
 
 .notebook-test:
   stage: test
-  image: ${LEO_IMAGE}
+  image: \$IMAGE
   before_script:
     - mkdir -p ~/.config/gcloud
     - cp \$TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - source environment
+    - if [[ -e notebooks/\$NOTEBOOK/leo_config ]]; then source notebooks/\$NOTEBOOK/leo_config; fi
     - \$LEO_PIP install --upgrade -r requirements-dev.txt
-    - \$LEO_PIP install --upgrade -r \$BDCAT_NOTEBOOKS_HOME/notebooks/\$NOTEBOOK/requirements.txt
+    - \$LEO_PIP install --upgrade -r notebooks/\$NOTEBOOK/requirements.txt
   script:
     - make lint/\$NOTEBOOK
     - make mypy/\$NOTEBOOK
@@ -50,9 +51,14 @@ verify-gitlab-yml:
 EOF
 
 for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -z | xargs -r0); do
+    source environment
+    if [[ -e "${nb}/leo_config" ]]; then
+        source "${nb}/leo_config"
+    fi
     echo "" >> ${out}
     echo "$(basename ${nb}):" >> ${out}
     echo "  extends: .notebook-test" >> ${out}
     echo "  variables:" >> ${out}
     echo "    NOTEBOOK: \"$(basename ${nb})\"" >> ${out}
+    echo "    IMAGE: ${LEO_IMAGE}" >> ${out}
 done

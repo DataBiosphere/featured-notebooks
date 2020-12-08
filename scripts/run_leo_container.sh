@@ -14,6 +14,10 @@ set -euo pipefail
 NOTEBOOK=$1
 CONTAINER=${NOTEBOOK}
 
+if [[ -e ${BDCAT_NOTEBOOKS_HOME}/notebooks/${NOTEBOOK}/leo_config ]]; then
+    source ${BDCAT_NOTEBOOKS_HOME}/notebooks/${NOTEBOOK}/leo_config
+fi
+
 docker kill $1 1>&2 || :
 docker rm $1 1>&2 || :
 docker pull ${LEO_IMAGE} 1>&2
