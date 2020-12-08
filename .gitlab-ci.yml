@@ -17,13 +17,14 @@ verify-gitlab-yml:
 
 .notebook-test:
   stage: test
-  image: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+  image: $IMAGE
   before_script:
     - mkdir -p ~/.config/gcloud
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - source environment
+    - if [[ -e notebooks/$NOTEBOOK/leo_config ]]; then source notebooks/$NOTEBOOK/leo_config; fi
     - $LEO_PIP install --upgrade -r requirements-dev.txt
-    - $LEO_PIP install --upgrade -r $BDCAT_NOTEBOOKS_HOME/notebooks/$NOTEBOOK/requirements.txt
+    - $LEO_PIP install --upgrade -r notebooks/$NOTEBOOK/requirements.txt
   script:
     - make lint/$NOTEBOOK
     - make mypy/$NOTEBOOK
@@ -33,23 +34,28 @@ byod:
   extends: .notebook-test
   variables:
     NOTEBOOK: "byod"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
 prepare_igv_viewer_input:
   extends: .notebook-test
   variables:
     NOTEBOOK: "prepare_igv_viewer_input"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
 vcf_merge_subsample_tutorial:
   extends: .notebook-test
   variables:
     NOTEBOOK: "vcf_merge_subsample_tutorial"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
 workflow_cost_estimator:
   extends: .notebook-test
   variables:
     NOTEBOOK: "workflow_cost_estimator"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:1.0.12
 
 xvcfmerge_array_input:
   extends: .notebook-test
   variables:
     NOTEBOOK: "xvcfmerge_array_input"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
