@@ -41,6 +41,8 @@ verify-gitlab-yml:
     - source environment
     - $LEO_PIP install --upgrade -r requirements-dev.txt
   script:
+    - make lint/$NOTEBOOK
+    - make mypy/$NOTEBOOK
     - make cicd_test/$NOTEBOOK
 EOF
 
