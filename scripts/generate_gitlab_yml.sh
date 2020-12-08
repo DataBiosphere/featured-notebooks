@@ -14,11 +14,11 @@ fi
 
 out=$1
 
-cat << 'EOF' > $1
+# Escaped variables, e.g. \$TEST_MULE_CREDENTIALS, are not expanded in the heredoc defined below
+# during this script's execution.
+cat << EOF > $1
 # This file is generated and should not be modified directly.
 # Edit 'scripts/generate_gitlab_yaml.sh' instead
-
-image: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
 stages:
   - verify-gitlab-yml
@@ -29,21 +29,24 @@ before_script:
 
 verify-gitlab-yml:
   stage: verify-gitlab-yml
+  image: ${LEO_IMAGE}
   script: 
     - source environment
     - make verify-gitlab-yml
 
 .notebook-test:
   stage: test
+  image: ${LEO_IMAGE}
   before_script:
     - mkdir -p ~/.config/gcloud
-    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
+    - cp \$TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - source environment
-    - $LEO_PIP install --upgrade -r requirements-dev.txt
+    - \$LEO_PIP install --upgrade -r requirements-dev.txt
+    - \$LEO_PIP install --upgrade -r \$BDCAT_NOTEBOOKS_HOME/notebooks/\$NOTEBOOK/requirements.txt
   script:
-    - make lint/$NOTEBOOK
-    - make mypy/$NOTEBOOK
-    - make cicd_test/$NOTEBOOK
+    - make lint/\$NOTEBOOK
+    - make mypy/\$NOTEBOOK
+    - make cicd_test/\$NOTEBOOK
 EOF
 
 for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -z | xargs -r0); do

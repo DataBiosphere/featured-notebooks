@@ -4,7 +4,7 @@ while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
 export BDCAT_NOTEBOOKS_HOME="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 
 set -a
-LEO_IMAGE="us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.12"
+LEO_IMAGE="us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17"
 LEO_USER_HOME=/home/jupyter-user
 LEO_REPO_DIR=${LEO_USER_HOME}/$(basename ${BDCAT_NOTEBOOKS_HOME})
 LEO_PYTHON=${LEO_USER_HOME}/miniconda/bin/python
