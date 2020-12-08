@@ -1,7 +1,8 @@
 #!/bin/bash
 function usage() {
-    echo 'Given a Docker container name, kill and remove existing named'
-    echo 'container and launch a new one.'
+    echo 'Given a notebook name, launch the Docker image configered in'
+    echo '`notebooks/${NOTEBOOK_NAME}/leo_config`, install requirements,'
+    echo 'and execute the notebook. '
 }
 if [[ $# != 1 ]]; then
     usage
@@ -10,14 +11,19 @@ fi
 
 set -euo pipefail
 
-CONTAINER_NAME=$1
+NOTEBOOK=$1
+CONTAINER=${NOTEBOOK}
+
 docker kill $1 1>&2 || :
 docker rm $1 1>&2 || :
 docker pull ${LEO_IMAGE} 1>&2
 wid=$(docker run \
   -v ${BDCAT_NOTEBOOKS_HOME}:${LEO_REPO_DIR} \
   -v ~/.config:/home/jupyter-user/.config \
-  --name "${CONTAINER_NAME}" \
+  --name "${CONTAINER}" \
   -it -d \
   ${LEO_IMAGE})
 echo -n ${wid}
+
+docker exec ${CONTAINER} bash -c "${LEO_PIP} install --upgrade -r ${LEO_REPO_DIR}/notebooks/${NOTEBOOK}/requirements.txt"
+docker exec ${CONTAINER} ${LEO_PYTHON} "${LEO_REPO_DIR}/notebooks/${NOTEBOOK}/main.py"

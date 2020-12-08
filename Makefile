@@ -28,9 +28,7 @@ $(PUBLISH):
 	scripts/publish.sh $(@:publish/%=notebooks/%/notebook.ipynb) $(@:publish/%=notebooks/%/publish.txt) 
 
 $(TESTS):
-	scripts/run_leo_container.sh $(@:test/%=%)
-	docker exec $(@:test/%=%) bash -c "$(LEO_PIP) install --upgrade -r $(LEO_REPO_DIR)/$(@:test/%=notebooks/%/requirements.txt)"
-	docker exec $(@:test/%=%) $(LEO_PYTHON) $(LEO_REPO_DIR)/$(@:test/%=notebooks/%/main.py)
+	$(BDCAT_NOTEBOOKS_HOME)/scripts/run_leo_container.sh $(@:test/%=%)
 	$(MAKE) $(@:test/%=notebooks/%/notebook.ipynb)
 
 $(CICD_TESTS):
