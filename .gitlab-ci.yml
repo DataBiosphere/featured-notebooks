@@ -23,23 +23,30 @@ verify-gitlab-yml:
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - source environment
     - $LEO_PIP install --upgrade -r requirements-dev.txt
+  script:
+    - make cicd_test/$NOTEBOOK
 
 byod:
   extends: .notebook-test
-  script: make cicd_test/byod
+  variables:
+    NOTEBOOK: "byod"
 
 prepare_igv_viewer_input:
   extends: .notebook-test
-  script: make cicd_test/prepare_igv_viewer_input
+  variables:
+    NOTEBOOK: "prepare_igv_viewer_input"
 
 vcf_merge_subsample_tutorial:
   extends: .notebook-test
-  script: make cicd_test/vcf_merge_subsample_tutorial
+  variables:
+    NOTEBOOK: "vcf_merge_subsample_tutorial"
 
 workflow_cost_estimator:
   extends: .notebook-test
-  script: make cicd_test/workflow_cost_estimator
+  variables:
+    NOTEBOOK: "workflow_cost_estimator"
 
 xvcfmerge_array_input:
   extends: .notebook-test
-  script: make cicd_test/xvcfmerge_array_input
+  variables:
+    NOTEBOOK: "xvcfmerge_array_input"
