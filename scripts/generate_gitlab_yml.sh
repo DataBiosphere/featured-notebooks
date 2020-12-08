@@ -40,11 +40,14 @@ verify-gitlab-yml:
     - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
     - source environment
     - $LEO_PIP install --upgrade -r requirements-dev.txt
+  script:
+    - make cicd_test/$NOTEBOOK
 EOF
 
 for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -z | xargs -r0); do
     echo "" >> ${out}
     echo "$(basename ${nb}):" >> ${out}
     echo "  extends: .notebook-test" >> ${out}
-    echo "  script: make cicd_test/$(basename ${nb})" >> ${out}
+    echo "  variables:" >> ${out}
+    echo "    NOTEBOOK: \"$(basename ${nb})\"" >> ${out}
 done
