@@ -6,7 +6,24 @@
 # Notebook author: Beth Sheets
 # Herzogification: Ash O'Farrell
 
+import os
+from unittest import mock
+
 import herzog
+
+
+# Heavyweight dependencies (e.g. hail, Spark) make it challenging to create robust automated testing for this notebook.
+# In order to get it to pass Python execution, many objects are mocked with unittest.mock.MagicMock. These have been
+# marked with `# test fixture`. This will at least catch some syntax errors.
+#
+# In the meantime, this notebook should be tested manually in a Terra notebook environment.
+
+consolidate_gen3_pheno_tables = mock.MagicMock()  # test fixture
+get_terra_table_to_df = mock.MagicMock()  # test fixture
+get_ipython = mock.MagicMock()  # test fixture
+os.environ['GOOGLE_PROJECT'] = "foo"  # test fixture
+os.environ['WORKSPACE_BUCKET'] = "bar"  # test fixture
+
 with herzog.Cell("markdown"):
     """
     # Data disclaimer
@@ -106,6 +123,10 @@ with herzog.Cell("python"):
     import time
     from datetime import timedelta
     import tenacity
+
+fiss = mock.MagicMock()  # noqa # test fixture
+sns = mock.MagicMock()  # noqa test fixture
+pd = mock.MagicMock()  # noqa test fixture
 with herzog.Cell("markdown"):
     """
     # Load workspace data
@@ -165,7 +186,7 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     consolidated_table_name = "consolidated_metadata"
 with herzog.Cell("python"):
-    consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)  # noqa: F821
+    consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)
 with herzog.Cell("markdown"):
     """
     ## Read data from the workspace data model
@@ -173,7 +194,7 @@ with herzog.Cell("markdown"):
     Here, we use another function in the terra_data_util notebook to use Terra's fiss API to load the consolidate metadata into a pandas dataframe:
     """
 with herzog.Cell("python"):
-    samples = get_terra_table_to_df(PROJECT, WORKSPACE, consolidated_table_name)  # noqa: F821
+    samples = get_terra_table_to_df(PROJECT, WORKSPACE, consolidated_table_name)
     samples
 with herzog.Cell("python"):
     # We modify the first column of the dataframe to be relevant to TOPMed nomenclature
@@ -275,7 +296,7 @@ with herzog.Cell("markdown"):
     """
 with herzog.Cell("python"):
     vcf_base = bucket + 'ph*/ph*/*.vcf.gz'
-    vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')  # noqa: F821
+    vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')
     vcf_paths = vcf_paths
     vcf_paths
 with herzog.Cell("markdown"):
@@ -288,12 +309,15 @@ with herzog.Cell("markdown"):
     * **Bokeh** - an interactive visualization library
     """
 with herzog.Cell("python"):
-    # Start Hail context using Spark
     import hail as hl
-    from bokeh.io import *
-    #import bokeh.io  # don't use; this breaks the PCA
+    import bokeh.io as bokeh_io
     from bokeh.resources import INLINE
-    bokeh.io.output_notebook(INLINE)
+
+bokeh_io = mock.MagicMock()  # noqa # test fixture
+hl = mock.MagicMock()  # noqa # test fixture
+with herzog.Cell("python"):
+    # Start Hail context using Spark
+    bokeh_io.output_notebook(INLINE)
     hl.init(default_reference="GRCh38", log='population-genetics.log')
 with herzog.Cell("markdown"):
     """
@@ -416,6 +440,8 @@ with herzog.Cell("markdown"):
     ### Filter for only common variants
     Because this tutorial uses few individuals, we have poor statistical power for identifying rare variant associaitons. We filter to only common variants, those with a minor allele frequency greater than 0.01.
     """
+
+mt.variant_qc.AF = [1, 2, 3]  # test fixture
 with herzog.Cell("python"):
     mt = (
         mt
@@ -476,14 +502,14 @@ with herzog.Cell("markdown"):
     Check that these files were successfully loaded to the bucket:
     """
 with herzog.Cell("python"):
-    get_ipython().system(" gsutil ls {bucket + 'MyProject_MAFgt0.01.vcf.bgz/*'}")  # noqa: F821
+    get_ipython().system(" gsutil ls {bucket + 'MyProject_MAFgt0.01.vcf.bgz/*'}")
 with herzog.Cell("markdown"):
     """
     Here, we create an array pointing to all of the shards that make up the common variants for our dataset. We use this array in the last section of this notebook called "Generate a new Terra data model called "sample_set" and add all of our derived data files to this entity."
     """
 with herzog.Cell("python"):
     vcf_filtered_base = bucket + 'MyProject_MAFgt0.01.vcf.bgz/*.bgz'
-    vcf_filtered_path = get_ipython().getoutput('gsutil ls {vcf_filtered_base}')  # noqa: F821
+    vcf_filtered_path = get_ipython().getoutput('gsutil ls {vcf_filtered_base}')
     vcf_filtered_array = vcf_filtered_path
     vcf_filtered_array
 with herzog.Cell("markdown"):
@@ -547,12 +573,13 @@ with herzog.Cell("markdown"):
                         mt.scores[1],
                         label = mt.pheno.ancestry,
                         title = 'PCA', xlabel = 'PC1', ylabel = 'PC2')
-    show(p)
+    bokeh_io.show(p)
     ```
 
 
     ### Run the PCA
     """
+hl.hwe_normalized_pca.return_value = [mock.MagicMock() for _ in range(3)]  # test fixture
 with herzog.Cell("python"):
     _, pcs, _ = hl.hwe_normalized_pca(mt.GT, k=5)
 with herzog.Cell("markdown"):
@@ -563,7 +590,7 @@ with herzog.Cell("python"):
     p = hl.plot.scatter(pcs.scores[0],
                         pcs.scores[1],
                         xlabel='PC1', ylabel='PC2')
-    show(p)  # noqa: F821
+    bokeh_io.show(p)
 with herzog.Cell("markdown"):
     """
     ### Decide whether genetic stratification should be included in your association tests
@@ -717,7 +744,6 @@ with herzog.Cell("python"):
     #!gsutil cp {notebook_out} {bucket + notebook_out}
     #!gsutil cp {html_out} {bucket + html_out}
     pass
-
 with herzog.Cell("python"):
     elapsed_notebook_time = time.time() - start_notebook_time
     print(timedelta(seconds=elapsed_notebook_time))
