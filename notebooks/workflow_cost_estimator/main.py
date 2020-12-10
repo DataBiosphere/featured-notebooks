@@ -95,6 +95,7 @@ with herzog.Cell("python"):
               "%7s" % ("$%.2f" % shard_info['cost']))
         shard_info['duration'] /= 3600  # convert from seconds to hours
     print("%108s" % ("total_cost: $%.2f" % round(total_cost, 2)))
+    # If the output here is blank, your submission probably hasn't started yet. Try re-running this notebook in a few minutes.
 
 with herzog.Cell("markdown"):
     """
