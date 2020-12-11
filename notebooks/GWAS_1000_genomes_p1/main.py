@@ -86,7 +86,7 @@ with herzog.Cell("python"):
     PROJECT
 
 with herzog.Cell("python"):
-    WORKSPACE = os.path.basename(os.path.dirname(os.getcwd()))
+    WORKSPACE = os.environ['WORKSPACE_NAME']
     WORKSPACE
 
 with herzog.Cell("python"):
