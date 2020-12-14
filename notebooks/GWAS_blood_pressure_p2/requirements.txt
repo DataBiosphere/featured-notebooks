@@ -4,3 +4,6 @@ tenacity
 pyspark
 pandas
 matplotlib
+seaborn
+hail
+tenacity
