@@ -8,10 +8,16 @@
 
 import os
 import herzog
-from unittest import mock
 
-file_name = "CCDG_13607_B01_GRM_WGS_2019-02-19_chr22.recalibrated_variants.annotated.vcf.gz"  # test fixture
-drs_url = "drs://dg.4503:dg.4503/dbf99b00-414c-49b7-b062-140350acf379"  # test fixture
+from unittest import mock
+from terra_notebook_utils import table, drs
+table.print_column = mock.MagicMock()  # test fixture
+drs.copy = mock.MagicMock()  # test fixture
+drs.extract_tar_gz = mock.MagicMock()  # test fixture
+
+# open-access test files we might be able to use later -- note these are not tars
+#file_name = "CCDG_13607_B01_GRM_WGS_2019-02-19_chr22.recalibrated_variants.annotated.vcf.gz"
+#drs_url = "drs://dg.4503:dg.4503/dbf99b00-414c-49b7-b062-140350acf379"
 
 with herzog.Cell("markdown"):
     """
