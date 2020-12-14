@@ -9,6 +9,10 @@
 
 import os
 import herzog
+from unittest import mock
+
+# This notebook has a dependency on terra_data_table_util that, for now, is being mocked
+consolidate_gen3_pheno_tables = mock.MagicMock()  # test fixture
 
 # Mock the environment
 os.environ['WORKSPACE_NAME'] = "cicd-tester-1000genomes-gwas"
