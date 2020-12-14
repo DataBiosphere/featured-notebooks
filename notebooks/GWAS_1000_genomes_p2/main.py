@@ -9,6 +9,16 @@
 import os
 import herzog
 
+from unittest import mock
+# Heavyweight dependencies (e.g. hail, Spark) make it challenging to create robust automated testing for this notebook.
+# In order to get it to pass Python execution, many objects are mocked with unittest.mock.MagicMock. These have been
+# marked with `# test fixture`. This will at least catch some syntax errors.
+#
+# In the meantime, this notebook should be tested manually in a Terra notebook environment.
+
+get_terra_table_to_df = mock.MagicMock()  # test fixture
+get_ipython = mock.MagicMock()  # test fixture
+
 # Mock the environment
 os.environ['WORKSPACE_NAME'] = "cicd-tester-1000genomes-gwas"
 os.environ['WORKSPACE_BUCKET'] = "gs://fc-eb68164b-bae8-4892-83b8-637c1385b09a"
@@ -158,7 +168,7 @@ with herzog.Cell("python"):
 
 with herzog.Cell("python"):
     # Pull the phenotypic data from the consolidated table into a pandas dataframe
-    samples = get_terra_table_to_df(PROJECT, WORKSPACE, consolidated_table_name)  # noqa F821
+    samples = get_terra_table_to_df(PROJECT, WORKSPACE, consolidated_table_name)
 
     # Print out the top few rows (notice the number of columns)
     samples.head()
@@ -351,7 +361,7 @@ with herzog.Cell("python"):
     vcf_base = "gs://terra-featured-workspaces/GWAS/1kg-genotypes/subset/*.vcf.bgz"
 
     # Use gsutil to assign the list of the files to a variable
-    vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')  # noqa F821
+    vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')
 
     # Print a few of the paths to verify
     pprint(vcf_paths[1:3])
@@ -370,7 +380,7 @@ with herzog.Cell("python"):
     import bokeh.io as bokeh_io
     from bokeh.resources import INLINE
     bokeh_io.output_notebook(INLINE)
-    get_ipython().run_line_magic('matplotlib', 'inline')  # noqa F821
+    get_ipython().run_line_magic('matplotlib', 'inline')
 
 with herzog.Cell("python"):
     # After importing, start a Hail session
@@ -705,7 +715,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     vcf_filtered_base = bucket + 'MyProject_MAFgt0.05.vcf.bgz/*.bgz'
-    vcf_filtered_path = get_ipython().getoutput('gsutil ls {vcf_filtered_base}')  # noqa F821
+    vcf_filtered_path = get_ipython().getoutput('gsutil ls {vcf_filtered_base}')
     vcf_filtered_array = vcf_filtered_path
     vcf_filtered_array
 
