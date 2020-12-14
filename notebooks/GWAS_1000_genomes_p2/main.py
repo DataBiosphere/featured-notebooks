@@ -368,9 +368,8 @@ with herzog.Cell("python"):
     # Import some packages we will use, and set some parameters so plots render nicely
     import hail as hl
     import bokeh.io as bokeh_io
-    from bokeh.io import *  # noqa F403
     from bokeh.resources import INLINE
-    bokeh.io.output_notebook(INLINE)
+    bokeh_io.output_notebook(INLINE)
     get_ipython().run_line_magic('matplotlib', 'inline')  # noqa F821
 
 with herzog.Cell("python"):
