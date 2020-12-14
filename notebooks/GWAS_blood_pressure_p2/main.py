@@ -169,7 +169,8 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     consolidated_table_name = "consolidated_metadata"
 with herzog.Cell("python"):
-    consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)
+    #consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)
+    pass
 with herzog.Cell("markdown"):
     """
     ## Read data from the workspace data model
