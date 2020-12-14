@@ -132,8 +132,8 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Get the Google billing project name and workspace name
-    PROJECT = os.environ['WORKSPACE_NAMESPACE']
-    WORKSPACE = os.path.basename(os.path.dirname(os.getcwd()))
+    PROJECT = os.environ['GOOGLE_PROJECT']
+    WORKSPACE = os.environ['WORKSPACE_NAME']
     bucket = os.environ['WORKSPACE_BUCKET'] + "/"
 
     # Verify that we've captured the environment variables
