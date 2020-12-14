@@ -367,7 +367,7 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     # Import some packages we will use, and set some parameters so plots render nicely
     import hail as hl
-    import bokeh.io
+    import bokeh.io as bokeh_io
     from bokeh.io import *  # noqa F403
     from bokeh.resources import INLINE
     bokeh.io.output_notebook(INLINE)
@@ -573,7 +573,7 @@ with herzog.Cell("python"):
                         mt.scores[1],
                         label=mt.pheno.demographic_population,
                         title='PCA', xlabel='PC1', ylabel='PC2')
-    show(p)  # noqa F821
+    bokeh_io.show(p)
 
 with herzog.Cell("markdown"):
     """
