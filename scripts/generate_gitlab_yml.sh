@@ -47,5 +47,4 @@ for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -z | x
     echo "$(basename ${nb}):" >> ${out}
     echo "  extends: .notebook-test" >> ${out}
     echo "  script: make cicd_test/$(basename ${nb})" >> ${out}
-    echo "  image: "python:3.7"
 done
