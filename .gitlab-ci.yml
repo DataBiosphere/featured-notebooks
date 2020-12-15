@@ -35,7 +35,6 @@ GWAS_1000_genomes_p1:
 GWAS_1000_genomes_p2:
   extends: .notebook-test
   script: make cicd_test/GWAS_1000_genomes_p2
-  image: "python:3.7"
 
 prepare_igv_viewer_input:
   extends: .notebook-test
