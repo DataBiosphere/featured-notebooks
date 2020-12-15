@@ -18,7 +18,9 @@ from unittest import mock
 
 get_terra_table_to_df = mock.MagicMock()  # test fixture
 get_ipython = mock.MagicMock()  # test fixture
-sns.jointplo = mock.MagicMock()  # test fixture
+
+import seaborn as sns
+sns.jointplot = mock.MagicMock()  # test fixture
 
 # Mock the environment
 os.environ['WORKSPACE_NAME'] = "cicd-tester-1000genomes-gwas"
