@@ -21,6 +21,7 @@ get_ipython = mock.MagicMock()  # test fixture
 
 import seaborn as sns
 sns.jointplot = mock.MagicMock()  # test fixture
+sns.boxPlot = mock.MagicMock()  # test fixture
 
 # Mock the environment
 os.environ['WORKSPACE_NAME'] = "cicd-tester-1000genomes-gwas"
@@ -321,8 +322,8 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     # Increase plot size to avoid overcrowding
     plt.rcParams["figure.figsize"] = [30, 10]
-
     boxPlot(samples, catagorical_var="demographic_population", continuous_var="demographic_height_baseline", color_by="demographic_annotated_sex", force_x=True)
+
 with herzog.Cell("python"):
     # Select the metadata we want to use and check our output
     samples = samples[["subject_id", "demographic_age_at_index", "demographic_population", "demographic_bmi_baseline", "demographic_annotated_sex"]]
