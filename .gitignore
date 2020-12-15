@@ -7,3 +7,4 @@ __pycache__
 .coverage*
 .mypy_cache
 *.ipynb
+.DS_Store
