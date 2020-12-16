@@ -5,6 +5,14 @@ Example Jupyter notebook source files for the BioData Catalyst consortium. These
 Jupyter notebook `.ipynb` files are generated from source files with the
 [herzog](https://github.com/xbrianh/herzog) library. 
 
+## Notebooks Represented
+* BYOD -- Tutorial for bringing your own data to the Terra platform
+* GWAS Blood Pressure -- Two part series teaching how to use Gen3 data to preform a GWAS; [mirror of template workspace](https://app.gitbook.com/@bdcatalyst/s/biodata-catalyst-tutorials/tutorials/terra-tutorials/genome-wide-association-study-tutorial)
+* Prepare IGV Viewer Input -- Prepares data for IGV within Terra
+* VCF Merge/Subsample Tutorial -- Merging and subsampling for jointly called VCFs
+* Workflow Cost Estimator -- Estimate costs of workflows, even on billing projects that obscure this information
+* xvcfmerge Array Input -- Demonstrate Terra's data table structure being converted to inputs for xvcfmerge workflows
+
 ### Notebook Source Schema
 A notebook is defined by creating a directory under ${REPO_ROOT}/notebooks containing
   - `main.py`, the source script for the notebook in [herzog](https://github.com/xbrianh/herzog) format.
