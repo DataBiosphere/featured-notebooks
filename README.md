@@ -7,7 +7,7 @@ Jupyter notebook `.ipynb` files are generated from source files with the
 
 ## Notebooks Represented
 * BYOD -- Tutorial for bringing your own data to the Terra platform
-* GWAS Blood Pressure -- Two part series teaching how to use Gen3 data to preform a GWAS; [mirror of template workspace](https://app.gitbook.com/@bdcatalyst/s/biodata-catalyst-tutorials/tutorials/terra-tutorials/bdcatalyst-gwas-terra-gen3-dockstore)
+* GWAS Blood Pressure -- Two part series teaching how to use Gen3 data to perform a GWAS; [mirror of template workspace](https://app.gitbook.com/@bdcatalyst/s/biodata-catalyst-tutorials/tutorials/terra-tutorials/bdcatalyst-gwas-terra-gen3-dockstore)
 * Prepare IGV Viewer Input -- Prepares data for IGV within Terra
 * VCF Merge/Subsample Tutorial -- Merging and subsampling for jointly called VCFs
 * Workflow Cost Estimator -- Estimate costs of workflows, even on billing projects that obscure this information
