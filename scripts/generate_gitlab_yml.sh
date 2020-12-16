@@ -50,6 +50,7 @@ verify-gitlab-yml:
     - make cicd_test/\$NOTEBOOK
 EOF
 
+export LC_ALL='en_US.UTF-8'  # Needed to ensure `sort` works as expected on Ubuntu (and perhaps other systems)
 for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -z | xargs -r0); do
     source environment
     if [[ -e "${nb}/leo_config" ]]; then
