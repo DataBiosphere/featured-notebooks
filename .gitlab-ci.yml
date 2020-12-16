@@ -40,13 +40,13 @@ GWAS_blood_pressure_p1:
   extends: .notebook-test
   variables:
     NOTEBOOK: "GWAS_blood_pressure_p1"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:0.0.29
 
 GWAS_blood_pressure_p2:
   extends: .notebook-test
   variables:
     NOTEBOOK: "GWAS_blood_pressure_p2"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:0.0.29
 
 prepare_igv_viewer_input:
   extends: .notebook-test
