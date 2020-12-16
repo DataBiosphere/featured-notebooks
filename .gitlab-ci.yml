@@ -38,11 +38,15 @@ byod:
 
 GWAS_blood_pressure_p1:
   extends: .notebook-test
-  script: make cicd_test/GWAS_blood_pressure_p1
+  variables:
+    NOTEBOOK: "GWAS_blood_pressure_p1"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
 GWAS_blood_pressure_p2:
   extends: .notebook-test
-  script: make cicd_test/GWAS_blood_pressure_p2
+  variables:
+    NOTEBOOK: "GWAS_blood_pressure_p2"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
 prepare_igv_viewer_input:
   extends: .notebook-test
