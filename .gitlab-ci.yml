@@ -30,6 +30,12 @@ verify-gitlab-yml:
     - make mypy/$NOTEBOOK
     - make cicd_test/$NOTEBOOK
 
+byod:
+  extends: .notebook-test
+  variables:
+    NOTEBOOK: "byod"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+
 GWAS_blood_pressure_p1:
   extends: .notebook-test
   variables:
@@ -40,12 +46,6 @@ GWAS_blood_pressure_p2:
   extends: .notebook-test
   variables:
     NOTEBOOK: "GWAS_blood_pressure_p2"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
-
-byod:
-  extends: .notebook-test
-  variables:
-    NOTEBOOK: "byod"
     IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
 prepare_igv_viewer_input:
