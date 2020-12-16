@@ -10,6 +10,7 @@ import os
 from unittest import mock
 
 import herzog
+import pandas  # why do I have to do this twice????
 
 
 # Heavyweight dependencies (e.g. hail, Spark) make it challenging to create robust automated testing for this notebook.
@@ -149,124 +150,23 @@ with herzog.Cell("python"):
     bucket = os.environ['WORKSPACE_BUCKET']
     bucket = bucket + '/'
     bucket
+
+with herzog.Cell("python"):
+    # Load phenotypic data from previous notebook
+    samples_traits_for_analysis = pandas.read_csv('bp-phenotypes.csv')
+
 with herzog.Cell("markdown"):
     """
     Here, we define some output files we will generate in this notebook.
     """
 with herzog.Cell("python"):
-    phenotype_out = 'bp-phenotypes.csv'
+    phenotype_out = 'bp-phenotypes-2.csv'
     kinship_out = 'bp-kinship.csv'
-    notebook_out = 'bp-phenotypes.ipynb'
-    html_out = 'bp-phenotypes.html'
-    samples_out = 'samples_traits.csv'
-with herzog.Cell("python"):
-    # Take a look at all of the entities in of our workspace
-    ent_types = fiss.fapi.list_entity_types(PROJECT, WORKSPACE).json()
-    for t in ent_types.keys():
-        print(t, "count:", ent_types[t]['count'])
-with herzog.Cell("markdown"):
-    """
-    Note: If you receive an error here about the Firecloud model. Try restarting the notebook kernel and reruning the prior lines of code.
+    notebook_out = 'bp-phenotypes-2.ipynb'
+    html_out = 'bp-phenotypes-2.html'
+    samples_out = 'samples_traits-2.csv'
 
-    # Consolidate the Gen3 clinical entities into a single Terra data model using functions in the "terra_data_util" python notebook
 
-    The terra_data_util notebook was created to help researchers manipulate TOPMed data imported from Gen3. The notebook contains several functions for consolidating, renaming, and deleting entities in Terra. It is available as a notebook so that a researcher can easily edit functions for their specific use cases. Review the Gen3 data dictionary to understand how entities are related in the graph structure.
-    """
-with herzog.Cell("python"):
-    #Run the companion notebook. Note: it must be in the same workspace you are currently working in.
-    #%run terra_data_table_util.ipynb
-    pass
-with herzog.Cell("markdown"):
-    """
-    The consolidate_gen3_pheno_tables function:
-    * Joins all clinical data tables into a single consolidated_metadata table in the Terra data section
-    * This join forces all entities (individuals) to be present in every clinical table, so some individuals may be removed. Consider how this affects your dataset.
-    * Renames attribute fields to have a prefix of the original entity type (for example: "demographic_annotated_sex", where demographic is the original entity type, annotated_sex is the attribute field)
-    """
-with herzog.Cell("python"):
-    consolidated_table_name = "consolidated_metadata"
-with herzog.Cell("python"):
-    consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)
-with herzog.Cell("markdown"):
-    """
-    ## Read data from the workspace data model
-
-    Here, we use another function in the terra_data_util notebook to use Terra's fiss API to load the consolidate metadata into a pandas dataframe:
-    """
-with herzog.Cell("python"):
-    samples = get_terra_table_to_df(PROJECT, WORKSPACE, consolidated_table_name)
-    samples
-with herzog.Cell("python"):
-    # We modify the first column of the dataframe to be relevant to TOPMed nomenclature
-    samples.rename(columns={'entity:consolidated_metadata_id': 'subject_id'}, inplace=True)
-with herzog.Cell("python"):
-    # Verify the data
-    samples
-with herzog.Cell("markdown"):
-    """
-    # Examine sample phenotypes
-
-    Now let's take a look at the phenotype distributions. In a GWAS - and statistical genetics more generally - we should always be on the lookout for correlations within our dataset. Correlations between phenotypic values can confound our analysis, leading to results that may not represent true genetic associations with our traits. Exploring these relationships may help in choosing a reasonable set of covariates to model.
-
-    When generating plots, try to think about what we would expect a trait distribution to look like. Should it be uniform? skewed? normal? What about the distribution of two traits? What would this look like if the traits are correlated? uncorrelated? What axes of variation might confound a clear conclusion about a trait? More plotting functions for exploring phenotype data is available in [this featured workspace](https://app.terra.bio/#workspaces/fc-product-demo/2019_ASHG_Reproducible_GWAS).
-
-    Let's take a look at the distribution of an outcome, diastolic blood pressure values, across other categorical phenotypic variables that may covary with this phenotype.
-
-    ## Plot diastolic blood pressure by gender in this cohort
-
-    Depending on the project you imported and your phenotypes of interest, you will need to update the inputs for x, y, and hue.
-    """
-with herzog.Cell("python"):
-    plt.rcParams["figure.figsize"] = [12, 9]
-    ax = sns.boxplot(x="demographic_annotated_sex", y="blood_pressure_test_bp_diastolic", hue="medication_antihypertensive_meds", data=samples, palette=sns.xkcd_palette(["windows blue", "amber"]))
-with herzog.Cell("markdown"):
-    """
-    ## Plot systolic blood pressure distribution by sex and antihypertensive medications
-    """
-with herzog.Cell("python"):
-    # Let's also look at systolic blood pressure by gender in this cohort
-    ax = sns.boxplot(x="demographic_annotated_sex", y="blood_pressure_test_bp_systolic", hue="medication_antihypertensive_meds", data=samples, palette=sns.xkcd_palette(["windows blue", "amber"]))
-with herzog.Cell("markdown"):
-    """
-    ## Plot age at the time of the bp reading by gender
-    """
-with herzog.Cell("python"):
-    ax = sns.boxplot(x="demographic_annotated_sex", y="blood_pressure_test_age_at_bp_systolic", data=samples, palette=sns.xkcd_palette(["windows blue"]))
-with herzog.Cell("markdown"):
-    """
-    # Subset the dataframe to include only the metadata we are interested in for this analysis
-    """
-with herzog.Cell("python"):
-    #Select the metadata we want to use and check our output
-    samples_traits_for_analysis = samples[["subject_id", "sample_submitter_id", "demographic_annotated_sex", "blood_pressure_test_age_at_bp_systolic", "medication_antihypertensive_meds", "blood_pressure_test_bp_diastolic", "blood_pressure_test_bp_systolic"]]
-    samples_traits_for_analysis.head()
-with herzog.Cell("python"):
-    #Rename the second column to TOPMed nomenclature
-    samples_traits_for_analysis.rename(columns={'sample_submitter_id': 'nwd_id'}, inplace=True)
-    samples_traits_for_analysis.head()
-with herzog.Cell("python"):
-    #Reformat some of the data for downstream analyses
-    samples_traits_for_analysis.medication_antihypertensive_meds = samples_traits_for_analysis.medication_antihypertensive_meds.replace(['Not taking antihypertensive medication', "Taking antihypertensive medication"], [0, 1])
-    samples_traits_for_analysis.demographic_annotated_sex = samples_traits_for_analysis.demographic_annotated_sex.replace(['male', 'female'], ['M', 'F'])
-with herzog.Cell("python"):
-    #Check that formatting is correct
-    samples_traits_for_analysis
-with herzog.Cell("python"):
-    #Sum missing data for each column in the dataframe
-    samples_traits_for_analysis.isnull().sum()
-with herzog.Cell("python"):
-    #Remove rows with missing data
-    samples_traits_for_analysis = samples_traits_for_analysis.dropna()
-with herzog.Cell("python"):
-    #Check the dataset for duplicates of the TOPMed NWD_ID entity. Duplication should not be the case, but can occur.
-    #samples_traits_for_analysis['submitter_id'].duplicated()
-    len(samples_traits_for_analysis['subject_id'].unique())
-with herzog.Cell("python"):
-    #Drop duplicates
-    samples_traits_for_analysis = samples_traits_for_analysis.drop_duplicates(subset='subject_id')
-with herzog.Cell("python"):
-    #Check the data
-    samples_traits_for_analysis
 with herzog.Cell("python"):
     #Check out the distributions of the phenotypic data
     samples_traits_for_analysis.describe()
