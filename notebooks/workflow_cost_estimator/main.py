@@ -69,7 +69,7 @@ submission_id = "7d4d4bbd-6d3a-4e8f-848d-3992f5bd8e33"
 # TODO: workflow metadata expires after 40 days, which will cause this test to break. Is there a better way?
 
 with herzog.Cell("python"):
-    submission_id = "52290aa5-7ac4-4ac0-8087-e7e56f0c0e1e"
+    submission_id = "b3cd3f66-390a-41a9-9cdd-62593442d6fc"
     report = pd.DataFrame()
     for shard_info in cost_for_submission(submission_id):
         shard_info['duration'] /= 3600
