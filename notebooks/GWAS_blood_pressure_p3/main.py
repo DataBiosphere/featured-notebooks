@@ -153,7 +153,7 @@ with herzog.Cell("python"):
 
 with herzog.Cell("python"):
     # Load phenotypic data from previous notebook
-    samples_traits_for_analysis = pd.read_csv('bp-phenotypes.csv')
+    samples_traits_for_analysis = pd.read_csv(bucket+'bp-phenotypes.csv')
 
 with herzog.Cell("markdown"):
     """
