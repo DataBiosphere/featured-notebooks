@@ -65,8 +65,8 @@ with herzog.Cell("python"):
         print(s['submissionId'], s['submissionDate'], s['status'])
 
 # Insert a test submission id
-submissions = [s for s in list_submissions_chronological()]
-submission_id = submissions[-1]['submissionId']
+submission_id = "7d4d4bbd-6d3a-4e8f-848d-3992f5bd8e33"
+# TODO: workflow metadata expires after 40 days, which will cause this test to break. Is there a better way?
 
 with herzog.Cell("python"):
     # submission_id = "b25c93e8-41ad-4980-b63c-46963b0402bc"  # Uncomment and insert your submission id here
