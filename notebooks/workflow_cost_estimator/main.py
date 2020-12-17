@@ -17,7 +17,7 @@ with herzog.Cell("markdown"):
       - CPUs, Memory, and runtime is pulled from Terra's Firecloud API
         [monitorSubmission](https://api.firecloud.org/#/Submissions/monitorSubmission) endpoint. This information is
         available for 42 days after workflow completion.
-      - GCP Instance type is assumed custom configurations of eith N1 or N2 instance type.
+      - GCP Instance type is assumed custom configurations of either N1 or N2 instance type.
 
     *author: Brian Hannafious, Genomics Institute, University of California Santa Cruz*
     """
