@@ -51,7 +51,7 @@ GWAS_blood_pressure_p2:
 GWAS_blood_pressure_p3:
   extends: .notebook-test
   variables:
-    NOTEBOOK: "GWAS_blood_pressure_p2"
+    NOTEBOOK: "GWAS_blood_pressure_p3"
     IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:0.0.29
 
 prepare_igv_viewer_input:
