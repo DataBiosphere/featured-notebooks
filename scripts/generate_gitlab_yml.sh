@@ -51,7 +51,7 @@ verify-gitlab-yml:
 EOF
 
 export LC_ALL='en_US.UTF-8'  # Needed to ensure `sort` works as expected on Ubuntu (and perhaps other systems)
-for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -z | xargs -r0); do
+for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -f -z | xargs -r0); do
     source environment
     if [[ -e "${nb}/leo_config" ]]; then
         source "${nb}/leo_config"
