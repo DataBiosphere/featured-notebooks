@@ -46,6 +46,8 @@ $(MYPY):
 
 verify-gitlab-yml:
 	scripts/generate_gitlab_yml.sh test_gitlab_yml
+	cat .gitlab-ci.yml
+	cat test_gitlab_yml
 	diff .gitlab-ci.yml test_gitlab_yml
 
 clean_notebooks:
