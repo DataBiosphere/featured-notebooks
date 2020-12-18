@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# Title: 2-GWAS-preliminary-analysis
+# Title: 3-GWAS-secondary-analysis
 
 # Notebook author: Beth Sheets
 # Herzogification: Ash O'Farrell
