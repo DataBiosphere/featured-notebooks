@@ -10,7 +10,6 @@ import os
 from unittest import mock
 
 import herzog
-import pandas  # why do I have to do this twice????
 
 
 # Heavyweight dependencies (e.g. hail, Spark) make it challenging to create robust automated testing for this notebook.
