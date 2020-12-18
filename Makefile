@@ -44,6 +44,9 @@ $(MYPY):
 .gitlab-ci.yml:
 	scripts/generate_gitlab_yml.sh .gitlab-ci.yml
 
+.gitlab-ci.yml-macintosh:
+	scripts/generate_gitlab_macos.sh .gitlab-ci.yml
+
 verify-gitlab-yml:
 	scripts/generate_gitlab_yml.sh test_gitlab_yml
 	diff .gitlab-ci.yml test_gitlab_yml
