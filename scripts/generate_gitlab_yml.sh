@@ -56,7 +56,7 @@ if [ ${USER} = ash ]; then
   SORT="sort -f"
 else
   PRINT="-print0"
-  SORT="sort -f -z"
+  SORT="sort -f -z | xargs -r0"
 fi
 for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d ${PRINT} | ${SORT}); do
     source environment
