@@ -236,7 +236,7 @@ with herzog.Cell("python"):
             jplot.set_axis_labels(var1, var2)
 
     # Visualize within each continuous trait, organized by dichotomous data
-    def boxPlot(data, catagorical_var, continuous_var, color_by=None, force_x=False, force_color=False):
+    def boxPlot(data, catagorical_var, continuous_var, color_by=None, force_x=False, force_color=False):  # type: ignore
         make_plot = True
         if len(data[catagorical_var].unique().tolist()) > 10 and force_x is not True:
             make_plot = False

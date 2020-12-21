@@ -36,16 +36,16 @@ byod:
     NOTEBOOK: "byod"
     IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
-GWAS_1000G_p1:
+GWAS_1000Genomes_p1:
   extends: .notebook-test
   variables:
-    NOTEBOOK: "GWAS_1000G_p1"
+    NOTEBOOK: "GWAS_1000Genomes_p1"
     IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
-GWAS_1000G_p2:
+GWAS_1000Genomes_p2:
   extends: .notebook-test
   variables:
-    NOTEBOOK: "GWAS_1000G_p2"
+    NOTEBOOK: "GWAS_1000Genomes_p2"
     IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:0.0.29
 
 GWAS_blood_pressure_p1:
