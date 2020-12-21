@@ -1,6 +1,6 @@
 terra-notebook-utils
 herzog >= 0.0.2, < 0.1.0
-pandas
+pandas==1.0.4
 seaborn
 hail
 tenacity
