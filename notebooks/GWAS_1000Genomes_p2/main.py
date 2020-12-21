@@ -28,9 +28,10 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 with herzog.Cell("markdown"):
     """
+    # GWAS Initial Analysis
+    *version: 2.0.1*
+    
     # Introduction
-
-    *version: 2.0*
     ----
 
     This notebook demonstrates typical initial steps in a genetic association analysis: exploring phenotype distributions, filtering and PD-pruning, and Principal Component analysis. It has been written to be interactive, allowing you to make choices as you go.
@@ -63,7 +64,7 @@ with herzog.Cell("markdown"):
             <tr><th>Option</th><th>Value</th></tr>
         </thead>
         <tbody>
-             <tr><td>ENVIRONMENT</td><td>Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.61)</td></tr>
+             <tr><td>Application Configuration</td><td>Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.61)</td></tr>
                           <tr><td>CPUs</td><td>8</td></tr>
                           <tr><td>Memory (GB)</td><td>30</td></tr>
                           <tr><td>Disk size (GB)</td><td>100</td></tr>
