@@ -52,11 +52,14 @@ EOF
 
 export LC_ALL='en_US.UTF-8'  # Needed to ensure `sort` works as expected on Ubuntu (and perhaps other systems)
 if [ ${USER} = ash ]; then
-  SPLIT_NULL="xargs -R0"
+  PRINT="-print"
+  SORT="sort -f"
 else
-  SPLIT_NULL="xargs -r0"
+  PRINT="-print0"
+  SORT="sort -f -z"
+  XARGS= "xargs -r0"
 fi
-for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d -print0 | sort -f -z | xargs -R0); do
+for nb in $(find notebooks -mindepth 1 -maxdepth 1 -type d ${PRINT} | ${SORT}); do
     source environment
     if [[ -e "${nb}/leo_config" ]]; then
         source "${nb}/leo_config"
