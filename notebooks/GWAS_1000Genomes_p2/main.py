@@ -29,8 +29,8 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 with herzog.Cell("markdown"):
     """
     # GWAS Initial Analysis
-    *version: 2.0.1*
-    
+    *version: 2.0.2*
+
     # Introduction
     ----
 
@@ -179,9 +179,8 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     ### If you get an error when running the code above
-    Expand this section by clicking the arrow at left for troubleshooting help
 
-    Note: The command above uses the FISS API. Sometimes the Terra Firecloud Service gets an error that requests you retry after 30 seconds. If you get an error in the 500 range, we suggest that you restart the notebook kernel. If that doesn't work, you can restart you notebook runtime (but remember to save your work using gsutil whenever you do this option).
+    The command above uses the FISS API. Sometimes the Terra Firecloud Service gets an error that requests you retry after 30 seconds. If you get an error in the 500 range, we suggest that you restart the notebook kernel. If that doesn't work, you can restart you notebook runtime (but remember to save your work using gsutil whenever you do this option).
     """
 
 with herzog.Cell("python"):
@@ -786,7 +785,7 @@ with herzog.Cell("python"):
     phenotype_file = bucket + "my_phenotypes.csv"
     sample_id_column = "subject_id"
     outcome = "bmi"
-    covariates = "age, sex, population"
+    covariates = "age,sex,population"
     grm = bucket + "kinship.csv"
     makeSampleSet(samples, PROJECT, WORKSPACE, label, phenotype_file, sample_id_column, outcome, covariates)
 
