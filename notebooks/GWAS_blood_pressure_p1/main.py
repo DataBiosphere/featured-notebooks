@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # Title: 1-unarchive-vcf-tar-file-to-workspace.py
 
 # Notebook author: Beth Sheets
