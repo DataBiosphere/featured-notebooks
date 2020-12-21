@@ -19,7 +19,7 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 with herzog.Cell("markdown"):
     """
     # Phenotype Consolidater
-    *version: 2.0*
+    *version: 2.0.1*
 
     ## Notebook Overview
 
@@ -35,12 +35,12 @@ with herzog.Cell("markdown"):
             <tr><th>Option</th><th>Value</th></tr>
         </thead>
         <tbody>
-             <tr><td>ENVIRONMENT</td><td>Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3)</td></tr>
+             <tr><td>Application Configuration</td><td>Default (GATK 4.1.4.1, Python 3.7.9, R 4.0.3)</td></tr>
               <tr><td>CPUs</td><td>4</td></tr>
               <tr><td>Memory (GB)</td><td>15</td></tr>
-              <tr><td>Disk size (GB)</td><td>50</td></tr>
               <tr><td>Startup script</td><td>(leave blank)</td></tr>
               <tr><td>Compute Type</td><td>Standard VM</td></tr>
+              <tr><td>Disk size (GB)</td><td>50</td></tr>
         </tbody>
     </table>
     """
@@ -136,6 +136,8 @@ with herzog.Cell("markdown"):
 
     ### Info
     Author: Beth Sheets (UCSC)
+
     Update: Ash O'Farrell (UCSC)
+
     The authorship and updating of this notebook was performed under the BioData Catalyst grant.
     """
