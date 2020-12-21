@@ -18,8 +18,7 @@ get_ipython = mock.MagicMock()  # test fixture
 
 import seaborn as sns
 sns.jointplot = mock.MagicMock()  # test fixture
-sns.boxPlot = mock.MagicMock()  # test fixture
-boxPlot = mock.MagicMock()  # test fixture
+# boxPlot, hail, and bokeh are mocked further down the line
 
 # Mock the environment
 os.environ['WORKSPACE_NAME'] = "cicd-tester-1000genomes-gwas"
@@ -29,8 +28,8 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 with herzog.Cell("markdown"):
     """
     # GWAS Initial Analysis
-    *version: 2.0.1*
-    
+    *version: 2.0.2*
+
     # Introduction
     ----
 
@@ -179,9 +178,8 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     ### If you get an error when running the code above
-    Expand this section by clicking the arrow at left for troubleshooting help
 
-    Note: The command above uses the FISS API. Sometimes the Terra Firecloud Service gets an error that requests you retry after 30 seconds. If you get an error in the 500 range, we suggest that you restart the notebook kernel. If that doesn't work, you can restart you notebook runtime (but remember to save your work using gsutil whenever you do this option).
+    The command above uses the FISS API. Sometimes the Terra Firecloud Service gets an error that requests you retry after 30 seconds. If you get an error in the 500 range, we suggest that you restart the notebook kernel. If that doesn't work, you can restart you notebook runtime (but remember to save your work using gsutil whenever you do this option).
     """
 
 with herzog.Cell("python"):
@@ -317,7 +315,10 @@ with herzog.Cell("markdown"):
 
     In the next code block, try a boxplot with variables of your choice.
     """
-
+# the boxplot is a real pain for our pipeline
+# #%boxPlot isn't going to work
+sns.boxPlot = mock.MagicMock()  # test fixture
+boxPlot = mock.MagicMock()  # test fixture # noqa
 with herzog.Cell("python"):
     # Increase plot size to avoid overcrowding
     plt.rcParams["figure.figsize"] = [30, 10]
@@ -385,6 +386,8 @@ with herzog.Cell("python"):
     bokeh_io.output_notebook(INLINE)
     get_ipython().run_line_magic('matplotlib', 'inline')
 
+bokeh_io = mock.MagicMock()  # noqa # test fixture
+hl = mock.MagicMock()  # noqa # test fixture
 with herzog.Cell("python"):
     # After importing, start a Hail session
     hl.init(default_reference="GRCh37", log='tutorial-analysis.log')
@@ -786,7 +789,7 @@ with herzog.Cell("python"):
     phenotype_file = bucket + "my_phenotypes.csv"
     sample_id_column = "subject_id"
     outcome = "bmi"
-    covariates = "age, sex, population"
+    covariates = "age,sex,population"
     grm = bucket + "kinship.csv"
     makeSampleSet(samples, PROJECT, WORKSPACE, label, phenotype_file, sample_id_column, outcome, covariates)
 
