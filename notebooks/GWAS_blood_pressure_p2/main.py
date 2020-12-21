@@ -32,9 +32,9 @@ with herzog.Cell("markdown"):
 
     # Introduction
 
-    This notebook demonstrates typical initial steps in a genetic association analysis: exploring phenotype distributions, filtering and LD-pruning, and Principal Component analysis.
+    This first phenotype analysis notebook demonstrates typical initial steps in a genetic association analysis: exploring phenotype distributions and selection potential covariates.
 
-    This notebook hopes to help you understand the following steps in performing an association test in BioData Catalyst:
+
 
     1. First, we discover all of the metadata available from our Gen3 export. We then use a set of functions created to merge and reformat the metadata to create a consolidated data table. We reformat a bit of the Gen3 graph language to be more familiar TOPMed nomenclature.
 
@@ -44,15 +44,9 @@ with herzog.Cell("markdown"):
 
     4. We define an outcome and a set of covariates to use when modeling genotype-phenotype associations.
 
-    5. Next, we import, explore, and perform quality control on genotypic data.
-
-    6. Once we're satisfied that everything looks reasonable, we process the genetic data to better adjust for relatedness within our set of samples. Relatedness can easily confound GWAS results and we must take care to account for it in our analysis.
-
-    7. We write our results to prepare a set of input parameters and data for a genomewide association analysis pipeline.
-
-    8. The final cells of the notebook demonstrate how to generate a new Terra data model that links all of the data generated in the notebook and allows for easy import into the workflows that perform the association tests.
-
-
+    5. Finally, we save a new csv file with our phenotypes of interest that we will compare to genotypic data in the next notebook. 
+    
+   
     # Set up your notebook
 
     ## Set your runtime configuration
