@@ -1,6 +1,6 @@
 terra-notebook-utils
 herzog >= 0.0.2, < 0.1.0
 pandas==1.0.4
-seaborn
-hail
-tenacity
+seaborn==0.11.1
+hail==0.2.61
+tenacity==6.3.1

@@ -1,5 +1,4 @@
 terra-notebook-utils
 herzog >= 0.0.2, < 0.1.0
-pandas
-seaborn
-tenacity
+pandas==1.0.4
+tenacity==6.3.1
