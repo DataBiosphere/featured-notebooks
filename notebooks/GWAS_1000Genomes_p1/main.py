@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # Notebook author: Beth Sheets
 # Herzog version: Ash O'Farrell
 

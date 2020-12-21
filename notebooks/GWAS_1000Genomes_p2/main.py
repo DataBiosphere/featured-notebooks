@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # Notebook author: Beth Sheets
 # Herzog version: Ash O'Farrell
 
@@ -66,7 +63,7 @@ with herzog.Cell("markdown"):
             <tr><th>Option</th><th>Value</th></tr>
         </thead>
         <tbody>
-             <tr><td>ENVIRONMENT</td><td>Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.57)</td></tr>
+             <tr><td>ENVIRONMENT</td><td>Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.61)</td></tr>
                           <tr><td>CPUs</td><td>8</td></tr>
                           <tr><td>Memory (GB)</td><td>30</td></tr>
                           <tr><td>Disk size (GB)</td><td>100</td></tr>
