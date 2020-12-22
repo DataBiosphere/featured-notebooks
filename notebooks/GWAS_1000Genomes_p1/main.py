@@ -18,12 +18,12 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 with herzog.Cell("markdown"):
     """
-    # Phenotype Consolidater
-    *version: 2.0.1*
+    # Consolidate Phenotypes from Gen3
+    *version: 2.0.2*
 
     ## Notebook Overview
 
-    This notebook consolidates the phentotypic data in tables imported to Terra from Gen3 into one consolidated table of metadata with familiar subject IDs for downstream analysis. It uses functions defined in the terra_data_table_util notebook, and can be adapted to consolidate different metadata.
+    This notebook consolidates the phentotypic data in tables imported to Terra from Gen3 into one consolidated table of metadata with familiar subject IDs for downstream analysis. It uses functions defined in the [terra_data_table_util notebook](https://terra.biodatacatalyst.nhlbi.nih.gov/#workspaces/biodata-catalyst/BioData%20Catalyst%20Collection/notebooks/launch/terra_data_table_util.ipynb?), and can be adapted to consolidate different metadata. If you are using this notebook as a template workspace, then terra_data_table_util is likely already in this workspace, but if it's not in your list of notebooks, you will want [to clone it](https://doc-0g-2g-docs.googleusercontent.com/docs/securesc/tr1c63atj2dnc8up8k72p0bk5mf4cjae/7i39ou6tv8etf7hbcvddlgguqfr6p2ad/1608658425000/02948814035259017789/02710643537415029250/1MP4G9QHGiYBK-9pZc3ogz9Jrv19y8a2E?authuser=0) from the Biodata Catalyst [notebook collection workspace](https://terra.biodatacatalyst.nhlbi.nih.gov/#workspaces/biodata-catalyst/BioData%20Catalyst%20Collection/notebooks).
 
     ## Set up your notebook
     ----
@@ -102,6 +102,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Run the companion notebook. Note: it must be in the same workspace you're currently working in.
+    # Please see notes in the beginning of this notebook for links to terra_data_table_util if it's not already in your workspace.
     #%run terra_data_table_util.ipynb
     pass
 
@@ -118,7 +119,7 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     The consolidate_gen3_pheno_tables function:
-    * Joins all clinical data tables into a single consolidated_metadata table in the Terra data section
+    * Joins all phenotypic data tables into a single consolidated_metadata table in the Terra data section
     * This join forces all entities (individuals) to be present in every clinical table, so some individuals may be removed. Consider how this affects your dataset.
     * Renames attribute fields to have a prefix of the original entity type (for example: "demographic_annotated_sex", where demographic is the original entity type, annotated_sex is the attribute field)
 
@@ -127,7 +128,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Consolidate the phenotypic data using the function defined in the terra_data_table_util notebook
-    consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)  #type: ignore  # noqa
+    consolidate_gen3_pheno_tables(PROJECT, WORKSPACE, consolidated_table_name)
 
 with herzog.Cell("markdown"):
     """
