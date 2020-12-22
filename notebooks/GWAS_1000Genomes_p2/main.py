@@ -18,8 +18,7 @@ get_ipython = mock.MagicMock()  # test fixture
 
 import seaborn as sns
 sns.jointplot = mock.MagicMock()  # test fixture
-sns.boxPlot = mock.MagicMock()  # test fixture
-boxPlot = mock.MagicMock()  # test fixture
+# boxPlot is mocked further down the line
 
 # Mock the environment
 os.environ['WORKSPACE_NAME'] = "cicd-tester-1000genomes-gwas"
@@ -316,7 +315,10 @@ with herzog.Cell("markdown"):
 
     In the next code block, try a boxplot with variables of your choice.
     """
-
+# the boxplot is a real pain for our pipeline
+# #%boxPlot isn't going to work
+sns.boxPlot = mock.MagicMock()  # test fixture
+boxPlot = mock.MagicMock()  # test fixture # noqa
 with herzog.Cell("python"):
     # Increase plot size to avoid overcrowding
     plt.rcParams["figure.figsize"] = [30, 10]
