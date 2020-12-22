@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # Title: 2-GWAS-phenotypic-data-preparation
 
 # Notebook author: Beth Sheets
