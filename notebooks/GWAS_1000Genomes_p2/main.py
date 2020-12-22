@@ -802,6 +802,8 @@ with herzog.Cell("python"):
 
 with herzog.Cell("python"):
     vcf_attribute = [fiss.fapi._attr_set("vcfs", vcf_filtered_array)]
+vcf_attribute = ['foo', 'bar']
+with herzog.Cell("python"):
     fiss.fapi.update_entity(PROJECT, WORKSPACE, 'sample_set', 'tutorial-analysis-vcfupdate', vcf_attribute)
 
 with herzog.Cell("markdown"):
