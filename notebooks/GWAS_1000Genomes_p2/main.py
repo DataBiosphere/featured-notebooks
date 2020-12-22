@@ -402,7 +402,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     mt = hl.import_vcf(vcf_paths)
-
+mt = mock.MagicMock()
 with herzog.Cell("markdown"):
     """
     ### View matrix table structure
