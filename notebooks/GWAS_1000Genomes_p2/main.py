@@ -18,7 +18,7 @@ get_ipython = mock.MagicMock()  # test fixture
 
 import seaborn as sns
 sns.jointplot = mock.MagicMock()  # test fixture
-# boxPlot is mocked further down the line
+# boxPlot, hail, and bokeh are mocked further down the line
 
 # Mock the environment
 os.environ['WORKSPACE_NAME'] = "cicd-tester-1000genomes-gwas"
@@ -386,6 +386,8 @@ with herzog.Cell("python"):
     bokeh_io.output_notebook(INLINE)
     get_ipython().run_line_magic('matplotlib', 'inline')
 
+bokeh_io = mock.MagicMock()  # noqa # test fixture
+hl = mock.MagicMock()  # noqa # test fixture
 with herzog.Cell("python"):
     # After importing, start a Hail session
     hl.init(default_reference="GRCh37", log='tutorial-analysis.log')
