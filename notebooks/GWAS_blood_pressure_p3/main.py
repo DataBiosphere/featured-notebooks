@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# Title: 3-GWAS-secondary-analysis
+# Title: 3-GWAS-genomic-data-preparation
 
 # Notebook author: Beth Sheets
 # Herzogification: Ash O'Farrell
@@ -36,21 +36,15 @@ with herzog.Cell("markdown"):
 
     This notebook hopes to help you understand the following steps in performing an association test in BioData Catalyst:
 
-    1. First, we discover all of the metadata available from our Gen3 export. We then use a set of functions created to merge and reformat the metadata to create a consolidated data table. We reformat a bit of the Gen3 graph language to be more familiar TOPMed nomenclature.
+    1. You will import the phenotype.csv you generated in the "2-GWAS-phenotypic-data-preparation" notebook.
 
-    2. We then import the metadata from the data table to the notebook compute environment using the FISS API.
+    2. Next, we import, explore, and perform quality control on genotypic data.
 
-    3. We explore and process the phenotypic data to understand their underlying structure. To do this, we subset the specific phenotype data that we are interested in and generate plots to examine the distribution and structure of these phenotypes.
+    3. Once we're satisfied that everything looks reasonable, we process the genetic data to better adjust for relatedness within our set of samples. Relatedness can easily confound GWAS results and we must take care to account for it in our analysis.
 
-    4. We define an outcome and a set of covariates to use when modeling genotype-phenotype associations.
+    4. We write our results to prepare a set of input parameters and data for a genomewide association analysis pipeline.
 
-    5. Next, we import, explore, and perform quality control on genotypic data.
-
-    6. Once we're satisfied that everything looks reasonable, we process the genetic data to better adjust for relatedness within our set of samples. Relatedness can easily confound GWAS results and we must take care to account for it in our analysis.
-
-    7. We write our results to prepare a set of input parameters and data for a genomewide association analysis pipeline.
-
-    8. The final cells of the notebook demonstrate how to generate a new Terra data model that links all of the data generated in the notebook and allows for easy import into the workflows that perform the association tests.
+    5. The final cells of the notebook demonstrate how to generate a new Terra data model that links all of the data generated in the notebook and allows for easy import into the workflows that perform the association tests.
 
 
     # Set up your notebook
@@ -159,11 +153,11 @@ with herzog.Cell("markdown"):
     Here, we define some output files we will generate in this notebook.
     """
 with herzog.Cell("python"):
-    phenotype_out = 'bp-phenotypes-2.csv'
+    phenotype_out = 'bp-phenotypes-updated.csv'
     kinship_out = 'bp-kinship.csv'
-    notebook_out = 'bp-phenotypes-2.ipynb'
-    html_out = 'bp-phenotypes-2.html'
-    samples_out = 'samples_traits-2.csv'
+    notebook_out = 'bp-hail.ipynb'
+    html_out = 'bp-hail.html'
+    samples_out = 'samples_traits-updated.csv'
 
 with herzog.Cell("python"):
     #Check out the distributions of the phenotypic data
@@ -564,25 +558,32 @@ with herzog.Cell("python"):
                'pheno.blood_pressure_test_bp_systolic': 'bp_systolic',
                }
     samples_traits_for_analysis.rename(columns=col_map, inplace=True)
+
 with herzog.Cell("python"):
-    # Check that this work
+    # Check that this worked
     # Note that because we used the nwd_id as the key to match the phenotypic to genotypic data,
     # nwd_id is now the firt column
     samples_traits_for_analysis.head()
+
 with herzog.Cell("markdown"):
     """
     ## Write the phenotype data to a new file
+    Write the phenotype data exported from the outputs of Hail to a new file for use in the GENESIS workflows. Hail may have removed individuals if they did not have genotype data associated with them.
     """
+
 with herzog.Cell("python"):
     samples_traits_for_analysis.to_csv(phenotype_out, index=False)
+
 with herzog.Cell("markdown"):
     """
     ## Move the phenotype and GRM files to the workspace bucket
     """
+
 with herzog.Cell("python"):
     #!gsutil cp {phenotype_out} {bucket + phenotype_out}
     #!gsutil cp {kinship_out} {bucket + kinship_out}
     pass
+
 with herzog.Cell("markdown"):
     """
     ## Generate a new Terra data model called "sample_set" and add all of our derived data files to this entity.
@@ -595,6 +596,7 @@ with herzog.Cell("markdown"):
 
     In a GWAS, you may iterate through an analysis multiple times by filtering your data differently or including/excluding covariates. For each separate run, you can cange the values in the columns, specifically the value in the sample_set_id column to reflect a new analysis. You will see that you can save each notebook you used for each iteration as well.
     """
+
 with herzog.Cell("python"):
     # Make a new "sample set" entity type and create an entity within called "systloicbp"
 

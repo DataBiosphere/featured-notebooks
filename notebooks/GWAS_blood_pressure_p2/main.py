@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# Title: 2-GWAS-preliminary-analysis
+# Title: 2-GWAS-phenotypic-data-preparation
 
 # Notebook author: Beth Sheets
 # Herzogification: Ash O'Farrell
@@ -34,8 +34,6 @@ with herzog.Cell("markdown"):
 
     This first phenotype analysis notebook demonstrates typical initial steps in a genetic association analysis: exploring phenotype distributions and selection potential covariates.
 
-
-
     1. First, we discover all of the metadata available from our Gen3 export. We then use a set of functions created to merge and reformat the metadata to create a consolidated data table. We reformat a bit of the Gen3 graph language to be more familiar TOPMed nomenclature.
 
     2. We then import the metadata from the data table to the notebook compute environment using the FISS API.
@@ -45,7 +43,6 @@ with herzog.Cell("markdown"):
     4. We define an outcome and a set of covariates to use when modeling genotype-phenotype associations.
 
     5. Finally, we save a new csv file with our phenotypes of interest that we will compare to genotypic data in the next notebook.
-
 
     # Set up your notebook
 
@@ -249,61 +246,37 @@ with herzog.Cell("python"):
     #Check out the distributions of the phenotypic data
     samples_traits_for_analysis.describe()
 
-
-
 with herzog.Cell("markdown"):
     """
     # Save sample metadata and update data table
-    Now that we've explored the phenotypes, the next step is to save and push our results back to the workspace data model. Once we populate the data model, we can use it for downstream analyses.
-    """
-
-
-
-with herzog.Cell("python"):
-    # Change the column names of our data
-    # You can see what column headers are required for the Genesis workflows (for example, sex)
-    col_map = {'s': 'nwd_id',
-               'pheno.subject_id': 'subject_id',
-               'pheno.blood_pressure_test_age_at_bp_systolic': 'age_at_bp_systolic',
-               'pheno.demographic_annotated_sex': 'sex',
-               'pheno.medication_antihypertensive_meds': 'antihypertensive_meds',
-               'pheno.blood_pressure_test_bp_diastolic': 'bp_diastolic',
-               'pheno.blood_pressure_test_bp_systolic': 'bp_systolic',
-               }
-    samples_traits_for_analysis.rename(columns=col_map, inplace=True)
-with herzog.Cell("python"):
-    # Check that this work
-    # Note that because we used the nwd_id as the key to match the phenotypic to genotypic data,
-    # nwd_id is now the firt column
-    samples_traits_for_analysis.head()
-with herzog.Cell("markdown"):
-    """
+    Now that we've explored the phenotypes, the next step is to save to the workspace bucket. Once we populate the data model, we can use it for downstream analyses.
     ## Write the phenotype data to a new file
     """
+
 with herzog.Cell("python"):
     samples_traits_for_analysis.to_csv(phenotype_out, index=False)
+
 with herzog.Cell("markdown"):
     """
-    ## Move the phenotype files to the workspace bucket
+    ## Save the phenotype files to the workspace bucket
     """
+
 with herzog.Cell("python"):
     #!gsutil cp {phenotype_out} {bucket + phenotype_out}
     pass
-
-
-
-
 
 with herzog.Cell("markdown"):
     """
     ## Save the notebook and an HTML rendering to the workspace bucket
     """
+
 with herzog.Cell("python"):
     #%notebook {notebook_out}
     #!jupyter nbconvert --to html {notebook_out}
     #!gsutil cp {notebook_out} {bucket + notebook_out}
     #!gsutil cp {html_out} {bucket + html_out}
     pass
+
 with herzog.Cell("python"):
     elapsed_notebook_time = time.time() - start_notebook_time
     print(timedelta(seconds=elapsed_notebook_time))
