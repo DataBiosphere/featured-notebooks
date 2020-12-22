@@ -448,6 +448,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     mt = hl.variant_qc(mt)
+
 with herzog.Cell("markdown"):
     """
     Then take a look at how the matrix table structure changes: use <fibt color="red">describe</font> and you should see a new set of annotations added to the table (under variant_qc). Then use `mt.rows().show(5)` to see the first few variants and their annotations (scroll down to the end).
@@ -491,7 +492,7 @@ with herzog.Cell("markdown"):
 
     Variants can be filtered using <font color='red'>filter_rows</font> and conditioning on allele frequency. <font color='red'>filter_rows</font> takes an expression. We want to filter to variants with alternate frequency > 5% using the expression below.
     """
-
+mt.filter_rows = mock.MagicMock()
 with herzog.Cell("python"):
     mt = mt.filter_rows(mt.variant_qc.AF[1] > 0.05)
 
