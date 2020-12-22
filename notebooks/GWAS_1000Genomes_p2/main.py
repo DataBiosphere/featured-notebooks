@@ -28,7 +28,7 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 with herzog.Cell("markdown"):
     """
     # GWAS Initial Analysis
-    *version: 2.0.3*
+    *version: 2.0.4*
 
     # Introduction
     ----
@@ -683,7 +683,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     col_map = {'s': 'subject_id',
-               'pheno.lab_result_age_at_ldl': 'age',
+               'pheno.demographic_age_at_index': 'age',
                'pheno.demographic_population': 'population',
                'pheno.demographic_bmi_baseline': 'bmi',
                #'pheno.lab_result_glucos1c': 'glucose',
