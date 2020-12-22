@@ -565,7 +565,7 @@ with herzog.Cell("markdown"):
 
     You run PCA using the function <font color='red'>hwe_normalized_pca</font>. For this analysis, we are mainly interested in the scores, and can disregard the eigenvalues and loadings. The `k` parameter determines the number of PCs to return -- as `k` grows, so does the computation time.
     """
-mt.GT = [1, 2, 3]
+hl.hwe_normalized_pca.return_value = [mock.MagicMock() for _ in range(3)]  # test fixture
 with herzog.Cell("python"):
     _, pcs, _ = hl.hwe_normalized_pca(mt.GT, k=5)
 
