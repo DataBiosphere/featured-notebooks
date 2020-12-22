@@ -28,7 +28,7 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 with herzog.Cell("markdown"):
     """
     # GWAS Initial Analysis
-    *version: 2.0.2*
+    *version: 2.0.3*
 
     # Introduction
     ----
@@ -490,11 +490,17 @@ with herzog.Cell("markdown"):
     """
     From this output, we see a nested structure called `variant_qc`. The field we are interested in is `AF`, which stands for allele frequency. `AF`'s type is an array. This array contains reference allele frequencies (at index 0) and alternate allele frequencies (at index 1).
 
-    Variants can be filtered using <font color='red'>filter_rows</font> and conditioning on allele frequency. <font color='red'>filter_rows</font> takes an expression. We want to filter to variants with alternate frequency > 5% using the expression below.
+    Variants can be filtered using <font color='red'>filter_rows</font> and conditioning on allele frequency. <font color='red'>filter_rows</font> takes an expression. We want to filter to variants with alternate frequency > 5% using the expressions below.
     """
-mt.filter_rows = mock.MagicMock()
+
 with herzog.Cell("python"):
-    mt = mt.filter_rows(mt.variant_qc.AF[1] > 0.05)
+    alleleFreq = mt.variant_qc.AF[1]
+
+# Sneaky workaround to avoid TypeError: '>' not supported between instances of 'MagicMock' and 'float'
+alleleFreq = 0
+
+with herzog.Cell("python"):
+    mt = mt.filter_rows(alleleFreq > 0.05)
 
 with herzog.Cell("markdown"):
     """
