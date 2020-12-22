@@ -44,9 +44,9 @@ with herzog.Cell("markdown"):
 
     4. We define an outcome and a set of covariates to use when modeling genotype-phenotype associations.
 
-    5. Finally, we save a new csv file with our phenotypes of interest that we will compare to genotypic data in the next notebook. 
-    
-   
+    5. Finally, we save a new csv file with our phenotypes of interest that we will compare to genotypic data in the next notebook.
+
+
     # Set up your notebook
 
     ## Set your runtime configuration
