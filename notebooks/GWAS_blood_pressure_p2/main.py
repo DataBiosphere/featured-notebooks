@@ -105,7 +105,7 @@ with herzog.Cell("markdown"):
 
     Phenotypic data for each individual in the study are stored in the workspace data table. To analyze inside this notebook, we have to explicitly load the data in our notebook environment. To do this, we'll need some information about the Terra Workspace. We use the Fiss API to access environmental variables.
 
-    The billing project, workspace, and bucket filepaths are neccessary to define in every python Jupyter notebook you run in Terra.
+    The billing project, workspace, and bucket filepaths are neccessary to define in most python Jupyter notebooks you run in Terra.
 
     ## Define filepaths and environmental variables
     """

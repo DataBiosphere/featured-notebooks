@@ -32,11 +32,11 @@ with herzog.Cell("markdown"):
 
     # Introduction
 
-    This notebook demonstrates typical initial steps in a genetic association analysis: exploring phenotype distributions, filtering and LD-pruning, and Principal Component analysis.
+    This notebook demonstrates typical initial steps in a genetic association analysis: filtering, LD-pruning, and Principal Component analysis.
 
     This notebook hopes to help you understand the following steps in performing an association test in BioData Catalyst:
 
-    1. You will import the phenotype.csv you generated in the "2-GWAS-phenotypic-data-preparation" notebook.
+    1. We will import the phenotype.csv generated in the "2-GWAS-phenotypic-data-preparation" notebook.
 
     2. Next, we import, explore, and perform quality control on genotypic data.
 
@@ -123,11 +123,7 @@ sns = mock.MagicMock()  # noqa test fixture
 pd = mock.MagicMock()  # noqa test fixture
 with herzog.Cell("markdown"):
     """
-    # Load workspace data
-
-    Phenotypic data for each individual in the study are stored in the workspace data table. To analyze inside this notebook, we have to explicitly load the data in our notebook environment. To do this, we'll need some information about the Terra Workspace. We use the Fiss API to access environmental variables.
-
-    The billing project, workspace, and bucket filepaths are neccessary to define in every python Jupyter notebook you run in Terra.
+    The billing project, workspace, and bucket filepaths are neccessary to define in most python Jupyter notebooks you run in Terra.
 
     ## Define filepaths and environmental variables
     """
