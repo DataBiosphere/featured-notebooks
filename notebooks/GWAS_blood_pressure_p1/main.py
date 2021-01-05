@@ -5,9 +5,9 @@
 
 import os
 import herzog
-
 from unittest import mock
 from terra_notebook_utils import table, drs
+
 table.print_column = mock.MagicMock()  # test fixture
 table.fetch_drs_url = mock.MagicMock()  # test fixture
 drs.copy = mock.MagicMock()  # test fixture
