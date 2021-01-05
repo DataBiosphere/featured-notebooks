@@ -149,7 +149,7 @@ with herzog.Cell("markdown"):
     Here, we define some output files we will generate in this notebook.
     """
 with herzog.Cell("python"):
-    phenotype_out = 'bp-phenotypes-updated.csv'
+    phenotype_out = 'bp-phenotypes-hail-update.csv'
     kinship_out = 'bp-kinship.csv'
     notebook_out = 'bp-hail.ipynb'
     html_out = 'bp-hail.html'
@@ -601,6 +601,8 @@ with herzog.Cell("python"):
             'phenotypes',
             'phenotypes_notebook',
             'phenotypes_html',
+            'hail_notebook',
+            'hail_html',
             'outcome_name',
             'outcome_type',
             'covariates',
@@ -610,7 +612,9 @@ with herzog.Cell("python"):
     #values for each column
     vals = ['systolicbp',
             bucket + phenotype_out,
-            bucket + notebook_out,
+            bucket + "bp-phenotypes.iypnb",  # second notebook in this workspace
+            bucket + "bp-phenotypes.html",
+            bucket + notebook_out,  # third notebook (this one) in this workspace
             bucket + html_out,
             'bp_systolic',
             'Continuous',
