@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # Title: 3-GWAS-genomic-data-preparation
 
 # Notebook author: Beth Sheets
