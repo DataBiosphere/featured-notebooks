@@ -28,7 +28,7 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 with herzog.Cell("markdown"):
     """
     # GWAS Initial Analysis
-    *version: 2.0.4*
+    *version: 2.0.5*
 
     # Introduction
     ----
@@ -56,24 +56,18 @@ with herzog.Cell("markdown"):
     # Set up your notebook
     ----
 
-    ## Set runtime values
-    If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you will now need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below:
+    ## Recommended runtime values
     <table style="float:left">
         <thead>
             <tr><th>Option</th><th>Value</th></tr>
         </thead>
         <tbody>
-             <tr><td>Application Configuration</td><td>Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.61)</td></tr>
-                          <tr><td>CPUs</td><td>8</td></tr>
-                          <tr><td>Memory (GB)</td><td>30</td></tr>
-                          <tr><td>Disk size (GB)</td><td>100</td></tr>
-                          <tr><td>Startup script</td><td>(leave blank)</td></tr>
-                          <tr><td>Compute Type</td><td>Spark cluster</td></tr>
-             <tr><td>Workers</td><td>4</td></tr>
-                          <tr><td>Preemptible</td><td>0</td></tr>
-                          <tr><td>Workers CPUs</td><td>4</td></tr>
-                          <tr><td>Workers Memory (GB)</td><td>15</td></tr>
-             <tr><td>Workers Disk size (GB)</td><td>50</td></tr>
+            <tr><td> Application configuration</td><td>Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3) </tr></td>
+            <tr><td> CPUs</td><td>4</tr></td>
+            <tr><td> Memory (GB)</td><td>15</tr></td>
+            <tr><td> Startup script</td><td>(leave blank)</tr></td>
+            <tr><td> Compute type</td><td>Standard VM</tr></td>
+            <tr><td> Persistent disk size (GB)</td><td>500</tr></td>
         </tbody>
     </table>
     """
