@@ -52,6 +52,6 @@ clean_notebooks:
 	git clean -dfX notebooks
 
 clean:
-	git clean -dfx
+	git clean -dfX
 
 .PHONY: .gitlab-ci.yml $(NOTEBOOK_DIRS) $(NOTEBOOKS) $(PUBLISH) $(TESTS) $(CICD_TESTS) clean clean_notebooks
