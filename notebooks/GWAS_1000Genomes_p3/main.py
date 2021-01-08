@@ -83,6 +83,9 @@ with herzog.Cell("python"):
     import pandas as pd
     from pprint import pprint  # for pretty printing
 
+fiss = mock.MagicMock()  # noqa # test fixture
+pd = mock.MagicMock()  # noqa test fixture
+
 with herzog.Cell("python"):
     # Get the Google billing project name and workspace name
     PROJECT = os.environ['GOOGLE_PROJECT']
@@ -173,6 +176,7 @@ with herzog.Cell("markdown"):
 
     You can merge phenotypes with the VCF data by matching sample IDs between objects. Recall that the *sample* column of the phenotype data held unique IDs for each sample. These same sample IDs are stored in the VCF files and index the matrix table columns. <font color='red'>annotate_cols</font> can be used to add the phenotypes to the matrix table columns. `samples[mt.s]` matches samples IDs between objects and <font color='red'>annotate_cols</font> merges into the VCF:
     """
+
 with herzog.Cell("python"):
     # Load phenotypic data from previous notebook
     samples = pd.read_csv(bucket + 'nb2pheno.csv')
