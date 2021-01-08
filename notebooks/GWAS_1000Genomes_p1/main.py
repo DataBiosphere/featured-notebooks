@@ -1,3 +1,5 @@
+# Title: 1-Prepare-Gen3-data-for-exploration
+
 # Notebook author: Beth Sheets
 # Herzog version: Ash O'Farrell
 
@@ -19,7 +21,7 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 with herzog.Cell("markdown"):
     """
     # Consolidate Phenotypes from Gen3
-    *version: 2.0.2*
+    *version: 2.0.3*
 
     ## Notebook Overview
 
@@ -136,9 +138,7 @@ with herzog.Cell("markdown"):
 
 
     ### Info
-    Author: Beth Sheets (UCSC)
-
-    Update: Ash O'Farrell (UCSC)
+    Authors: Beth Sheets (UCSC), Ash O'Farrell (UCSC)
 
     The authorship and updating of this notebook was performed under the BioData Catalyst grant.
     """

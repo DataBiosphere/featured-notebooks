@@ -1,3 +1,5 @@
+# Title: 2-GWAS-initial-analysis
+
 # Notebook author: Beth Sheets
 # Herzog version: Ash O'Farrell
 
@@ -27,7 +29,7 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 with herzog.Cell("markdown"):
     """
     # GWAS Initial Analysis
-    *version: 2.0.5*
+    *version: 2.0.6*
 
     # Introduction
     ----
@@ -361,8 +363,20 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
+    notebook_out = '1000G-final-nb.ipynb'
+    html_out = '1000G-final-nb.html'
+
+with herzog.Cell("python"):
     #%notebook {notebook_out}
     #!jupyter nbconvert --to html {notebook_out}
     #!gsutil cp {notebook_out} {bucket + notebook_out}
     #!gsutil cp {html_out} {bucket + html_out}
     pass
+
+with herzog.Cell("markdown"):
+    """
+    ### Info
+    Authors: Beth Sheets (UCSC), Ash O'Farrell (UCSC)
+
+    The authorship and updating of this notebook was performed under the BioData Catalyst grant.
+    """

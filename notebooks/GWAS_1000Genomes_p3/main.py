@@ -1,3 +1,5 @@
+# 3-finalPreparation
+
 # Notebook author: Beth Sheets
 # Herzog version: Ash O'Farrell
 
@@ -24,7 +26,7 @@ os.environ['WORKSPACE_BUCKET'] = "bar"  # test fixture
 with herzog.Cell("markdown"):
     """
     # GWAS Genomic Analysis
-    *version: 2.0.0*
+    *version: 2.0.1*
 
     ## Introduction
     In this notebook, you will be working with Hail to make some final adjustments to your data.
@@ -73,8 +75,10 @@ with herzog.Cell("markdown"):
     Once you select these options, Terra may ask you about the persistent disk. Essentially, when you run a Jupyter notebook, it creates a VM whose contents can be shared across other notebooks. But the VM of a Hail notebook like this one is not compatiable with the setup that you used for the previous two notebooks. This generally means files created in the VM you used earlier cannot be accessed by the one you're making right now. But, in the previous notebook, we saved our phenotypic data to the workspace bucket, which exists outside of the VM. For that reason, it doesn't matter too much if you keep your old persistent disk or not. If you'd like to return to the previous notebooks and manipulate the data without rerunning them in their entirity, you may want to keep the persistent disk, but doing so will incurr a cost over time. Terra will give you an estimate of that cost to help inform your decision.
 
     """
+
 with herzog.Cell("python"):
     #%%capture
+    import os
     from firecloud import fiss
     import pandas as pd
     from pprint import pprint  # for pretty printing
@@ -139,6 +143,9 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
+    # If this fails with the following error...
+    # Error summary: IOException: No FileSystem for scheme: gs
+    # Make sure your notebook is a hail compute. See the top of this notebook under "Set runtime values" for details.
     mt = hl.import_vcf(vcf_paths)
 
 mt = mock.MagicMock()  # noqa # test fixture
@@ -168,7 +175,7 @@ with herzog.Cell("markdown"):
     """
 with herzog.Cell("python"):
     # Load phenotypic data from previous notebook
-    samples = pd.read_csv(bucket + 'bp-phenotypes.csv')
+    samples = pd.read_csv(bucket + 'nb2pheno.csv')
 
 with herzog.Cell("python"):
     # First convert the phenotypes to a Hail table
@@ -548,7 +555,10 @@ with herzog.Cell("python"):
 
 with herzog.Cell("python"):
     vcf_attribute = [fiss.fapi._attr_set("vcfs", vcf_filtered_array)]
+
+# Another workaround
 vcf_attribute = ['foo', 'bar']
+
 with herzog.Cell("python"):
     fiss.fapi.update_entity(PROJECT, WORKSPACE, 'sample_set', 'tutorial-analysis-vcfupdate', vcf_attribute)
 
@@ -615,4 +625,12 @@ with herzog.Cell("markdown"):
                                   title = 'PCA', xlabel = 'PC1', ylabel = 'PC2')
                   show(p)
     ```
+    """
+
+with herzog.Cell("markdown"):
+    """
+    ### Info
+    Authors: Beth Sheets (UCSC), Ash O'Farrell (UCSC)
+
+    The authorship and updating of this notebook was performed under the BioData Catalyst grant.
     """
