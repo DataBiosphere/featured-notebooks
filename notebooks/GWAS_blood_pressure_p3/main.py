@@ -104,9 +104,6 @@ with herzog.Cell("markdown"):
     chr1    Hail/8/30/500,120/0/16/30/100    time
     chr1    Hail/16/30/500,120/0/8/30/100    time
     """
-with herzog.Cell("python"):
-    
-
 with herzog.Cell("markdown"):
     """
     **Restart the kernel after every pip install. You can do this using the kernel selection in the toolbar.**
