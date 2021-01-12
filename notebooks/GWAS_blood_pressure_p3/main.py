@@ -48,21 +48,15 @@ with herzog.Cell("markdown"):
 
     ## Select your Jupyter environment
 
-    In the gear wheel at the top right of this notebook you can select the docker image or "Environment" to use. We suggest using the environment with the most update to date Hail package (for example: Python 3.7.6, Hail 0.2.30). Configure your notebook runtime using the gear wheel at the top right to use a spark cluster for parallel processing. You can learn more about Spark in the Hail section below. You can learn more about Terra's [runtime environment](https://support.terra.bio/hc/en-us/articles/360027237871) and how to [control cloud costs](https://support.terra.bio/hc/en-us/articles/360029772212).
+    In the gear wheel at the top right of this notebook you can select the docker image or "Environment" to use. We suggest using the environment with the most update to date Hail package (for example: Python 3.7.6, Hail 0.2.30)
 
     ## Set your runtime configuration based on your cost and time needs
 
-    Your compute needs will be based on the size of your input and your cost concerns.
-    * If you are new to scaling costs with hail, it is recommended that you consider starting by running on just one chromosome and then scaling up.
-    * The first disk size variable (not the worker one) *must* be larger than the size of your VCF(s).
-    * Clusters can be resized dynamically when running hail in some circumstances, but this is not currently available on Terra. For that reason we have made this notebook as focused on hail operations as possible so as to save money and compute time.
-    * It is always recommended to use at least two workers when doing anything with hail.
-    * That being said, hail is made to work with data larger than available memory, so that does not need to be larger than your VCF(s).
-    * Note that preemptibles are counted in addition to non-preemptibles. For example, if you select 100 workers and 50 preemptibles, you are requesting a total of 150 nodes, **not** 100 nodes of which 50 are preemptible.
-    * Using preemptibles is not recommended for analyses that take longer than 6 hours. For large-scale GWAS data preparation, this may be the case depending on the number of workers you request for parallel processing of your variant matrix. 
-    * Preemptible nodes are generally not assigned more than 100 GB of disk space, so it is not worth making them larger than that. However, besides that, they have the same resources (ie memory) as your nonpreemptible workers.
+    * Your compute needs will be based on the size of your VCF and your cost concerns.
+    * You can learn more about Terra's [runtime environment](https://support.terra.bio/hc/en-us/articles/360027237871) and how to [control cloud costs](https://support.terra.bio/hc/en-us/articles/360029772212).
+    * Configure your notebook runtime using the gear wheel at the top right to use a spark cluster for parallel processing. You can learn more about Spark in the Hail section below.
     * A suggested custom configuration using a 100GB VCF file is below. For larger files, consider using more workers.
-    * **It is not recommended to just copy these values down for every possible job. You will likely need to tailor them to what you know about your data.** For instance, a dataset with more closely related individuals (such as the Amish data set) may have a different execution time than a similarly sized dataset derived from a more diverse cohort.
+    * Using pre-emptibles is not recommended for analyses that take longer than 6 hours. For large-scale GWAS data preparation, this may be the case depending on the number of workers you request for parallel processing of your variant matrix.
     <table style="float:left">
         <thead>
             <tr><th>Attributes</th><th>Value</th></tr>
