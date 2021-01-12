@@ -56,25 +56,6 @@ with herzog.Cell("markdown"):
     * You can learn more about Terra's [runtime environment](https://support.terra.bio/hc/en-us/articles/360027237871) and how to [control cloud costs](https://support.terra.bio/hc/en-us/articles/360029772212).
     * Configure your notebook runtime using the gear wheel at the top right to use a spark cluster for parallel processing. You can learn more about Spark in the Hail section below.
     * A suggested custom configuration using a 100GB VCF file is below. For larger files, consider using more workers.
-    * Using pre-emptibles is not recommended for analyses that take longer than 6 hours. For large-scale GWAS data preparation, this may be the case depending on the number of workers you request for parallel processing of your variant matrix.
-    <table style="float:left">
-        <thead>
-            <tr><th>Attributes</th><th>Value</th></tr>
-        </thead>
-        <tbody>
-            <tr><td> Application configuration</td><td>Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.57) </tr></td>
-            <tr><td> CPUs</td><td>8 </tr></td>
-            <tr><td> Memory (GB)</td><td>30 </tr></td>
-            <tr><td> Disk size (GB)</td><td>500 </tr></td>
-            <tr><td> Startup script</td><td>(leave blank) </tr></td>
-            <tr><td> Compute type</td><td>Spark cluster </tr></td>
-            <tr><td> Workers</td><td>120 </tr></td>
-            <tr><td> Preemptible</td><td>50 </tr></td>
-            <tr><td> Workers-CPUs</td><td>8 </tr></td>
-            <tr><td> Workers-Memory (GB)</td><td>30 </tr></td>
-            <tr><td> Workers-Disk size (GB)</td><td>100 </tr></td>
-        </tbody>
-    </table>
     """
 with herzog.Cell("markdown"):
     """
@@ -92,6 +73,40 @@ with herzog.Cell("python"):
     #%pip install tenacity
     #%pip install hail
     pass
+with herzog.Cell("markdown"):
+    """
+    # Here is the part where we test scaling
+
+    ## THIS run's stuff
+    Fill in this table OR ELSE.
+    Hail/8/30/500,120/0/8/30/100
+    <table style="float:left">
+    <thead>
+        <tr><th>Attributes</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+        <tr><td> Application configuration</td><td>Hail</tr></td>
+        <tr><td> CPUs</td><td>8 </tr></td>
+        <tr><td> Memory (GB)</td><td>30 </tr></td>
+        <tr><td> Disk size (GB)</td><td>500 </tr></td>
+        <tr><td> Startup script</td><td>(leave blank) </tr></td>
+        <tr><td> Compute type</td><td>Spark cluster </tr></td>
+        <tr><td> Workers</td><td>120 </tr></td>
+        <tr><td> Preemptible</td><td>0 </tr></td>
+        <tr><td> Workers-CPUs</td><td>8 </tr></td>
+        <tr><td> Workers-Memory (GB)</td><td>30 </tr></td>
+        <tr><td> Workers-Disk size (GB)</td><td>100 </tr></td>
+    </tbody>
+    </table>
+
+    ## Chart
+    chr1    Hail/8/30/500,120/0/8/30/100    time
+    chr1    Hail/8/30/500,120/0/16/30/100    time
+    chr1    Hail/16/30/500,120/0/8/30/100    time
+    """
+with herzog.Cell("python"):
+    
+
 with herzog.Cell("markdown"):
     """
     **Restart the kernel after every pip install. You can do this using the kernel selection in the toolbar.**
