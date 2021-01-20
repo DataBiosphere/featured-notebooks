@@ -76,33 +76,24 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     # Here is the part where we test scaling
+    """
+with herzog.Cell("markdown"):
+    """
 
-    ## THIS run's stuff
-    Fill in this table OR ELSE.
-    Hail/8/30/500,120/0/8/30/100
-    <table style="float:left">
-    <thead>
-        <tr><th>Attributes</th><th>Value</th></tr>
-    </thead>
-    <tbody>
-        <tr><td> Application configuration</td><td>Hail</tr></td>
-        <tr><td> CPUs</td><td>8 </tr></td>
-        <tr><td> Memory (GB)</td><td>30 </tr></td>
-        <tr><td> Disk size (GB)</td><td>500 </tr></td>
-        <tr><td> Startup script</td><td>(leave blank) </tr></td>
-        <tr><td> Compute type</td><td>Spark cluster </tr></td>
-        <tr><td> Workers</td><td>120 </tr></td>
-        <tr><td> Preemptible</td><td>0 </tr></td>
-        <tr><td> Workers-CPUs</td><td>8 </tr></td>
-        <tr><td> Workers-Memory (GB)</td><td>30 </tr></td>
-        <tr><td> Workers-Disk size (GB)</td><td>100 </tr></td>
-    </tbody>
-    </table>
+    action item: try the test notebook with number of partitions minimum set to like 2000 on a bunch of preempts
 
-    ## Chart
-    chr1    Hail/8/30/500,120/0/8/30/100    time
-    chr1    Hail/8/30/500,120/0/16/30/100    time
-    chr1    Hail/16/30/500,120/0/8/30/100    time
+    test 1
+    ----
+    master: 8/30/500
+    workers: 2 workers/120 preempts/8/30/100
+    min_partitions=2000
+
+    test 2
+    ----
+    master: 8/30/500
+    workers: 2 workers/120 preempts/8/30/500
+    min_partitions=2000
+
     """
 with herzog.Cell("markdown"):
     """
@@ -194,7 +185,7 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     vcf_base = bucket + 'ph*/ph*/*.vcf.gz'
     vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')
-    vcf_paths = vcf_paths
+    vcf_paths = "gs://fc-secure-642aebbb-7760-4461-a0db-b77ef5e89052/phg001280.v1.TOPMed_WGS_Amish_v4.genotype-calls-vcf.WGS_markerset_grc38.c2.HMB-IRB-MDS.tar.gz/phg001280.v1.TOPMed_WGS_Amish_v4.genotype-calls-vcf.WGS_markerset_grc38.c2.HMB-IRB-MDS/Amish_phs000956_TOPMed_WGS_freeze.8.chr1.hg38.vcf.gz"
     vcf_paths
 with herzog.Cell("markdown"):
     """
@@ -258,12 +249,17 @@ with herzog.Cell("python"):
     # If you get an error here, double check sure your application configuration is set to Hail,
     # not the default GATK/python/R setup -- that default will not work here!
     # See the application configuration at the top of this notebook for more details
+
+
+    start_import_vcf = time.time()
     mt = (
         hl
         .import_vcf(
-            vcf_paths, force_bgz=True, min_partitions=200
+            vcf_paths, force_bgz=True, min_partitions=2000
         )
     )
+    elapsed_vcf_import = time.time() - start_import_vcf
+
 with herzog.Cell("markdown"):
     """
     ### View matrix table structure
@@ -275,8 +271,13 @@ with herzog.Cell("markdown"):
     """
     **Count rows and columns**: How many variants and samples are there in your matrix table? Note that the `count` function can take a long time with a big dataset.
     """
+
+# consider removing this or commenting it out as optional
+# its a useful sanity check but it takes a while
 with herzog.Cell("python"):
+    start_count = time.time()
     mt.count()
+    elapsed_count = time.time() - start_count
 with herzog.Cell("markdown"):
     """
     ### Merge phenotype and VCF data
@@ -285,6 +286,7 @@ with herzog.Cell("markdown"):
     First convert the phenotypes pandas dataframe (samples_traits_for_analysis) to a Hail table:
     """
 with herzog.Cell("python"):
+    start_convert_pheno_to_hail = time.time()
     samples_traits_for_analysis = (
         hl
         .Table.from_pandas(
@@ -292,20 +294,30 @@ with herzog.Cell("python"):
             key='nwd_id'
         )
     )
+    elapsed_convert_pheno_to_hail = time.time() - start_convert_pheno_to_hail
 with herzog.Cell("markdown"):
     """
     Then annotate the matrix table by matching the NWD IDs:
     """
 with herzog.Cell("python"):
+    start_anno = time.time()
     mt = (
         mt.annotate_cols(pheno=samples_traits_for_analysis[mt.s])
     )
+    elapsed_anno = time.time() - start_anno
 with herzog.Cell("markdown"):
     """
     See the first few rows of the matrix table:
     """
+
+# remove show until you've written the matrix
+# consider getting rid of show entirely because outside tutorial context its not helpful
+# and it costs valuable time
+# but it is a helpful sanity check
 with herzog.Cell("python"):
+    start_first_show = time.time()
     mt.rows().show(5)
+    elapsed_first_show = time.time() - start_first_show
 with herzog.Cell("markdown"):
     """
     ### Generate variant level summary statistics
@@ -313,15 +325,21 @@ with herzog.Cell("markdown"):
     Run <font color='red'>variant_qc</font> first:
     """
 with herzog.Cell("python"):
+    start_var_qc = time.time()
     mt = hl.variant_qc(mt)
+    elapsed_var_qc = time.time() - start_var_qc
 with herzog.Cell("markdown"):
     """
     Next take a look at how the matrix table structure changes: use <fibt color="red">describe</font> and you should see a new set of annotations added to the table (under variant_qc). Then use `mt.rows().show(5)` to see the first few variants and their annotations (scroll down to the end).
     """
 with herzog.Cell("python"):
     mt.describe()
+
+# same with this show here
 with herzog.Cell("python"):
+    start_second_show = time.time()
     mt.rows().show(5)
+    elapsed_second_show = time.time() - start_second_show
 with herzog.Cell("markdown"):
     """
     ## Variant filtering
@@ -340,12 +358,14 @@ with herzog.Cell("markdown"):
 
 mt.variant_qc.AF = [1, 2, 3]  # test fixture
 with herzog.Cell("python"):
+    start_filter_map = time.time()
     mt = (
         mt
         .filter_rows(
             mt.variant_qc.AF[1] > 0.01
         )
     )
+    elapsed_filter_map = time.time() - start_filter_map
 with herzog.Cell("markdown"):
     """
     ### Filter to only those samples in the phenotype file with "bp_systolic" information
@@ -444,11 +464,13 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     #We added code to help you monitor the time it takes for pruning. We currently estimate over an hour.
     start_prune_write_time = time.time()
-    pruned_variant_table = hl.ld_prune(mt.GT, r2=0.2, bp_window_size=500000, block_size=1024)
+    pruned_variant_table = hl.ld_prune(mt.GT, r2=0.2, bp_window_size=500000, block_size=75)
     elapsed_prune_write_time = time.time() - start_prune_write_time
     print(timedelta(seconds=elapsed_prune_write_time))
 with herzog.Cell("python"):
+    start_filter_rows_for_defined = time.time()
     mt = mt.filter_rows(hl.is_defined(pruned_variant_table[mt.row_key]))
+    elapsed_filter_rows_for_defined = time.time - start_filter_rows_for_defined
 with herzog.Cell("markdown"):
     """
     ## Principal Component Analysis
@@ -478,6 +500,7 @@ with herzog.Cell("markdown"):
     """
 hl.hwe_normalized_pca.return_value = [mock.MagicMock() for _ in range(3)]  # test fixture
 with herzog.Cell("python"):
+    start_pca_and_scatter = time.time()
     _, pcs, _ = hl.hwe_normalized_pca(mt.GT, k=5)
 with herzog.Cell("markdown"):
     """
@@ -488,6 +511,7 @@ with herzog.Cell("python"):
                         pcs.scores[1],
                         xlabel='PC1', ylabel='PC2')
     bokeh_io.show(p)
+    elapsed_pca_and_scatter = time.time() - start_pca_and_scatter
 with herzog.Cell("markdown"):
     """
     ### Decide whether genetic stratification should be included in your association tests
@@ -498,14 +522,19 @@ with herzog.Cell("python"):
     # Use describe to find the PC fields you want to keep
     pcs.describe()
 with herzog.Cell("python"):
+    start_annotate_pcs = time.time()
     # Add to the matrix table
     mt = mt.annotate_cols(scores=pcs[mt.s].scores)
+    elapsed_annotate_pcs = time.time() - start_annotate_pcs
 with herzog.Cell("markdown"):
     """
     # Generate a genetic relatedness matrix (GRM)
     Hail has built-in functions for generating a GRM. A GRM can also account for population stratification and cryptic genetic relatedness in our cohort.
     """
 # On chr 1 from Amish this only took 46 seconds but on all Amish chromosomes it seemed to have hung
+
+# maybe replace this (GRM), PCA, and ld_prune() to become workflows
+# make a statement about cloud environment, but not a specific one
 with herzog.Cell("python"):
     # Calculate the GRM
     # WARNING: This can take a very long time to complete!
@@ -516,16 +545,22 @@ with herzog.Cell("python"):
     elapsed_grm_time = time.time() - start_grm_time
     print(timedelta(seconds=elapsed_grm_time))
 with herzog.Cell("python"):
+    start_sample_order = time.time()
     # Get the right sample order
     ind_order = mt.s.collect()
+    elapsed_sample_order = time.time() - start_sample_order
 with herzog.Cell("python"):
+    start_GRM_to_df = time.time()
     # GRM to data frame
     rel_pd = pd.DataFrame(data=grm,
                           index=ind_order,
                           columns=ind_order)
+    elapsed_GRM_to_df = time.time()
 with herzog.Cell("python"):
+    start_grm_to_bucket = time.time()
     # Export GRM
     rel_pd.to_csv(kinship_out)
+    elapsed_grm_to_bucket = time.time - start_grm_to_bucket
 with herzog.Cell("markdown"):
     """
     # Save sample metadata and update data table
@@ -546,11 +581,13 @@ with herzog.Cell("python"):
         .select('s', 'pheno')
     )
 with herzog.Cell("python"):
+    start_hail_to_pandas = time.time()
     # Convert the Hail matrix back to a pandas dataframe
     samples_traits_for_analysis = (
         samples_traits_for_analysis
         .to_pandas()
     )
+    elapsed_hail_to_pandas = time.time() - start_hail_to_pandas
 with herzog.Cell("python"):
     # Change the column names of our data
     # You can see what column headers are required for the Genesis workflows (for example, sex)
@@ -577,6 +614,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
+    start_pheno_to_bucket = time.time()
     samples_traits_for_analysis.to_csv(phenotype_out, index=False)
 
 with herzog.Cell("markdown"):
@@ -587,6 +625,7 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     #!gsutil cp {phenotype_out} {bucket + phenotype_out}
     #!gsutil cp {kinship_out} {bucket + kinship_out}
+    elapsed_pheno_to_bucket = time.time() - start_pheno_to_bucket
     pass
 
 with herzog.Cell("markdown"):
@@ -631,6 +670,8 @@ with herzog.Cell("python"):
             'nwd_id',
             bucket + kinship_out]
 
+    start_terra_table = time.time()
+
     #create the entity and upload it using the API
     entity = '\n'.join(['\t'.join(cols), '\t'.join(vals)])
     fiss.fapi.upload_entities(PROJECT, WORKSPACE, entity)
@@ -643,6 +684,7 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     common_variants_attribute = [fiss.fapi._attr_set("common_variants", vcf_filtered_array)]
     fiss.fapi.update_entity(PROJECT, WORKSPACE, 'sample_set', 'systolicbp', common_variants_attribute)
+    elapsed_terra_table = time.time() - start_terra_table
 with herzog.Cell("markdown"):
     """
     ## Save the notebook and an HTML rendering to the workspace bucket
@@ -656,3 +698,46 @@ with herzog.Cell("python"):
 with herzog.Cell("python"):
     elapsed_notebook_time = time.time() - start_notebook_time
     print(timedelta(seconds=elapsed_notebook_time))
+
+    print("IMPORT VCF")
+    print(timedelta(seconds=elapsed_vcf_import))
+    print("MT.COUNT()")
+    print(timedelta(seconds=elapsed_count))
+    print("CONVERT PHENOS TO HAIL TABLE")
+    print(timedelta(seconds=elapsed_convert_pheno_to_hail))
+    print("ANNOTATE COLS WITH PHENOS")
+    print(timedelta(seconds=elapsed_anno))
+    print("FIRST SHOW OF MATRIX TABLE")
+    print(timedelta(seconds=elapsed_first_show))
+    print("VARIANT QC")
+    print(timedelta(seconds=elapsed_var_qc))
+    print("SECOND SHOW OF MATRIX TABLE")
+    print(timedelta(seconds=elapsed_second_show))
+    print("FILTER BY MAF")
+    print(timedelta(seconds=elapsed_filter_map))
+    print("WRITE MATRIX TABLE TO BUCKET")
+    print(timedelta(seconds=elapsed_write_time))
+    print("EXPORT VCFS")
+    print(timedelta(seconds=elapsed_vcf_write_time))
+    print("LD PRUNING")
+    print(timedelta(seconds=elapsed_prune_write_time))
+    print("FILTER BY ROWS FOR WHICH PRUNED IS DEFINED")
+    print(timedelta(seconds=elapsed_filter_rows_for_defined))
+    print("PCA AND SCATTER PLOT")
+    print(timedelta(seconds=elapsed_pca_and_scatter))
+    print("ANNOTATE MATRIX TABLE WITH PCS")
+    print(timedelta(seconds=elapsed_annotate_pcs))
+    print("GRM")
+    print(timedelta(seconds=elapsed_grm_time))
+    print("ORDER BY SAMPLE")
+    print(timedelta(seconds=elapsed_sample_order))
+    print("GRM TO DATAFRAME")
+    print(timedelta(seconds=elapsed_GRM_to_df))
+    print("WRITE DATAFRAME TO BUCKET")
+    print(timedelta(seconds=elapsed_grm_to_bucket))
+    print("HAIL TABLE TO PANDAS")
+    print(timedelta(seconds=elapsed_hail_to_pandas))
+    print("PHENO DATA TO BUCKET")
+    print(timedelta(seconds=elapsed_pheno_to_bucket))
+    print("MAKE TERRA DATA TABLE")
+    print(timedelta(seconds=elapsed_terra_table))
