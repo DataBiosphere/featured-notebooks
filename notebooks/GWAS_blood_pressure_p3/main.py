@@ -76,6 +76,7 @@ with herzog.Cell("markdown"):
         </tbody>
     </table>
     """
+
 with herzog.Cell("markdown"):
     """
     # Load useful packages
@@ -88,10 +89,12 @@ with herzog.Cell("markdown"):
 
     ## Install and update packages
     """
+
 with herzog.Cell("python"):
     #%pip install tenacity
     #%pip install hail
     pass
+
 with herzog.Cell("markdown"):
     """
     **Restart the kernel after every pip install. You can do this using the kernel selection in the toolbar.**
@@ -99,6 +102,7 @@ with herzog.Cell("markdown"):
     ## Import all the packages this notebook will use
 
     """
+
 with herzog.Cell("python"):
     #%%capture
     from firecloud import fiss
@@ -118,6 +122,7 @@ with herzog.Cell("python"):
 fiss = mock.MagicMock()  # noqa # test fixture
 sns = mock.MagicMock()  # noqa test fixture
 pd = mock.MagicMock()  # noqa test fixture
+
 with herzog.Cell("markdown"):
     """
     The billing project, workspace, and bucket filepaths are neccessary to define in most python Jupyter notebooks you run in Terra.
@@ -126,16 +131,12 @@ with herzog.Cell("markdown"):
     """
 with herzog.Cell("python"):
     start_notebook_time = time.time()
+
 with herzog.Cell("python"):
     PROJECT = os.environ['GOOGLE_PROJECT']
-    PROJECT
-with herzog.Cell("python"):
     WORKSPACE = os.path.basename(os.path.dirname(os.getcwd()))
-    WORKSPACE
-with herzog.Cell("python"):
     bucket = os.environ['WORKSPACE_BUCKET']
     bucket = bucket + '/'
-    bucket
 
 with herzog.Cell("python"):
     # Load phenotypic data from previous notebook
@@ -155,6 +156,7 @@ with herzog.Cell("python"):
 with herzog.Cell("python"):
     #Check out the distributions of the phenotypic data
     samples_traits_for_analysis.describe()
+
 with herzog.Cell("markdown"):
     """
     # Work with genotype data using Hail
@@ -184,6 +186,7 @@ with herzog.Cell("python"):
     vcf_paths = get_ipython().getoutput('gsutil ls {vcf_base}')
     vcf_paths = vcf_paths
     vcf_paths
+
 with herzog.Cell("markdown"):
     """
     Note, if you downloaded multiple VCFs to your workspace using the 1-copy-vcf-to-workspace notebook, or if you brought a VCF into the workspace with a different method, you will need to update the path in the vcf_base variable.
@@ -193,6 +196,7 @@ with herzog.Cell("markdown"):
     * **Hail** - an open-source, general-purpose, Python-based data analysis tool with additional data types and methods for working with genomic data
     * **Bokeh** - an interactive visualization library
     """
+
 with herzog.Cell("python"):
     import hail as hl
     import bokeh.io as bokeh_io
@@ -200,10 +204,12 @@ with herzog.Cell("python"):
 
 bokeh_io = mock.MagicMock()  # noqa # test fixture
 hl = mock.MagicMock()  # noqa # test fixture
+
 with herzog.Cell("python"):
     # Start Hail context using Spark
     bokeh_io.output_notebook(INLINE)
     hl.init(default_reference="GRCh38", log='population-genetics.log')
+
 with herzog.Cell("markdown"):
     """
     ## Load VCF data and perform variant QC
@@ -242,6 +248,7 @@ with herzog.Cell("markdown"):
     ### Load genotype data
     Use <font color='red'>import_vcf</font> with the syntax described above to define the matrix table, `mt`:
     """
+
 with herzog.Cell("python"):
     # If you get an error here, double check sure your application configuration is set to Hail,
     # not the default GATK/python/R setup -- that default will not work here!
@@ -252,19 +259,24 @@ with herzog.Cell("python"):
             vcf_paths, force_bgz=True, min_partitions=200
         )
     )
+
 with herzog.Cell("markdown"):
     """
     ### View matrix table structure
     Use the <font color='red'>describe</font> function to view the structure of the matrix table:
     """
+
 with herzog.Cell("python"):
     mt.describe()
+
 with herzog.Cell("markdown"):
     """
     **Count rows and columns**: How many variants and samples are there in your matrix table? Note that the `count` function can take a long time with a big dataset.
     """
+
 with herzog.Cell("python"):
     mt.count()
+
 with herzog.Cell("markdown"):
     """
     ### Merge phenotype and VCF data
@@ -272,6 +284,7 @@ with herzog.Cell("markdown"):
 
     First convert the phenotypes pandas dataframe (samples_traits_for_analysis) to a Hail table:
     """
+
 with herzog.Cell("python"):
     samples_traits_for_analysis = (
         hl
@@ -280,36 +293,46 @@ with herzog.Cell("python"):
             key='nwd_id'
         )
     )
+
 with herzog.Cell("markdown"):
     """
     Then annotate the matrix table by matching the NWD IDs:
     """
+
 with herzog.Cell("python"):
     mt = (
         mt.annotate_cols(pheno=samples_traits_for_analysis[mt.s])
     )
+
 with herzog.Cell("markdown"):
     """
     See the first few rows of the matrix table:
     """
+
 with herzog.Cell("python"):
     mt.rows().show(5)
+
 with herzog.Cell("markdown"):
     """
     ### Generate variant level summary statistics
 
     Run <font color='red'>variant_qc</font> first:
     """
+
 with herzog.Cell("python"):
     mt = hl.variant_qc(mt)
+
 with herzog.Cell("markdown"):
     """
     Next take a look at how the matrix table structure changes: use <fibt color="red">describe</font> and you should see a new set of annotations added to the table (under variant_qc). Then use `mt.rows().show(5)` to see the first few variants and their annotations (scroll down to the end).
     """
+
 with herzog.Cell("python"):
     mt.describe()
+
 with herzog.Cell("python"):
     mt.rows().show(5)
+
 with herzog.Cell("markdown"):
     """
     ## Variant filtering
@@ -327,6 +350,7 @@ with herzog.Cell("markdown"):
     """
 
 mt.variant_qc.AF = [1, 2, 3]  # test fixture
+
 with herzog.Cell("python"):
     mt = (
         mt
@@ -334,69 +358,88 @@ with herzog.Cell("python"):
             mt.variant_qc.AF[1] > 0.01
         )
     )
+
 with herzog.Cell("markdown"):
     """
     ### Filter to only those samples in the phenotype file with "bp_systolic" information
     """
+
 with herzog.Cell("python"):
     mt = (
         mt
         .filter_cols(hl.is_defined(mt.pheno['blood_pressure_test_bp_systolic']), keep=True)
     )
+
 with herzog.Cell("markdown"):
     """
     ### Write the Hail matrix to the workspace bucket to save your work
 
     For very large analyses, we recommend that you save your work along the way. Due to the interactive nature of notebooks, you may lose your work if it is in the Notebook's RAM and not saved to the Workspace bucket. This may take a several minutes -- for comparison, saving the results when running on chromosome 1 of a 1111 member TOPMed study took just over four minutes.
     """
+
 with herzog.Cell("python"):
     start_matrix_write_time = time.time()
     mt.write(bucket + 'MyProject_MAFgt0.01.mt', overwrite=True)
     elapsed_write_time = time.time() - start_matrix_write_time
+
 with herzog.Cell("python"):
     print(timedelta(seconds=elapsed_write_time))
+
 with herzog.Cell("python"):
     # Read the Hail matrix back in.
     mt = hl.read_matrix_table(bucket + 'MyProject_MAFgt0.01.mt')
+
 with herzog.Cell("python"):
     #Visualize variants
     hl.summarize_variants(mt)
+
 with herzog.Cell("markdown"):
     """
     # Convert the common variant genotype matrix back to a vcf and save in the workspace bucket for use in workflows
 
     This step computes a new field with allele count information and adds as a row to the matrix
     """
+
 with herzog.Cell("python"):
     mt = mt.annotate_rows(info=mt.info.annotate(AC=mt.variant_qc.AC))
+
 with herzog.Cell("markdown"):
     """
     We export the VCF as several files (shards) to speed up the process.
     """
+
 with herzog.Cell("python"):
     start_vcf_write_time = time.time()
+
 with herzog.Cell("python"):
     mt = mt.repartition(25)
     hl.export_vcf(mt, bucket + 'MyProject_MAFgt0.01.vcf.bgz', parallel='header_per_shard')
+
 with herzog.Cell("python"):
     elapsed_vcf_write_time = time.time() - start_vcf_write_time
+
 with herzog.Cell("python"):
     print(timedelta(seconds=elapsed_vcf_write_time))
+
 with herzog.Cell("markdown"):
     """
     Check that these files were successfully loaded to the bucket:
     """
+
 with herzog.Cell("python"):
     get_ipython().system(" gsutil ls {bucket + 'MyProject_MAFgt0.01.vcf.bgz/*'}")
+
 with herzog.Cell("markdown"):
     """
     Here, we create an array pointing to all of the shards that make up the common variants for our dataset. We use this array in the last section of this notebook called "Generate a new Terra data model called "sample_set" and add all of our derived data files to this entity."
     """
+
 with herzog.Cell("python"):
     vcf_filtered_base = bucket + 'MyProject_MAFgt0.01.vcf.bgz/*.bgz'
     vcf_filtered_path = get_ipython().getoutput('gsutil ls {vcf_filtered_base}')
     vcf_filtered_array = vcf_filtered_path
     vcf_filtered_array
+
 with herzog.Cell("markdown"):
     """
     # Understanding population structure within our sample
@@ -428,15 +471,16 @@ with herzog.Cell("markdown"):
     Be sure to take a look at how pruning changes the number of variants in your dataset using the <font color='red'>count</font> function.
     """
 
-# When testing on Amish chromosome one, this took 38 minutes
 with herzog.Cell("python"):
     #We added code to help you monitor the time it takes for pruning. We currently estimate over an hour.
     start_prune_write_time = time.time()
     pruned_variant_table = hl.ld_prune(mt.GT, r2=0.2, bp_window_size=500000, block_size=1024)
     elapsed_prune_write_time = time.time() - start_prune_write_time
     print(timedelta(seconds=elapsed_prune_write_time))
+
 with herzog.Cell("python"):
     mt = mt.filter_rows(hl.is_defined(pruned_variant_table[mt.row_key]))
+
 with herzog.Cell("markdown"):
     """
     ## Principal Component Analysis
@@ -464,36 +508,44 @@ with herzog.Cell("markdown"):
 
     ### Run the PCA
     """
+
 hl.hwe_normalized_pca.return_value = [mock.MagicMock() for _ in range(3)]  # test fixture
+
 with herzog.Cell("python"):
     _, pcs, _ = hl.hwe_normalized_pca(mt.GT, k=5)
+
 with herzog.Cell("markdown"):
     """
     ### Visualize the PCA
     """
+
 with herzog.Cell("python"):
     p = hl.plot.scatter(pcs.scores[0],
                         pcs.scores[1],
                         xlabel='PC1', ylabel='PC2')
     bokeh_io.show(p)
+
 with herzog.Cell("markdown"):
     """
     ### Decide whether genetic stratification should be included in your association tests
 
     If your project shows distinct clusters of samples in your PCA, you need to account for this genetic stratification by including the first principal components as covariates in your analysis. This can be done using the annotate_cols function.
     """
+
 with herzog.Cell("python"):
     # Use describe to find the PC fields you want to keep
     pcs.describe()
+
 with herzog.Cell("python"):
     # Add to the matrix table
     mt = mt.annotate_cols(scores=pcs[mt.s].scores)
+
 with herzog.Cell("markdown"):
     """
     # Generate a genetic relatedness matrix (GRM)
     Hail has built-in functions for generating a GRM. A GRM can also account for population stratification and cryptic genetic relatedness in our cohort.
     """
-# On chr 1 from Amish this only took 46 seconds but on all Amish chromosomes it seemed to have hung
+
 with herzog.Cell("python"):
     # Calculate the GRM
     # WARNING: This can take a very long time to complete!
@@ -503,17 +555,21 @@ with herzog.Cell("python"):
 
     elapsed_grm_time = time.time() - start_grm_time
     print(timedelta(seconds=elapsed_grm_time))
+
 with herzog.Cell("python"):
     # Get the right sample order
     ind_order = mt.s.collect()
+
 with herzog.Cell("python"):
     # GRM to data frame
     rel_pd = pd.DataFrame(data=grm,
                           index=ind_order,
                           columns=ind_order)
+
 with herzog.Cell("python"):
     # Export GRM
     rel_pd.to_csv(kinship_out)
+
 with herzog.Cell("markdown"):
     """
     # Save sample metadata and update data table
@@ -521,11 +577,13 @@ with herzog.Cell("markdown"):
 
     ## Convert the phenotype data to the correct format
     """
+
 with herzog.Cell("python"):
     # Gather the sample metadata
     samples_traits_for_analysis = (
         mt.cols()
     )
+
 with herzog.Cell("python"):
     # Select only the columns we want to keep
     samples_traits_for_analysis = (
@@ -533,12 +591,14 @@ with herzog.Cell("python"):
         .key_by()
         .select('s', 'pheno')
     )
+
 with herzog.Cell("python"):
     # Convert the Hail matrix back to a pandas dataframe
     samples_traits_for_analysis = (
         samples_traits_for_analysis
         .to_pandas()
     )
+
 with herzog.Cell("python"):
     # Change the column names of our data
     # You can see what column headers are required for the Genesis workflows (for example, sex)
@@ -622,25 +682,30 @@ with herzog.Cell("python"):
     #create the entity and upload it using the API
     entity = '\n'.join(['\t'.join(cols), '\t'.join(vals)])
     fiss.fapi.upload_entities(PROJECT, WORKSPACE, entity)
+
 with herzog.Cell("markdown"):
     """
     ## Update your sample_set entity with the array of paths to your filtered vcf files
 
     In this example, our sample set that we created above is titled "systolicbp" and we are adding a set of filtered common varaints to the
     """
+
 with herzog.Cell("python"):
     common_variants_attribute = [fiss.fapi._attr_set("common_variants", vcf_filtered_array)]
     fiss.fapi.update_entity(PROJECT, WORKSPACE, 'sample_set', 'systolicbp', common_variants_attribute)
+
 with herzog.Cell("markdown"):
     """
     ## Save the notebook and an HTML rendering to the workspace bucket
     """
+
 with herzog.Cell("python"):
     #%notebook {notebook_out}
     #!jupyter nbconvert --to html {notebook_out}
     #!gsutil cp {notebook_out} {bucket + notebook_out}
     #!gsutil cp {html_out} {bucket + html_out}
     pass
+
 with herzog.Cell("python"):
     elapsed_notebook_time = time.time() - start_notebook_time
     print(timedelta(seconds=elapsed_notebook_time))
