@@ -271,11 +271,13 @@ with herzog.Cell("python"):
 
 with herzog.Cell("markdown"):
     """
-    **Count rows and columns**: How many variants and samples are there in your matrix table? Note that the `count` function can take a long time with a big dataset.
+    **Count rows and columns**: How many variants and samples are there in your matrix table? While this is a useful sanity check, please note that the `count` function can take a long time with a big dataset.
     """
 
 with herzog.Cell("python"):
-    mt.count()
+    # Uncomment if you wish to do this, leave commented out to save time
+    # Execution time based on Freeze 8, chr1 only, n=1000 on 200 workers is approximately 40 seconds
+    #mt.count()
 
 with herzog.Cell("markdown"):
     """
@@ -310,7 +312,9 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    mt.rows().show(5)
+    # Uncomment if you wish to do this, leave commented out to save time
+    # Execution time based on Freeze 8, chr1 only, n=1000 on 200 workers is approximately 20 seconds
+    #mt.rows().show(5)
 
 with herzog.Cell("markdown"):
     """
@@ -331,7 +335,9 @@ with herzog.Cell("python"):
     mt.describe()
 
 with herzog.Cell("python"):
-    mt.rows().show(5)
+    # Uncomment if you wish to do this, leave commented out to save time
+    # Execution time based on Freeze 8, chr1 only, n=1000 on 200 workers is approximately 20 seconds
+    #mt.rows().show(5)
 
 with herzog.Cell("markdown"):
     """
