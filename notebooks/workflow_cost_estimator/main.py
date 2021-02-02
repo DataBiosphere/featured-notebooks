@@ -38,14 +38,14 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     from terra_notebook_utils import costs, workflows, WORKSPACE_NAME, WORKSPACE_GOOGLE_PROJECT
 
-    def list_submissions_chronological(workspace: str=WORKSPACE_NAME, 
+    def list_submissions_chronological(workspace: str=WORKSPACE_NAME,
                                        workspace_namespace: str=WORKSPACE_GOOGLE_PROJECT):
         listing = [(s['submissionDate'], s) for s in workflows.list_submissions(workspace, workspace_namespace)]
         for date, submission in sorted(listing):
             yield submission
 
-    def cost_for_submission(submission_id: str, 
-                            workspace: str=WORKSPACE_NAME, 
+    def cost_for_submission(submission_id: str,
+                            workspace: str=WORKSPACE_NAME,
                             workspace_namespace: str=WORKSPACE_GOOGLE_PROJECT):
         workflows_metadata = workflows.get_all_workflows(submission_id, workspace, workspace_namespace)
         for workflow_id, workflow_metadata in workflows_metadata.items():
