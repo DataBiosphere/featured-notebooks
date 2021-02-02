@@ -1,5 +1,6 @@
 # featured-notebooks
-Example Jupyter notebook source files for the BioData Catalyst and AnVIL consortiums. These notebooks are published to the
+Example Jupyter notebook source files for the [BioData Catalyst](https://biodatacatalyst.nhlbi.nih.gov) and
+[AnVIL](https://anvilproject.org) consortiums. These notebooks are published to the
 [Terra notebook environment](https://support.terra.bio/hc/en-us/articles/360027237871-Terra-s-Jupyter-Notebooks-environment-Part-I-Key-components).
 
 Jupyter notebook `.ipynb` files are generated from source files with the
