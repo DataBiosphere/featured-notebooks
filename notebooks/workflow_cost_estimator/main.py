@@ -1,4 +1,3 @@
-# publish to: "terra-notebook-utils-tests" "test-workflow-cost-estimator"
 import os
 import herzog
 
@@ -37,23 +36,30 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    import pandas as pd
-    from terra_notebook_utils import costs, workflows
+    from terra_notebook_utils import costs, workflows, WORKSPACE_NAME, WORKSPACE_GOOGLE_PROJECT
 
-    def list_submissions_chronological():
-        listing = [(s['submissionDate'], s) for s in workflows.list_submissions()]
+    def list_submissions_chronological(workspace: str=WORKSPACE_NAME,
+                                       workspace_namespace: str=WORKSPACE_GOOGLE_PROJECT):
+        listing = [(s['submissionDate'], s) for s in workflows.list_submissions(workspace, workspace_namespace)]
         for date, submission in sorted(listing):
             yield submission
 
-    def cost_for_submission(submission_id: str):
-        submission = workflows.get_submission(submission_id)
-        for wf in submission['workflows']:
-            for shard_info in workflows.estimate_workflow_cost(submission_id, wf['workflowId']):
-                shard_info['workflow_id'] = wf['workflowId']
+    def cost_for_submission(submission_id: str,
+                            workspace: str=WORKSPACE_NAME,
+                            workspace_namespace: str=WORKSPACE_GOOGLE_PROJECT):
+        workflows_metadata = workflows.get_all_workflows(submission_id, workspace, workspace_namespace)
+        for workflow_id, workflow_metadata in workflows_metadata.items():
+            shard_number = 1  # keep track of scattered workflows
+            for shard_info in workflows.estimate_workflow_cost(workflow_id, workflow_metadata):
+                shard_info['workflow_id'] = workflow_id
+                shard_info['shard'] = shard_number
+                shard_number += 1
                 yield shard_info
 
-    def estimate_job_cost(cpus: int, memory_gb: int, runtime_hours: float, preemptible: bool) -> float:
-        return costs.GCPCustomN1Cost.estimate(cpus, memory_gb, runtime_hours * 3600, preemptible)
+    def estimate_job_cost(cpus: int, memory_gb: int, disk_gb: int, runtime_hours: float, preemptible: bool) -> float:
+        disk = costs.PersistentDisk.estimate(disk_gb, runtime_hours * 3600)
+        compute = costs.GCPCustomN1Cost.estimate(cpus, memory_gb, runtime_hours * 3600, preemptible)
+        return disk + compute
 
 with herzog.Cell("markdown"):
     """
@@ -69,17 +75,26 @@ submission_id = "7d4d4bbd-6d3a-4e8f-848d-3992f5bd8e33"
 # TODO: workflow metadata expires after 40 days, which will cause this test to break. Is there a better way?
 
 with herzog.Cell("python"):
-    # submission_id = "b25c93e8-41ad-4980-b63c-46963b0402bc"  # Uncomment and insert your submission id here
-    report = pd.DataFrame()
+    # submission_id = "388beeb8-5e44-4215-8a71-89f2625fbc45"  # Uncomment and insert your submission id here
+    total_cost = 0
+    print("%37s" % "workflow_id",
+          "%30s" % "task_name",
+          "%5s" % "cpus",
+          "%7s" % "memory",
+          "%7s" % "disk",
+          "%9s" % "duration",
+          "%7s" % "cost")
     for shard_info in cost_for_submission(submission_id):
-        shard_info['duration'] /= 3600
-        report = report.append(shard_info, ignore_index=True)
-
-with herzog.Cell("python"):
-    report.style.format(dict(cost="${:.2f}", duration="{:.2f}h", memory="{:.0f}GB"))
-
-with herzog.Cell("python"):
-    print("Total cost: $%.2f" % report['cost'].sum())
+        total_cost += shard_info['cost']
+        print("%37s" % shard_info['workflow_id'],
+              "%30s" % shard_info['task_name'],
+              "%5i" % shard_info['number_of_cpus'],
+              "%5iGB" % shard_info['memory'],
+              "%5iGB" % shard_info['disk'],
+              "%8.2fh" % (shard_info['duration'] / 3600),  # convert from seconds to hours
+              "%7s" % ("$%.2f" % shard_info['cost']))
+        shard_info['duration'] /= 3600  # convert from seconds to hours
+    print("%108s" % ("total_cost: $%.2f" % round(total_cost, 2)))
 
 with herzog.Cell("markdown"):
     """
@@ -88,18 +103,27 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     # Define configurations for: cpus, memory(GB), runtime(hours), preemptible
-    configurations = [(10, 64, 5, False),
-                      (8, 32, 10, False),
-                      (10, 64, 5, True),
-                      (8, 32, 10, True)]
-    report = pd.DataFrame()
-    for cpus, memory_gb, runtime_hours, preemptible in configurations:
-        cost = estimate_job_cost(cpus, memory_gb, runtime_hours, preemptible)
-        report = report.append(dict(cost=cost, cpus=cpus, memory=memory_gb, duration=runtime_hours, preemptible=preemptible), ignore_index=True)
-    report['preemptible'] = report['preemptible'].astype('bool')
+    configurations = [(10, 64, 700, 5, False),
+                      (8, 32, 700, 10, False),
+                      (10, 64, 700, 5, True),
+                      (8, 32, 700, 10, True),
+                      (8, 32, 400, 10, True),
+                      (8, 32, 100, 10, True)]
 
-with herzog.Cell("python"):
-    report.style.format(dict(cost="${:.2f}", duration="{:.2f}h", memory="{:.0f}GB"))
+    print("%8s" % "cpus",
+          "%8s" % "memory",
+          "%8s" % "disk",
+          "%8s" % "runtime",
+          "%12s" % "preemptible",
+          "%8s" % "cost")
+    for cpus, memory_gb, disk_gb, runtime_hours, preemptible in configurations:
+        cost = estimate_job_cost(cpus, memory_gb, disk_gb, runtime_hours, preemptible)
+        print("%8i" % cpus,
+              "%6iGB" % memory_gb,
+              "%6iGB" % disk_gb,
+              "%7ih" % runtime_hours,
+              "%12s" % str(preemptible),
+              "%8s" % ("$%.2f" % cost))
 
 with herzog.Cell("markdown"):
     """
