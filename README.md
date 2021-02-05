@@ -1,5 +1,6 @@
-# bdcat_notebooks
-Example Jupyter notebook source files for the BioData Catalyst consortium. These notebooks are published to the
+# featured-notebooks
+Example Jupyter notebook source files for the [BioData Catalyst](https://biodatacatalyst.nhlbi.nih.gov) and
+[AnVIL](https://anvilproject.org) consortiums. These notebooks are published to the
 [Terra notebook environment](https://support.terra.bio/hc/en-us/articles/360027237871-Terra-s-Jupyter-Notebooks-environment-Part-I-Key-components).
 
 Jupyter notebook `.ipynb` files are generated from source files with the
@@ -92,7 +93,7 @@ in the standard location under `~/.config`.
 
 ## Other
 ### Links
-Project home page [GitHub](https://github.com/DataBiosphere/bdcat_notebooks)  
+Project home page [GitHub](https://github.com/DataBiosphere/featured-notebooks)  
 
 ### Bugs
-Please report bugs, issues, feature requests, etc. on [GitHub](https://github.com/DataBiosphere/bdcat_notebooks).
+Please report bugs, issues, feature requests, etc. on [GitHub](https://github.com/DataBiosphere/featured-notebooks).

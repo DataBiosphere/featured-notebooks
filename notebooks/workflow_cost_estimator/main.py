@@ -130,6 +130,6 @@ with herzog.Cell("markdown"):
     ## Contributions
     Contributions, bug reports, and feature requests are welcome on:
       - [terra-notebook-utils GitHub](https://github.com/DataBiosphere/terra-notebook-utils) for general functionality.
-      - [bdcat_notebooks GitHub](https://github.com/DataBiosphere/bdcat_notebooks) for this notebook.
+      - [featured-notebooks GitHub](https://github.com/DataBiosphere/featured-notebooks) for this notebook.
     """
 ################################################ TESTS ################################################ noqa
