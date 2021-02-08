@@ -1,2 +1,3 @@
 # terra-notebook-utils-tests
 gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10/notebooks/Workflow Cost Estimator.ipynb
+gs://fc-4eec601d-5ddc-4c59-ad35-d85c1d187e6a/notebooks/Workflow Cost Estimator.ipynb
