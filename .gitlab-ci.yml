@@ -20,7 +20,7 @@ verify-gitlab-yml:
   image: $IMAGE
   before_script:
     - mkdir -p ~/.config/gcloud
-    - cp $TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
+    - echo -n $BASE_64_ENCODED_TEST_MULE_CREDS | base64 -d > ~/.config/gcloud/application_default_credentials.json
     - source environment
     - if [[ -e notebooks/$NOTEBOOK/leo_config ]]; then source notebooks/$NOTEBOOK/leo_config; fi
     - $LEO_PIP install --upgrade -r requirements-dev.txt
