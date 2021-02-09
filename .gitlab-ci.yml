@@ -36,6 +36,12 @@ byod:
     NOTEBOOK: "byod"
     IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
 
+data_table_transformer:
+  extends: .notebook-test
+  variables:
+    NOTEBOOK: "data_table_transformer"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:1.0.12
+
 GWAS_1000Genomes_p1:
   extends: .notebook-test
   variables:
