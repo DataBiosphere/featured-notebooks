@@ -14,7 +14,7 @@ fi
 
 out=$1
 
-# Escaped variables, e.g. \$TEST_MULE_CREDENTIALS, are not expanded in the heredoc defined below
+# Escaped variables, e.g. \$BASE_64_ENCODED_TEST_MULE_CREDS, are not expanded in the heredoc defined below
 # during this script's execution.
 cat << EOF > $1
 # This file is generated and should not be modified directly.
@@ -39,7 +39,7 @@ verify-gitlab-yml:
   image: \$IMAGE
   before_script:
     - mkdir -p ~/.config/gcloud
-    - cp \$TEST_MULE_CREDENTIALS ~/.config/gcloud/application_default_credentials.json
+    - echo -n \$BASE_64_ENCODED_TEST_MULE_CREDS | base64 -d > ~/.config/gcloud/application_default_credentials.json
     - source environment
     - if [[ -e notebooks/\$NOTEBOOK/leo_config ]]; then source notebooks/\$NOTEBOOK/leo_config; fi
     - \$LEO_PIP install --upgrade -r requirements-dev.txt
