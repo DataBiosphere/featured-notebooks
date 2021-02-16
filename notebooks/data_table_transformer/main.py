@@ -8,14 +8,17 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 with herzog.Cell("markdown"):
     """
-    ### Use  Pandas `pivot` command  to convert [AnVIL](https://anvilproject.org) table from  long to wide
+    ### Use [Pandas](https://pandas.pydata.org) `pivot` command  to convert [AnVIL](https://anvilproject.org)
+        sequencing data table imported from Gen3 from long to wide format.
     - `index_column` long format column containing the unique keys of the wide formatted table rows
     - `header_column` long format column containing the new column headers of the wide formatted table
-    - `value_columns` long format columns to carry over into the wide formatted table (These may be muxed with the
-       `header_column` names, e.g. "cram" -> "file_type-cram")
+    - `value_columns` long format columns to carry over into the wide formatted table (These may be combined with the
+      `header_column` names, e.g. "cram" -> "file_type-cram")
 
     While this notebook is focused on the AnVIL data model, it can work with any Terra data table with appropriate
     choices for `index_column`, `header_column`, and `value_columns`.
+
+    *author: Brian Hannafious, Genomics Institute, University of California Santa Cruz, bhannafi@ucsc.edu*
     """
 
 with herzog.Cell("markdown"):
@@ -31,7 +34,8 @@ with herzog.Cell("python"):
 
 with herzog.Cell("markdown"):
     """
-    Import Pandas interface functions from [terra-pandas](https://github.com/xbrianh/terra-pandas)
+    Import [Pandas](https://pandas.pydata.org) interface functions from
+    [terra-pandas](https://github.com/xbrianh/terra-pandas)
     """
 
 with herzog.Cell("python"):
@@ -48,7 +52,8 @@ with herzog.Cell("markdown"):
       - Convert the wide-formatted dataframe into a Terra data table.
     """
 
-import json
+###################################################################################### noqa
+# Provide test fixtures for the following cells
 import pandas
 from uuid import uuid4
 from random import choice, randint
@@ -70,14 +75,14 @@ for _ in range(NUMBER_OF_WIDE_ROWS):
         lines.append({'pfb:sample': sample_obj,
                       'pfb:data_format': fmt,
                       'pfb:object_id': f"{uuid4()}",
-                      'pfb:file_size': randint(1024, 1024 ** 3),
-                      'pfb:file_name': f"{uuid4()}"})
+                      'pfb:file_size': randint(1024, 1024 ** 3)})
 dataframe_to_table("test-long", pandas.DataFrame(lines))
+###################################################################################### noqa
 
 with herzog.Cell("python"):
     index_column = "pfb:sample"
     header_column = "pfb:data_format"
-    value_columns = ["pfb:object_id", "pfb:file_size", "pfb:file_name"]
+    value_columns = ["pfb:object_id", "pfb:file_size"]
 
     # Uncomment the following lines with your table names
     # long_table = ""  # Include long formatted table to transform
@@ -85,11 +90,11 @@ with herzog.Cell("python"):
 
     # Convert the long table into a Pandas dataframe
     df = table_to_dataframe(long_table)
-    # Filter out rows without sample ids (such as multisample files)
+    # Filter out rows without pfb:sample (such as multisample files)
     df = df[df[index_column].notna()]
     # "pfb:sample" is a complex field in AnVIL. Convert it to a string container the sample id
     df[index_column] = df[index_column].apply(lambda item: item['entityName'])
-    # Use Pandas "pivot" method to convert  from long to wide
+    # Use Pandas "pivot" method to convert from long to wide
     df_wide = df.pivot(index=index_column, columns=header_column, values=value_columns)
     # Convert the wide dataframe into a Terra data table
     dataframe_to_table(wide_table, df_wide)
@@ -105,9 +110,9 @@ with herzog.Cell("markdown"):
 with herzog.Cell("python"):
     # long_to_wide("sequencing",
     #              "sequencing-wide-two",
-    #              index_column="pfb:sample",
+    #              index_column="pfb:specimen_id",
     #              header_column="pfb:data_format",
-    #              value_columns=["pfb:object_id", "pfb:file_size", "pfb:file_name"])"
+    #              value_columns=["pfb:sample", "pfb:object_id", "pfb:file_size"])"
     pass
 
 with herzog.Cell("markdown"):
@@ -123,3 +128,12 @@ with herzog.Cell("python"):
     tables_to_delete: list = []
     for table_name in tables_to_delete:
         table.delete(table_name)
+
+with herzog.Cell("markdown"):
+    """
+    ## Contributions
+    Contributions, bug reports, and feature requests are welcome on:
+      - [terra-notebook-utils GitHub](https://github.com/DataBiosphere/terra-notebook-utils) for low level data table interfaces.
+      - [terra-pandas GitHub](https://github.com/xbrianh/terra-pandas) for integration between data tables and Pandas DataFrames.
+      - [featured-notebooks GitHub](https://github.com/DataBiosphere/featured-notebooks) for this notebook.
+    """
