@@ -18,7 +18,7 @@ with herzog.Cell("markdown"):
         available for 42 days after workflow completion.
       - GCP Instance type is assumed custom configurations of eith N1 or N2 instance type.
 
-    *author: Brian Hannafious, Genomics Institute, University of California Santa Cruz*
+    *author: Brian Hannafious, Genomics Institute, University of California Santa Cruz, bhannafi@ucsc.edu*
     """
 
 with herzog.Cell("markdown"):
