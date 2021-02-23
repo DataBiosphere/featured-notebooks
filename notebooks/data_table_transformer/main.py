@@ -18,6 +18,30 @@ with herzog.Cell("markdown"):
     While this notebook is focused on the AnVIL data model, it can work with any Terra data table with appropriate
     choices for `index_column`, `header_column`, and `value_columns`.
 
+    #### Long to Wide Example
+
+    An example of a long to wide data table transformation is shown below. For this transformation, the choices of parameters are
+    - `index_column = "pfb:sample"`
+    - `header_column = "pfb:data_format"`
+    - `value_columns = ["pfb:object_id", "pfb:file_size"]`
+    
+    ##### Long Table
+
+    | pfb:sample                           | pfb:data_format | pfb:object_id | pfb:file_size |
+    | ---------                            | ---------       |  ---------    |  ---------    |
+    | 03a22247-edb1-41a3-892c-fc7e30454e68 | cram            | uv            | 241           |
+    | 03a22247-edb1-41a3-892c-fc7e30454e68 | crai            | rk            | 522           |
+    | 2ba689e8-b599-499f-90b4-67e0d3ff167e | cram            | sc            | 669           |
+    | 2ba689e8-b599-499f-90b4-67e0d3ff167e | crai            | mg            | 494           |
+
+
+    ##### Wide Table
+
+    | pfb:sample                           | pfb:object_id-crai | pfb:object_id-cram | pfb:file_size-crai | pfb:file_size-cram |
+    | ---------                            | ---------          | ---------          | ---------          | ---------          |
+    | 03a22247-edb1-41a3-892c-fc7e30454e68 | rk                 | uv                 | 522                | 241                |
+    | 2ba689e8-b599-499f-90b4-67e0d3ff167e | mg                 | sc                 | 494                | 669                |
+
     *author: Brian Hannafious, Genomics Institute, University of California Santa Cruz, bhannafi@ucsc.edu*
     """
 
