@@ -52,8 +52,8 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    #%pip install --upgrade --no-cache-dir terra-notebook-utils
     #%pip install --upgrade --no-cache-dir terra-pandas
+    #%pip install --upgrade --no-cache-dir terra-notebook-utils
     pass
 
 with herzog.Cell("markdown"):
@@ -109,8 +109,8 @@ with herzog.Cell("python"):
     value_columns = ["pfb:object_id", "pfb:file_size"]
 
     # Uncomment the following lines with your table names
-    # long_table = ""  # Include long formatted table to transform
-    # wide_table = ""  # Include the wide formatted table to create
+    # long_table = ""  # Long formatted table to transform
+    # wide_table = ""  # Wide formatted table to create
 
     # Convert the long table into a Pandas dataframe
     df = table_to_dataframe(long_table)
@@ -141,7 +141,7 @@ with herzog.Cell("python"):
 
 with herzog.Cell("markdown"):
     """
-    While data tables may be deleted via the Terra UI, it is often useful to programatical delete large tables, or
+    While data tables may be deleted via the Terra UI, it is often useful to programmatically delete large tables, or
     several tables at the same time.
     """
 
