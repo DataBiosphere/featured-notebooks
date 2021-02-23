@@ -24,7 +24,7 @@ with herzog.Cell("markdown"):
     - `index_column = "pfb:sample"`
     - `header_column = "pfb:data_format"`
     - `value_columns = ["pfb:object_id", "pfb:file_size"]`
-    
+
     ##### Long Table
 
     | pfb:sample                           | pfb:data_format | pfb:object_id | pfb:file_size |
