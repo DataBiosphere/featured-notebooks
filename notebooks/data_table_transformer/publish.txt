@@ -1,8 +1,5 @@
 # terra-notebook-utils-tests
 gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10/notebooks/Data Table Transformer.ipynb
 
-# BioData Catalyst Collection
-gs://fc-4eec601d-5ddc-4c59-ad35-d85c1d187e6a/notebooks/Workflow Cost Estimator.ipynb
-
 # NHGRI AnVIL Notebooks Collection
-gs://fc-c9cf1fe1-a6f4-4e8d-b188-66c8670f2614/notebooks/Workflow Cost Estimator.ipynb
+gs://fc-c9cf1fe1-a6f4-4e8d-b188-66c8670f2614/notebooks/Data Table Transformer.ipynb
