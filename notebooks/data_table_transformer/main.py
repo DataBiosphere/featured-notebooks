@@ -8,6 +8,7 @@ os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 with herzog.Cell("markdown"):
     """
+    # Data Table Transformer
     ### Use [Pandas](https://pandas.pydata.org) `pivot` command  to convert [AnVIL](https://anvilproject.org)
         sequencing data table imported from Gen3 from long to wide format.
     - `index_column` long format column containing the unique keys of the wide formatted table rows
