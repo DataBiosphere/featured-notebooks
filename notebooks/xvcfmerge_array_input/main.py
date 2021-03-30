@@ -1,6 +1,7 @@
 # publish to: "terra-notebook-utils-tests" "test"
 import os
 import herzog
+from firecloud import fiss
 
 with herzog.Cell("markdown"):
     """
@@ -39,27 +40,16 @@ os.environ['WORKSPACE_BUCKET'] = "gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10"
 os.environ['GOOGLE_PROJECT'] = "firecloud-cgl"
 
 with herzog.Cell("python"):
+    #%pip install --upgrade --no-cache-dir terra-notebook-utils
+    pass
+
+with herzog.Cell("python"):
     import os
-    from firecloud import fiss
+    from terra_notebook_utils import table
 
-    # Function to upload TSVs to a Terra Data Table
-    def upload_data_table(tsv: str):
-        resp = fiss.fapi.upload_entities(os.environ['GOOGLE_PROJECT'],
-                                         os.environ['WORKSPACE_NAME'],
-                                         tsv,
-                                         model="flexible")
-        resp.raise_for_status()
-
-    # Function to modify Terra Data Table rows
-    def update_row(table: str, row_name: str, updates: dict):
-        fiss_updates = [fiss.fapi._attr_set(column, value)
-                        for column, value in updates.items()]
-        resp = fiss.fapi.update_entity(os.environ['GOOGLE_PROJECT'],
-                                       os.environ['WORKSPACE_NAME'],
-                                       table,
-                                       row_name,
-                                       fiss_updates)
-        resp.raise_for_status()
+    workspace = os.environ['WORKSPACE_NAME']
+    workspace_namespace = os.environ['GOOGLE_PROJECT']
+    workspace_bucket = os.environ['WORKSPACE_BUCKET']
 
 with herzog.Cell("markdown"):
     """
@@ -68,22 +58,19 @@ with herzog.Cell("markdown"):
     Results will be placed in your workspace bucket.
     """
 
+table.delete("vcf-merge-input-drs")
 with herzog.Cell("python"):
-    bucket = os.environ['WORKSPACE_BUCKET']
-    table = "vcf-merge-input-drs"
-
-    tsv_data = "\t".join([f"{table}_id", "workspace", "billing_project"])
-    for row_name in ["drs_combined_a", "drs_combined_b"]:
-        tsv_data += os.linesep + "\t".join([row_name, os.environ['WORKSPACE_NAME'], os.environ['GOOGLE_PROJECT']])
-    upload_data_table(tsv_data)
-
-    update_row(table, row_name="drs_combined_a", updates=dict(inputs=["drs://dg.4503/697f611b-aa8a-4bd7-a80b-946276273833",
-                                                                      "drs://dg.4503/ce212b62-e796-4b32-becb-361f272cead0"],
-                                                              output=f"{bucket}/merged/drs_combined_a.vcf.gz"))
-
-    update_row(table, row_name="drs_combined_b", updates=dict(inputs=["drs://dg.4503/93286e47-3d09-47e6-ac87-4c2975ef0c3f",
-                                                                      "drs://dg.4503/aba6b011-2ab4-4739-beb4-c1eeaee60c74"],
-                                                              output=f"{bucket}/merged/drs_combined_b.vcf.gz"))
+    table_name = "vcf-merge-input-drs"
+    table.put_row(table_name, dict(workspace=workspace,
+                                   billing_project=workspace_namespace,
+                                   inputs=["drs://dg.4503/697f611b-aa8a-4bd7-a80b-946276273833",
+                                           "drs://dg.4503/ce212b62-e796-4b32-becb-361f272cead0"],
+                                   output=f"{workspace_bucket}/merged/drs_combined_a.vcf.gz"))
+    table.put_row(table_name, dict(workspace=workspace,
+                                   billing_project=workspace_namespace,
+                                   inputs=["drs://dg.4503/93286e47-3d09-47e6-ac87-4c2975ef0c3f",
+                                           "drs://dg.4503/aba6b011-2ab4-4739-beb4-c1eeaee60c74"],
+                                   output=f"{workspace_bucket}/merged/drs_combined_b.vcf.gz"))
 
 with herzog.Cell("markdown"):
     """
@@ -98,41 +85,55 @@ with herzog.Cell("markdown"):
     `gs://[your-bucket's-name]/vcfsb/chr2.vcf.gz`
     """
 
+table.delete("vcf-merge-input-bucket")
 with herzog.Cell("python"):
-    bucket = os.environ['WORKSPACE_BUCKET']
-    table = "vcf-merge-input-bucket"
-
-    tsv_data = "\t".join([f"{table}_id", "workspace", "billing_project"])
-    for row_name in ["chr1", "chr2"]:
-        tsv_data += os.linesep + "\t".join([row_name, os.environ['WORKSPACE_NAME'], os.environ['GOOGLE_PROJECT']])
-    upload_data_table(tsv_data)
-
-    update_row(table, row_name="chr1", updates=dict(inputs=[f"{bucket}/vcfsa/chr1.vcf.gz", f"{bucket}/vcfsb/chr1.vcf.gz"],
-                                                    output=f"{bucket}/merged/chr1.vcf.gz"))
-
-    update_row(table, row_name="chr2", updates=dict(inputs=[f"{bucket}/vcfsa/chr2.vcf.gz", f"{bucket}/vcfsb/chr2.vcf.gz"],
-                                                    output=f"{bucket}/merged/chr2.vcf.gz"))
+    table_name = "vcf-merge-input-bucket"
+    table.put_row(table_name, dict(workspace=workspace,
+                                   billing_project=workspace_namespace,
+                                   inputs=[f"{workspace_bucket}/vcfsa/chr1.vcf.gz",
+                                           f"{workspace_bucket}/vcfsb/chr1.vcf.gz"],
+                                   output=f"{workspace_bucket}/merged/chr1.vcf.gz"))
+    table.put_row(table_name, dict(workspace=workspace,
+                                   billing_project=workspace_namespace,
+                                   inputs=[f"{workspace_bucket}/vcfsa/chr2.vcf.gz",
+                                           f"{workspace_bucket}/vcfsb/chr2.vcf.gz"],
+                                   output=f"{workspace_bucket}/merged/chr2.vcf.gz"))
 
 
 ################################################ TESTS ################################################ noqa
 resp = fiss.fapi.get_entities(os.environ['GOOGLE_PROJECT'], os.environ['WORKSPACE_NAME'], "vcf-merge-input-drs")
 resp.raise_for_status()
 rows = resp.json()
+row_data = list()
 for row in rows:
     assert row['attributes']['workspace'] == os.environ['WORKSPACE_NAME']
     assert row['attributes']['billing_project'] == os.environ['GOOGLE_PROJECT']
-assert rows[0]['attributes']['inputs'] == ["drs://dg.4503/697f611b-aa8a-4bd7-a80b-946276273833", "drs://dg.4503/ce212b62-e796-4b32-becb-361f272cead0"]
-assert rows[0]['attributes']['output'] == f"{os.environ['WORKSPACE_BUCKET']}/merged/drs_combined_a.vcf.gz"
-assert rows[1]['attributes']['inputs'] == ["drs://dg.4503/93286e47-3d09-47e6-ac87-4c2975ef0c3f", "drs://dg.4503/aba6b011-2ab4-4739-beb4-c1eeaee60c74"]
-assert rows[1]['attributes']['output'] == f"{os.environ['WORKSPACE_BUCKET']}/merged/drs_combined_b.vcf.gz"
+    row_data.append((tuple(row['attributes']['inputs']['items']), row['attributes']['output']))
+
+assert (("drs://dg.4503/697f611b-aa8a-4bd7-a80b-946276273833",
+         "drs://dg.4503/ce212b62-e796-4b32-becb-361f272cead0"),
+        f"{os.environ['WORKSPACE_BUCKET']}/merged/drs_combined_a.vcf.gz") in row_data
+assert (("drs://dg.4503/93286e47-3d09-47e6-ac87-4c2975ef0c3f",
+         "drs://dg.4503/aba6b011-2ab4-4739-beb4-c1eeaee60c74"),
+        f"{os.environ['WORKSPACE_BUCKET']}/merged/drs_combined_b.vcf.gz") in row_data
+
+# assert rows[0]['attributes']['inputs']['items'] == ["drs://dg.4503/697f611b-aa8a-4bd7-a80b-946276273833", "drs://dg.4503/ce212b62-e796-4b32-becb-361f272cead0"]
+# assert rows[0]['attributes']['output'] == f"{os.environ['WORKSPACE_BUCKET']}/merged/drs_combined_a.vcf.gz"
+# assert rows[1]['attributes']['inputs']['items'] == ["drs://dg.4503/93286e47-3d09-47e6-ac87-4c2975ef0c3f", "drs://dg.4503/aba6b011-2ab4-4739-beb4-c1eeaee60c74"]
+# assert rows[1]['attributes']['output'] == f"{os.environ['WORKSPACE_BUCKET']}/merged/drs_combined_b.vcf.gz"
 
 resp = fiss.fapi.get_entities(os.environ['GOOGLE_PROJECT'], os.environ['WORKSPACE_NAME'], "vcf-merge-input-bucket")
 resp.raise_for_status()
 rows = resp.json()
+row_data = list()
 for row in rows:
     assert row['attributes']['workspace'] == os.environ['WORKSPACE_NAME']
     assert row['attributes']['billing_project'] == os.environ['GOOGLE_PROJECT']
-assert rows[0]['attributes']['inputs'] == [f"{os.environ['WORKSPACE_BUCKET']}/vcfsa/chr1.vcf.gz", f"{os.environ['WORKSPACE_BUCKET']}/vcfsb/chr1.vcf.gz"]
-assert rows[0]['attributes']['output'] == f"{os.environ['WORKSPACE_BUCKET']}/merged/chr1.vcf.gz"
-assert rows[1]['attributes']['inputs'] == [f"{os.environ['WORKSPACE_BUCKET']}/vcfsa/chr2.vcf.gz", f"{os.environ['WORKSPACE_BUCKET']}/vcfsb/chr2.vcf.gz"]
-assert rows[1]['attributes']['output'] == f"{os.environ['WORKSPACE_BUCKET']}/merged/chr2.vcf.gz"
+    row_data.append((tuple(row['attributes']['inputs']['items']), row['attributes']['output']))
+
+assert ((f"{os.environ['WORKSPACE_BUCKET']}/vcfsa/chr1.vcf.gz",
+         f"{os.environ['WORKSPACE_BUCKET']}/vcfsb/chr1.vcf.gz"),
+        f"{os.environ['WORKSPACE_BUCKET']}/merged/chr1.vcf.gz") in row_data
+assert ((f"{os.environ['WORKSPACE_BUCKET']}/vcfsa/chr2.vcf.gz",
+         f"{os.environ['WORKSPACE_BUCKET']}/vcfsb/chr2.vcf.gz"),
+        f"{os.environ['WORKSPACE_BUCKET']}/merged/chr2.vcf.gz") in row_data
