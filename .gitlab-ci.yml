@@ -101,3 +101,9 @@ xvcfmerge_array_input:
   variables:
     NOTEBOOK: "xvcfmerge_array_input"
     IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+
+xvcfsubsample:
+  extends: .notebook-test
+  variables:
+    NOTEBOOK: "xvcfsubsample"
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
