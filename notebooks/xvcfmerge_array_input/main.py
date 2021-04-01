@@ -36,7 +36,7 @@ with herzog.Cell("markdown"):
 
     Runtime and cost can vary greatly depending on the size and number of intput files. Sample runtime and cost
     information is available for previous merge workflows in
-    [NHLBI BioData Catalyst / Utilities](https://dockstore.org/organizations/bdcatalyst/collections/Utilities) for
+    [NHLBI BioData Catalyst / Utilities](https://dockstore.org/organizations/bdcatalyst/collections/Utilities).
 
     ### Input File Requirements
 
