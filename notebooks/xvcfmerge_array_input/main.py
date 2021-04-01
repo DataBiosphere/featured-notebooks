@@ -124,7 +124,7 @@ with herzog.Cell("markdown"):
     - `gs://[bucket-name]/key/to/my/b-chr2.vcf.gz`
     """
 
-table.delete("vcf-merge-input-bucket")
+table.delete("vcf-merge-input-mixed")
 with herzog.Cell("python"):
     table_name = "vcf-merge-input-mixed"
     table.put_row(table_name,
