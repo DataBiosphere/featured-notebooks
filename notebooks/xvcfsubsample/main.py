@@ -42,7 +42,7 @@ with herzog.Cell("python"):
 with herzog.Cell("markdown"):
     """
     ## Option A: VCF subsample workflow input for DRS URIs
-    This is a typical workflow preparation for merging TOPMed VCFs _without_ downloading them to your workspace.
+    This is a typical workflow preparation for subsampling TOPMed VCFs _without_ downloading them to your workspace.
     Results will be placed in your workspace bucket.
     """
 
@@ -59,6 +59,16 @@ with herzog.Cell("python"):
                                    input="drs://dg.4503/06dc6204-a426-11ea-b7de-179adfdbfdb4",
                                    output=f"{workspace_bucket}/subsampled/drs_subsampled_b.vcf.gz",
                                    samples=["NWD927369", "NWD934675", "NWD952492"]))
+
+    # Samples may also be loaded from a file. If your samples file is stored in your workspace bucket,
+    # it can be made available to the notebook using the `gsutil` command:
+    # !gsutil cp "gs:${WORKSPACE_BUCKET}//my/samples/file" "samples"
+    #
+    # Now it may be opened for reading or used in other subroutines.
+    # with open("samples") as fh:
+    #     pass
+    #
+    # Parsing sample ids from the file is left as an exercise for the reader.
 
 with herzog.Cell("markdown"):
     """
@@ -87,3 +97,13 @@ with herzog.Cell("python"):
                                    input=f"{workspace_bucket}/vcfsa/chr2.vcf.gz",
                                    output=f"{workspace_bucket}/subsampled/chr2.vcf.gz",
                                    samples=["NWD860709", "NWD496635", "NWD637453", "NWD994242"]))
+
+    # Samples may also be loaded from a file. If your samples file is stored in your workspace bucket,
+    # it can be made available to the notebook using the `gsutil` command:
+    # !gsutil cp "gs:${WORKSPACE_BUCKET}//my/samples/file" "samples"
+    #
+    # Now it may be opened for reading or used in other subroutines.
+    # with open("samples") as fh:
+    #     pass
+    #
+    # Parsing sample ids from the file is left as an exercise for the reader.
