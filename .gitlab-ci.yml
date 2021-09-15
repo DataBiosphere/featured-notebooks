@@ -78,6 +78,10 @@ GWAS_blood_pressure_p3:
     NOTEBOOK: "GWAS_blood_pressure_p3"
     IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:0.0.29
 
+picsure_03_phewas:
+  extends: .notebook-test
+  script: make cicd_test/picsure_03_phewas
+
 prepare_igv_viewer_input:
   extends: .notebook-test
   variables:
