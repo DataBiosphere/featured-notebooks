@@ -37,6 +37,7 @@ with herzog.Cell("markdown"):
 
 with herzog.Cell("python"):
     from terra_notebook_utils import costs, workflows, WORKSPACE_NAME, WORKSPACE_GOOGLE_PROJECT
+    import pandas as pd
 
     def list_submissions_chronological(workspace: str=WORKSPACE_NAME,
                                        workspace_namespace: str=WORKSPACE_GOOGLE_PROJECT):
@@ -67,8 +68,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    for s in list_submissions_chronological():
-        print(s['submissionId'], s['submissionDate'], s['status'])
+    pd.DataFrame(list_submissions_chronological())[["submissionId","submissionDate","methodConfigurationName","status","userComment"]]
 
 # Insert a test submission id
 submission_id = "7d4d4bbd-6d3a-4e8f-848d-3992f5bd8e33"
