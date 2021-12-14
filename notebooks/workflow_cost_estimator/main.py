@@ -102,7 +102,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    # Define configurations for: cpus, memory(GB), runtime(hours), preemptible
+    # Define configurations for: cpus, memory(GB), disk(GB), runtime(hours), preemptible
     configurations = [(10, 64, 700, 5, False),
                       (8, 32, 700, 10, False),
                       (10, 64, 700, 5, True),
