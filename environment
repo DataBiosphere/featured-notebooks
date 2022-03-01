@@ -6,7 +6,7 @@ export BDCAT_NOTEBOOKS_HOME="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 # Variables beginning with "LEO_" may be overridden by defining "leo_config"
 # in a notebook directory, e.g. ${BDCAT_NOTEBOOKS_HOME}/notebooks/byod/leo_config
 set -a
-LEO_IMAGE="us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17"
+LEO_IMAGE="us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.4"
 LEO_USER_HOME=/home/jupyter-user
 LEO_REPO_DIR=${LEO_USER_HOME}/$(basename ${BDCAT_NOTEBOOKS_HOME})
 LEO_PYTHON=${LEO_USER_HOME}/miniconda/bin/python

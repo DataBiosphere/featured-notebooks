@@ -10,7 +10,7 @@ before_script:
 
 verify-gitlab-yml:
   stage: verify-gitlab-yml
-  image: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+  image: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.4
   script: 
     - source environment
     - make verify-gitlab-yml
@@ -34,7 +34,7 @@ GWAS_1000Genomes_p1:
   extends: .notebook-test
   variables:
     NOTEBOOK: "GWAS_1000Genomes_p1"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.4
 
 GWAS_1000Genomes_p2:
   extends: .notebook-test
@@ -52,13 +52,13 @@ GWAS_blood_pressure_p1:
   extends: .notebook-test
   variables:
     NOTEBOOK: "GWAS_blood_pressure_p1"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.4
 
 GWAS_blood_pressure_p2:
   extends: .notebook-test
   variables:
     NOTEBOOK: "GWAS_blood_pressure_p2"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.4
 
 GWAS_blood_pressure_p3:
   extends: .notebook-test
@@ -70,10 +70,10 @@ xvcfmerge_array_input:
   extends: .notebook-test
   variables:
     NOTEBOOK: "xvcfmerge_array_input"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.4
 
 xvcfsubsample:
   extends: .notebook-test
   variables:
     NOTEBOOK: "xvcfsubsample"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.4
