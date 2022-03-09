@@ -83,6 +83,10 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
+    def list_bucket(prefix="", bucket=WORKSPACE_BUCKET):
+        for blob in gs.get_client().bucket(bucket).list_blobs(prefix=prefix):
+            yield blob.name
+
     def upload_data_table(tsv):
         resp = fiss.fapi.upload_entities(google_project, workspace, tsv, model="flexible")
         resp.raise_for_status()
@@ -257,7 +261,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    listing = [key for key in gs.list_bucket(subdirectory)]
+    listing = [key for key in list_bucket(subdirectory)]
     create_cram_crai_table("my-table-name", listing)
 
 with herzog.Cell("markdown"):

@@ -8,3 +8,4 @@ __pycache__
 .mypy_cache
 *.ipynb
 .DS_Store
+test_gitlab_yml
