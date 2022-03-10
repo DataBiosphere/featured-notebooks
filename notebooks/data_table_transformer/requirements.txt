@@ -1,3 +1,0 @@
-terra-notebook-utils >= 0.8.1, < 0.9.0
-terra-pandas >= 0.0.1, < 0.1.0
-herzog >= 0.0.2, < 0.1.0

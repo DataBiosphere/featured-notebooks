@@ -1,2 +1,0 @@
-# cicd-tester-1000genomes-gwas
-gs://fc-eb68164b-bae8-4892-83b8-637c1385b09a
