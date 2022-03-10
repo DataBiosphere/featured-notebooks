@@ -83,9 +83,14 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    def list_bucket(prefix="", bucket=WORKSPACE_BUCKET):
-        for blob in gs.get_client().bucket(bucket).list_blobs(prefix=prefix):
+    def list_bucket(prefix="", bucket=os.environ['WORKSPACE_BUCKET']):
+        stripped_bucket = strip_gs(bucket)
+        for blob in gs.get_client().bucket(stripped_bucket).list_blobs(prefix=prefix):
             yield blob.name
+
+    def strip_gs(bucket_with_gs):
+        # Turns "gs://some-bucket" into "some-bucket" which is the format list_blobs() requires
+        return bucket_with_gs[5:]
 
     def upload_data_table(tsv):
         resp = fiss.fapi.upload_entities(google_project, workspace, tsv, model="flexible")
@@ -373,7 +378,6 @@ with herzog.Cell("python"):
 ################################################ TESTS ################################################ noqa
 BLANK_CELL_VALUE = f"{uuid4()}"
 
-delete_table("test_cram_crai_table")
 listing = list()
 for i in range(5):
     listing.append(f"{bucket}/{subdirectory}/sample_id_{i}.cram")
@@ -390,19 +394,16 @@ for i in range(5, 8):
     assert cram_crai_keyed_rows[f'sample_id_{i}'] == dict(cram=f"{bucket}/{subdirectory}/sample_id_{i}.cram",
                                                           crai=f"{bucket}/{subdirectory}/sample_id_{i}.cram.crai")
 
-delete_table("test_metadata_table_a")
 test_metadata_table_a_columns = dict(sample=["sample_id_1", "sample_id_2", "sample_id_3", "sample_id_4"],
                                      firstname=["a", "b", "c", "d"],
                                      birthday=["e", "f", "g", "h"])
 upload_columns("test_metadata_table_a", test_metadata_table_a_columns)
 
-delete_table("test_metadata_table_b")
 test_metadata_table_b_columns = dict(sample=["sample_id_1", "sample_id_2", "sample_id_3", "sample_id_5"],
                                      alpha=["1", "2", "3", "4"],
                                      beta=["5", "6", "7", "8"])
 upload_columns("test_metadata_table_b", test_metadata_table_b_columns)
 
-delete_table("test_joined_table")
 join_data_tables("test_joined_table", ["test_cram_crai_table", "test_metadata_table_a", "test_metadata_table_b"], "sample")
 keyed_rows = get_keyed_rows("test_joined_table", "sample")
 test_metadata_a_keyed_rows = get_keyed_rows("test_metadata_table_a", "sample")
@@ -418,3 +419,8 @@ for i in range(8):
                         alpha=test_metadata_b_keyed_rows.get(sample, dict()).get('alpha', BLANK_CELL_VALUE),
                         beta=test_metadata_b_keyed_rows.get(sample, dict()).get('beta', BLANK_CELL_VALUE))
     assert expected_row == keyed_rows[sample]
+
+delete_table("test_cram_crai_table")
+delete_table("test_metadata_table_a")
+delete_table("test_metadata_table_b")
+delete_table("test_joined_table")
