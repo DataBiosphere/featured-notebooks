@@ -1,0 +1,5 @@
+set -a
+LEO_IMAGE="us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:1.0.12"
+LEO_PYTHON="/usr/local/bin/python3"
+LEO_PIP="/usr/local/bin/python3 -m pip"
+set +a
