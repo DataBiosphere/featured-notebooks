@@ -257,7 +257,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    listing = [key for key in gs.list_bucket(subdirectory)]
+    listing = [key for key in gs.list_bucket(bucket, subdirectory)]
     create_cram_crai_table("my-table-name", listing)
 
 with herzog.Cell("markdown"):
@@ -333,7 +333,7 @@ with herzog.Cell("python"):
         rows_to_delete = [dict(entityType=e['entityType'], entityName=e['name'])
                           for e in iter_ents(table)]
         resp = fiss.fapi.delete_entities(google_project, workspace, rows_to_delete)
-        resp.raise_for_status()
+        # TODO: check specific status with resp.raise_for_status() ?
 
     def get_keyed_rows(table_name: str, key_column: str) -> Dict[str, Dict[str, Any]]:
         keyed_rows = dict()
