@@ -257,7 +257,7 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    listing = [key for key in gs.list_bucket(subdirectory)]
+    listing = [key for key in gs.list_bucket(bucket, subdirectory)]
     create_cram_crai_table("my-table-name", listing)
 
 with herzog.Cell("markdown"):
