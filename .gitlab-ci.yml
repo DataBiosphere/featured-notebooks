@@ -40,13 +40,13 @@ GWAS_1000Genomes_p2:
   extends: .notebook-test
   variables:
     NOTEBOOK: "GWAS_1000Genomes_p2"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:0.0.29
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:1.0.4
 
 GWAS_1000Genomes_p3:
   extends: .notebook-test
   variables:
     NOTEBOOK: "GWAS_1000Genomes_p3"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:0.0.29
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:1.0.4
 
 GWAS_blood_pressure_p1:
   extends: .notebook-test
@@ -64,7 +64,7 @@ GWAS_blood_pressure_p3:
   extends: .notebook-test
   variables:
     NOTEBOOK: "GWAS_blood_pressure_p3"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:0.0.29
+    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:1.0.4
 
 xvcfmerge_array_input:
   extends: .notebook-test
