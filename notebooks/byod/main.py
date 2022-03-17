@@ -70,6 +70,7 @@ with herzog.Cell("python"):
     # Terra-specific packages
     from terra_notebook_utils import gs
     from firecloud import fiss
+    import response
 
     google_project = os.environ['GOOGLE_PROJECT']
     workspace = os.environ['WORKSPACE_NAME']
@@ -332,8 +333,8 @@ with herzog.Cell("python"):
     def delete_table(table: str):
         rows_to_delete = [dict(entityType=e['entityType'], entityName=e['name'])
                           for e in iter_ents(table)]
-        fiss.fapi.delete_entities(google_project, workspace, rows_to_delete)
-        # TODO: check specific status with response.raise_for_status() ?
+        r = fiss.fapi.delete_entities(google_project, workspace, rows_to_delete)
+        response.raise_for_status(r)
 
     def get_keyed_rows(table_name: str, key_column: str) -> Dict[str, Dict[str, Any]]:
         keyed_rows = dict()
