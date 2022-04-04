@@ -33,14 +33,14 @@ with herzog.Cell("markdown"):
     ----
 
     ## Set runtime values
-    If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you may need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. Set the values as specified below:
+    If you are opening this notebook for the first time, and you did not edit your runtime settings before starting it, you will now need to change your settings. Click on the gear icon in the upper right to edit your Notebook Runtime. In the menu that appears on the right hand side of the screen, click on the button that reads "CUSTOMIZE" next to "Create custom environment." Set the values as specified below:
 
     <table style="float:left">
         <thead>
             <tr><th>Option</th><th>Value</th></tr>
         </thead>
         <tbody>
-            <tr><td> Application configuration</td><td>Default (GATK 4.1.4.1, Python 3.7.7, R 4.0.3) </tr></td>
+            <tr><td> Application Configuration</td><td>Default (GATK 4.2.4.0, Python 3.7.12, R 4.1.2) </tr></td>
             <tr><td> CPUs</td><td>4</tr></td>
             <tr><td> Memory (GB)</td><td>15</tr></td>
             <tr><td> Startup script</td><td>(leave blank)</tr></td>

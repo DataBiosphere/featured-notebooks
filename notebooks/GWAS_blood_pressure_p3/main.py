@@ -48,21 +48,21 @@ with herzog.Cell("markdown"):
 
     ## Select your Jupyter environment
 
-    In the gear wheel at the top right of this notebook you can select the docker image or "Environment" to use. We suggest using the environment with the most update to date Hail package (for example: Python 3.7.6, Hail 0.2.30)
+    In the gear wheel at the top right of this notebook you can select the docker image or "Environment" to use. We suggest using the environment with the most update to date Hail package. You can learn more about Terra's [runtime environment](https://support.terra.bio/hc/en-us/articles/360027237871) and how to [control cloud costs](https://support.terra.bio/hc/en-us/articles/360029772212).
 
     ## Set your runtime configuration based on your cost and time needs
 
     * Your compute needs will be based on the size of your VCF and your cost concerns.
-    * You can learn more about Terra's [runtime environment](https://support.terra.bio/hc/en-us/articles/360027237871) and how to [control cloud costs](https://support.terra.bio/hc/en-us/articles/360029772212).
-    * Configure your notebook runtime using the gear wheel at the top right to use a spark cluster for parallel processing. You can learn more about Spark in the Hail section below.
-    * A suggested custom configuration using a 100GB VCF file is below. For larger files, consider using more workers.
-    * Using pre-emptibles is not recommended for analyses that take longer than 6 hours. For large-scale GWAS data preparation, this may be the case depending on the number of workers you request for parallel processing of your variant matrix.
+    * Configure your notebook runtime using the gear wheel at the top right to use a Spark cluster for parallel processing. You can learn more about Spark in the Hail section below.
+    * Using preemptibles is *not* recommended for analyses that could take longer than 6 hours. For large-scale GWAS data preparation, this may be the case depending on the number of workers you request for parallel processing of your variant matrix.
+
+    A suggested custom configuration using a 100GB VCF file is below. For larger files, consider using more workers than this.
     <table style="float:left">
         <thead>
             <tr><th>Attributes</th><th>Value</th></tr>
         </thead>
         <tbody>
-            <tr><td> Application configuration</td><td>Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.57) </tr></td>
+            <tr><td> Application Configuration</td><td>Hail: (Python 3.7.12, Spark 2.4.5, hail 0.2.74) </tr></td>
             <tr><td> CPUs</td><td>8 </tr></td>
             <tr><td> Memory (GB)</td><td>30 </tr></td>
             <tr><td> Disk size (GB)</td><td>500 </tr></td>
