@@ -26,7 +26,7 @@ os.environ['WORKSPACE_BUCKET'] = "bar"  # test fixture
 with herzog.Cell("markdown"):
     """
     # GWAS Genomic Analysis
-    *version: 2.0.1*
+    *version: 2.0.2*
 
     ## Introduction
     In this notebook, you will be working with Hail to make some final adjustments to your data.
@@ -58,19 +58,20 @@ with herzog.Cell("markdown"):
             <tr><th>Option</th><th>Value</th></tr>
         </thead>
         <tbody>
-             <tr><td>Application Configuration</td><td>Hail: (Python 3.7.9, Spark 2.4.5, hail 0.2.61)</td></tr>
+                          <tr><td>Application Configuration</td><td>Hail: (Python 3.7.12, Spark 2.4.5, hail 0.2.74)</td></tr>
                           <tr><td>CPUs</td><td>8</td></tr>
                           <tr><td>Memory (GB)</td><td>30</td></tr>
                           <tr><td>Disk size (GB)</td><td>100</td></tr>
                           <tr><td>Startup script</td><td>(leave blank)</td></tr>
                           <tr><td>Compute Type</td><td>Spark cluster</td></tr>
-             <tr><td>Workers</td><td>4</td></tr>
+                          <tr><td>Workers</td><td>4</td></tr>
                           <tr><td>Preemptible</td><td>0</td></tr>
                           <tr><td>Workers CPUs</td><td>4</td></tr>
                           <tr><td>Workers Memory (GB)</td><td>15</td></tr>
-             <tr><td>Workers Disk size (GB)</td><td>50</td></tr>
+                          <tr><td>Workers Disk size (GB)</td><td>50</td></tr>
         </tbody>
     </table>
+    (The options to adjust the settings for the workers will not appear until you select the compute type as "Spark cluster").
 
     Once you select these options, Terra may ask you about the persistent disk. Essentially, when you run a Jupyter notebook, it creates a VM whose contents can be shared across other notebooks. But the VM of a Hail notebook like this one is not compatiable with the setup that you used for the previous two notebooks. This generally means files created in the VM you used earlier cannot be accessed by the one you're making right now. But, in the previous notebook, we saved our phenotypic data to the workspace bucket, which exists outside of the VM. For that reason, it doesn't matter too much if you keep your old persistent disk or not. If you'd like to return to the previous notebooks and manipulate the data without rerunning them in their entirity, you may want to keep the persistent disk, but doing so will incurr a cost over time. Terra will give you an estimate of that cost to help inform your decision.
 
