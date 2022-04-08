@@ -6,3 +6,6 @@ gs://fc-4eec601d-5ddc-4c59-ad35-d85c1d187e6a/notebooks/VCF Subsample Workflow In
 
 # NHGRI AnVIL Notebook Collection
 gs://fc-c9cf1fe1-a6f4-4e8d-b188-66c8670f2614/notebooks/VCF Subsample Workflow Input Preparation.ipynb
+
+# NIH Cloud Platforms
+gs://fc-47633194-a6fe-4c44-8a29-8d9840b4e393/notebooks/VCF Subsample Workflow Input Preparation.ipynb
