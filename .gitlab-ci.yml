@@ -30,18 +30,6 @@ verify-gitlab-yml:
     - make mypy/$NOTEBOOK
     - make cicd_test/$NOTEBOOK
 
-byod:
-  extends: .notebook-test
-  variables:
-    NOTEBOOK: "byod"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
-
-data_table_transformer:
-  extends: .notebook-test
-  variables:
-    NOTEBOOK: "data_table_transformer"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:1.0.12
-
 GWAS_1000Genomes_p1:
   extends: .notebook-test
   variables:
@@ -77,18 +65,6 @@ GWAS_blood_pressure_p3:
   variables:
     NOTEBOOK: "GWAS_blood_pressure_p3"
     IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-hail:0.0.29
-
-prepare_igv_viewer_input:
-  extends: .notebook-test
-  variables:
-    NOTEBOOK: "prepare_igv_viewer_input"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:0.0.17
-
-workflow_cost_estimator:
-  extends: .notebook-test
-  variables:
-    NOTEBOOK: "workflow_cost_estimator"
-    IMAGE: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:1.0.12
 
 xvcfmerge_array_input:
   extends: .notebook-test
