@@ -36,25 +36,34 @@ with herzog.Cell("markdown"):
     """
 
 with herzog.Cell("python"):
-    from terra_notebook_utils import costs, workflows, WORKSPACE_NAME, WORKSPACE_GOOGLE_PROJECT
+    from terra_notebook_utils import costs, workflows, WORKSPACE_NAME, WORKSPACE_NAMESPACE
 
     def list_submissions_chronological(workspace: str=WORKSPACE_NAME,
-                                       workspace_namespace: str=WORKSPACE_GOOGLE_PROJECT):
+                                       workspace_namespace: str=WORKSPACE_NAMESPACE):
         listing = [(s['submissionDate'], s) for s in workflows.list_submissions(workspace, workspace_namespace)]
         for date, submission in sorted(listing):
             yield submission
 
     def cost_for_submission(submission_id: str,
                             workspace: str=WORKSPACE_NAME,
-                            workspace_namespace: str=WORKSPACE_GOOGLE_PROJECT):
-        workflows_metadata = workflows.get_all_workflows(submission_id, workspace, workspace_namespace)
+                            workspace_namespace: str=WORKSPACE_NAMESPACE):
+        try:
+            workflows_metadata = workflows.get_all_workflows(submission_id, workspace, workspace_namespace)
+        except:
+            print("Unable to retrieve workflow metadata for specified submission.")
+            return
         for workflow_id, workflow_metadata in workflows_metadata.items():
-            shard_number = 1  # keep track of scattered workflows
-            for shard_info in workflows.estimate_workflow_cost(workflow_id, workflow_metadata):
-                shard_info['workflow_id'] = workflow_id
-                shard_info['shard'] = shard_number
-                shard_number += 1
-                yield shard_info
+            if "Submitted" == workflow_metadata['status']:
+                print("Workflow has submitted status, cost estimates may be unavailable.")
+            elif "Failed" == workflow_metadata['status']:
+                print("No workflow IDs found, submission has status failed.")
+            else:
+                shard_number = 1  # keep track of scattered workflows
+                for shard_info in workflows.estimate_workflow_cost(workflow_id, workflow_metadata):
+                    shard_info['workflow_id'] = workflow_id
+                    shard_info['shard'] = shard_number
+                    shard_number += 1
+                    yield shard_info
 
     def estimate_job_cost(cpus: int, memory_gb: int, disk_gb: int, runtime_hours: float, preemptible: bool) -> float:
         disk = costs.PersistentDisk.estimate(disk_gb, runtime_hours * 3600)
@@ -73,6 +82,15 @@ with herzog.Cell("python"):
 # Insert a test submission id
 submission_id = "7d4d4bbd-6d3a-4e8f-848d-3992f5bd8e33"
 # TODO: workflow metadata expires after 40 days, which will cause this test to break. Is there a better way?
+
+with herzog.Cell("markdown"):
+    """
+    Some possible errors you may run into when running the next cells:
+    1. If you get a note about not being able to retrieve workflow metadata, ensure you are entering a submission ID and not a workflow ID. If the note persists, it is likely that the workflow metadata for the submission is no longer available.
+    2. If you get a note about there being no workflow IDs and the status being failed, your workflow was cancelled before even running. Usually, this is because Terra detected invalid inputs.
+    3. If you get a note about submitted status, and no other information, then your workflow has not started yet. Try waiting a few minutes.
+    Terra's ability to detect invalid inputs tends to be fast, so it is unlikely for cases 2 and 3 overlap.
+    """
 
 with herzog.Cell("python"):
     # submission_id = "388beeb8-5e44-4215-8a71-89f2625fbc45"  # Uncomment and insert your submission id here
