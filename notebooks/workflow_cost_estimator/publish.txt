@@ -4,5 +4,5 @@ gs://fc-9169fcd1-92ce-4d60-9d2d-d19fd326ff10/notebooks/Workflow Cost Estimator.i
 # BioData Catalyst Collection
 gs://fc-4eec601d-5ddc-4c59-ad35-d85c1d187e6a/notebooks/Workflow Cost Estimator.ipynb
 
-# NHGRI AnVIL Notebooks Collection
-gs://fc-c9cf1fe1-a6f4-4e8d-b188-66c8670f2614/notebooks/Workflow Cost Estimator.ipynb
+# NIH Cloud Platforms - Notebooks Collection
+gs://fc-47633194-a6fe-4c44-8a29-8d9840b4e393/notebooks/Workflow Cost Estimator.ipynb
